@@ -1,0 +1,25 @@
+<article class="addcomment" id="replyto-${id}">
+    <div class="text">
+        <form id="addcomment_form_${id}" action="/slicepostmessage.json" method="post">
+        <div class="avatarcont">
+        <a href="#avatar-${Application.siteUser.id}" class="avatar" data-authorid="${$.md5(Application.siteUser.id.toString())}" data-avataruri="${Application.siteUser.avataruri}" title="${Application.siteUser.name}">
+        </a>
+        </div>
+        <div class="direct" style="">
+            <input type="button" class="dark_glass blue"
+                   value="Direct" id="showdirectusers" name="showdirectusers" />
+            <textarea autocomplete="off" id="directusernames" name="directusernames"
+                      class="ac_input" style="height: 1.2em; width: 540px; display: none;"></textarea>
+        </div>
+        <div class="postmsg">
+            <input type="hidden" id="replytoid"  name="${type}" value="${id}" />
+            <textarea name="text" style="height: 6em; width: 640px; margin-left: 1em;">${text}</textarea>
+        </div>
+        <div class="tags" style="padding-left: 92px; width: 640px;">
+            <input type="reset" class="cancel dark_glass red" value="Cancel Reply" name="cancel" style="opacity: 0.5;" />
+            &#160;&#160;
+            <input type="submit" class="dark_glass green" value="Comment" name="submit" style="float: right;" />
+        </div>
+        </form>
+    </div>
+</article>

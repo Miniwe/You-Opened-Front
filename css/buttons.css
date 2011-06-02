@@ -1,0 +1,113 @@
+
+input.dark_glass, .discussion .glass {
+    background: none;
+    border: none;
+    padding: .6em .8em;
+    margin: .4em;
+    text-align: center;
+    letter-spacing: .03em;
+    text-transform: uppercase;
+    color: #bbbbbb;
+    font-weight: bold;
+    box-shadow:inset 0px 0px 1px  0px #222222, 1px 1px 2px 1px #000000;
+    background-image: -webkit-gradient(
+        linear,
+        left top,
+        left bottom,
+        color-stop(0, rgba(80,80,80, 0)),
+        color-stop(0.5, rgb(26,26,26)),
+        color-stop(1, rgba(80,80,80, 0.5))
+        );
+
+}
+
+input.dark_glass:hover, .discussion .glass:hover {
+    background-image: -webkit-gradient(
+        linear,
+        left top,
+        left bottom,
+        color-stop(0, rgba(240,240,240, 0)),
+        color-stop(0.5, rgb(216,216,216)),
+        color-stop(1, rgba(240,240,240, 0.5))
+        );
+    color: #ffffff;
+    box-shadow:inset 0px 0px 5px  0px #000000, 1px 1px 3px 1px #000000;
+}
+
+input.dark_glass.red:hover, .discussion .glass.red:hover {
+    background-image: -webkit-gradient(
+        linear,
+        left top,
+        left bottom,
+        color-stop(0, rgba(240,40,40, 0)),
+        color-stop(0.5, rgb(216,16,16)),
+        color-stop(1, rgba(240,40,40, 0.5))
+        );
+}
+
+input.dark_glass.green:hover, .discussion .glass.green:hover {
+    background-image: -webkit-gradient(
+        linear,
+        left top,
+        left bottom,
+        color-stop(0, rgba(40,240,40, 0)),
+        color-stop(0.5, rgb(16,216,16)),
+        color-stop(1, rgba(40,240,40, 0.5))
+        );
+}
+
+input.dark_glass.blue:hover, .discussion .glass.blue:hover {
+    background-image: -webkit-gradient(
+        linear,
+        left top,
+        left bottom,
+        color-stop(0, rgba(40,40,240, 0)),
+        color-stop(0.5, rgb(16,16,216)),
+        color-stop(1, rgba(40,40,240, 0.5))
+        );
+}
+
+
+input.light_glass, .post .glass, .key .glass{
+    background: none;
+    border: none;
+    padding: .6em .8em;
+    margin: .4em;
+    text-align: center;
+    letter-spacing: .03em;
+    text-transform: uppercase;
+    color: #222222;
+    font-weight: bold;
+    box-shadow:inset 0px 0px 2px  0px #dddddd, 1px 1px 2px 0px #ffffff;
+    background-image: -webkit-gradient(
+        linear,
+        left top,
+        left bottom,
+        color-stop(0, rgba(220,220,220, 0)),
+        color-stop(0.5, rgb(240,240,240)),
+        color-stop(1, rgba(220,220,220, 0.5))
+        );
+
+}
+
+input.light_glass:hover, .post .glass:hover, .key .glass:hover{
+    background-image: -webkit-gradient(
+        linear,
+        left top,
+        left bottom,
+        color-stop(0, rgba(240,240,240, 0)),
+        color-stop(0.5, rgb(255,255,255)),
+        color-stop(1, rgba(255,255,255, 0.5))
+        );
+    color: #000000;
+    box-shadow:inset 0px 0px 5px 0px #ffffff, 1px 1px 3px 0px #ffffff;
+}
+
+#showdirectusers {
+    margin:0px;
+    vertical-align: baseline;
+    padding-top: 0.2em;
+    width:96px;
+    height:1.6em;
+    margin-left: 1em;
+}
