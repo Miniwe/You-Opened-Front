@@ -31,7 +31,15 @@
         </a>
         </div>
         <header>
-            Comment ${id}: ${branchesCount}-${postsCount}-${postsCountCoef}
+            {{if parentOutputsCount > 0}}
+            <span style="color:#00ff00;">Comment</span>
+            {{else}}
+            <span style="color:#ffbb66;">Message</span>
+            {{/if}}
+            ${id}: ${branchesCount}-${postsCount}-${postsCountCoef}
+            - <a href="http://youopened.com/yol/#post-${id}">ссылка</a>
+            <br >
+            <time date-val="${createtime}" datetime="${createtimef}">${createtimef}</time>
         </header>
         </div>
         <div class="avatarcont">

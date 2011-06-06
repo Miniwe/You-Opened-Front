@@ -3,7 +3,6 @@
  */
 function Post (Application, data)
 {
-    
     Post.superclass.constructor.call( this );
     
     this.Application = Application;
@@ -12,6 +11,9 @@ function Post (Application, data)
     this.parentId        = "";
     this.parent          = false;
   
+    this.createtime      =  data.createtime;
+    this.createtimef     = formatDate(data.createtime);
+    
     this.authorid        = data.authorid;
     this.text            = data.text;
     
@@ -39,6 +41,7 @@ function Post (Application, data)
             };
         }
         
+        this.parentOutputsCount = this.getActionValue(data.metadata.socialconnections.outputs, "Comment", "count") || 0;
         this.messagesCount = this.getActionValue(data.metadata.socialconnections.outputs, "Message", "count") || 0;
         if (this.messagesCount)
         {

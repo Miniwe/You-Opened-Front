@@ -8,11 +8,12 @@ var Application = function ( opts )
     
     this.bTmplCompleted = 0;
     
-     this.sessionkey = opts.sessionkey;
+    this.sessionkey = opts.sessionkey;
     
     this.templates = opts.templates || [];
     
-    this.siteUser    = null;
+    this.siteUserTimer    = null;
+    this.siteUser         = null;
     
     this.discussions = {};
     this.posts       = {};
@@ -65,7 +66,7 @@ var Application = function ( opts )
         return dfd.promise();
     };
     
-    this.ajaxStop = function ( ) // until dont working
+    this.ajaxStop = function ( ) // @todo until dont working
     {
         for (var i=0,l=this.ajaxRequests.length;i<l;i++)
         {
@@ -75,6 +76,33 @@ var Application = function ( opts )
 //            }
         }
         return false;
+    };
+    
+    this.userState = function ( )
+    {
+        var Application = this;
+        
+        Application.ajaxRequest('/slicegetrecenttimelinestatus.json', 
+            function( data ){
+                
+                Application.updateSiteUser(data);
+
+                Application.updateInterfaceByUser();
+                
+                var newData = Application.parseData(data);
+                
+                Application.updateMain(newData);
+                
+                Application.siteUserTimer = setTimeout(function() {
+                    Application.userState()
+//                    console.log('+1');
+                }, 30000);
+                
+            },
+            function( ){
+                message("Couldn't get user timeline");
+            }
+        );
     };
     
     this.ajaxRequest = function (url, success, error, data)
@@ -88,11 +116,9 @@ var Application = function ( opts )
             url       : this.globalPath + this.frameworkPath + url,
             success   : function (data, textStatus, jqXHR) { 
                 
-                Application.updateSiteUser(data);
-                
+                // pre actions 
                 success.call(Application, data, textStatus, jqXHR);
-                
-                Application.updateInterfaceByUser();
+                // post actions 
                 
             },
             dataType  : 'jsonp',
@@ -165,7 +191,7 @@ var Application = function ( opts )
         }
         
             
-    }
+    };
     
     this.msg = function (message, mode)
     {
@@ -178,7 +204,7 @@ var Application = function ( opts )
             alert(message);
         }
         
-    }
+    };
     
     this.renderDiscussions = function ()
     {
@@ -246,7 +272,7 @@ var Application = function ( opts )
             $("#discussion-" + User.pinned[i]).appendTo("#d-Pinned");
         }
         // тут сделать чтоб пиненые переносились наверх а непиненные вниз - но только если они уже не там
-    }
+    };
 
     this.loadTopDiscussions = function ()
     {
@@ -335,10 +361,20 @@ var Application = function ( opts )
                 
                 Application.ajaxRequest('/slicegetrecenttimelinestatus.json', 
                     function( data ){
+                        
+                        Application.updateSiteUser(data);
+
+                        Application.updateInterfaceByUser();
+
+                        Application.siteUserTimer = setTimeout(function() {
+                            Application.userState()
+                        }, 30000);
+                        
                         Application.router();
+
                     },
                     function( ){
-                        message("Couldn't get start data");
+                        Application.msg("Couldn't get start data");
                     }
                 );
             });
@@ -366,7 +402,10 @@ var Application = function ( opts )
             case "directmessage":
                 this.loadDiscussionsByParams("/slicegettopsocialratingfacadeinputsbyactiontype.json", {
                     facadeid   : (Application.siteUser != undefined)?Application.siteUser.id:0,
-                    actiontype : "Message"
+                    actiontype : "Message",
+                    count      :  100
+                }, function(){
+                    $("article.key").tsort("time", {order:"desc",attr:"date-val"});
                 });
                 break;
             case "user":
@@ -469,40 +508,40 @@ var Application = function ( opts )
             $("#shownewpost").hide();
             
             $(".auth").addClass("hidden");
-    
+            
+            return false;
+        }
+        
+        $("#userdata").html("User: " + this.siteUser.name+". Welcome !");
+        $("#showregistration, #showlogin").hide();
+
+        $("#logout").show();
+        $("#shownewpost").show();
+        $(".auth").removeClass("hidden");
+
+        // unpin all
+        // pin by user
+        $(".pinning").removeClass("pinned");
+//            console.log(this.siteUser.pinned);
+        for (var i=0, l=this.siteUser.pinned.length; i<l; i++)
+        {
+            $("article[data-id='" + this.siteUser.pinned[i] + "']").find(".pinning").addClass("pinned");
+//                console.log("article[data-id='" + this.siteUser.pinned[i] + "']");
+
+        }
+//            console.log(this.siteUser);
+
+        if (this.siteUser.messagesCount)
+        {
+            $("#directmessage")
+                .html("Inbox ("+ this.siteUser.messagesCount +")")
+                .show();
         }
         else
         {
-            $("#userdata").html("User: " + this.siteUser.name+". Welcome !");
-            $("#showregistration, #showlogin").hide();
-
-            $("#logout").show();
-            $("#shownewpost").show();
-            $(".auth").removeClass("hidden");
-            
-            // unpin all
-            // pin by user
-            $(".pinning").removeClass("pinned");
-//            console.log(this.siteUser.pinned);
-            for (var i=0, l=this.siteUser.pinned.length; i<l; i++)
-            {
-                $("article[data-id='" + this.siteUser.pinned[i] + "']").find(".pinning").addClass("pinned");
-//                console.log("article[data-id='" + this.siteUser.pinned[i] + "']");
-
-            }
-//            console.log(this.siteUser);
-
-            if (this.siteUser.messagesCount)
-            {
-                $("#directmessage").show();
-            }
-            else
-            {
-                $("#directmessage").hide();
-            }
-        
-
+            $("#directmessage").hide();
         }
+        
     }
     
     this.renderAvatar = function( View, size )
@@ -727,9 +766,22 @@ var Application = function ( opts )
         return newData;
     };
     
-    
     this.alignFloat = function ( )
     {
+        
+    };
+    
+    this.updateMain = function ( newData )
+    {
+        //console.log(newData);
+        for (var i=0; i< newData.posts.length; i++)
+        {
+            var Post = Application.posts[newData.posts[i]];
+            if ($("#post-"+Post.id).length < 0)
+            {
+                Post.render("#d-Unpinned", "key", "prependTo");
+            }
+        }
         
     };
     

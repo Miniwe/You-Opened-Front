@@ -198,15 +198,9 @@ Discussion.prototype = {
                    title="' + this.users[i].name + '"></a>')
                 .hover(function(){
                     $("<img src='img/direct.gif' class='direct' />")
-                        .css(
-                        {
-                            "margin-left": (6) + "px",
-                            "margin-top" : (6) + "px"
-                        })
-                        .on
                         .prependTo($(this));
                 }, function(){
-                    $(this).find(".direct").remove();
+                    $(this).find("img.direct").remove();
                 })
                 .appendTo(".avalist");
 
