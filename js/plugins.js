@@ -123,3 +123,13 @@ function getIds (str)
         return "";
     }
 }
+
+function formatDate (indate)
+{
+    var outdate = indate;
+    outdate = Math.round(outdate);
+    var d = new Date();
+    d.setTime(outdate * 1000);
+    
+    return d.toLocaleString(); // + " - " + outdate;
+}

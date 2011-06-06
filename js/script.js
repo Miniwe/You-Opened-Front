@@ -24,27 +24,61 @@
         // * * * jQuery function process place HERE * * *     
         
     $("#showdirectusers").live("click", function(){
-        $("#directusernames, #directuserids").val("");
         $("#directusernames").slideToggle();
     });
     
     $(".tags a, .yoltags a").live("mouseover", function(){
         $('article').highlight( $(this).html(), "highlight_hover" );
     });
-    
+
     $(".tags a, .yoltags a").live("mouseout", function(){
         $('article').removeHighlight( "highlight_hover" );
     });
+
+    $("img.direct").live("click", function(){
         
-    $(".avatar").live("mouseout", function(){
-        console.log($(this).attr("data-id"),'out');
+        var reply = $("article.addcomment");
+        if (reply.length < 1)
+        {
+            $("#shownewpost").click();
+            reply = $("article.addcomment");
+        }
+        
+        var directusersField = $("article.addcomment").find("#directusernames");
+        
+        if (! directusersField.is(':visible') )
+        {
+            $("#showdirectusers").click();
+        }
+        
+        var directusers = directusersField.val();
+        directusers = directusers?directusers:"";
+        var a = $(this).parent("a");
+        
+        if (directusers.indexOf(a.attr("data-id")) < 0)
+        {
+            if (directusers)
+            {
+                var directusers_ar = directusers.split(",").filter(function(){ return true });
+                directusers_ar.push(a.attr("title")+"("+a.attr("data-id")+")");
+            }
+            else
+            {
+                var directusers_ar = [a.attr("title")+"("+a.attr("data-id")+")"];
+            }
+            
+            directusersField.val(directusers_ar.join(","));
+            
+        }
+        
+        return false;
     });
-        
+
     $("#loader").click(function(){
-       $("#container .inner").slideToggle(); 
-       $("#container .inner2").toggleClass("darkLine"); 
+        $("#container .inner").slideToggle(); 
+        $("#container .inner2").toggleClass("darkLine"); 
     });
-    
+
     
     $("#searchform").submit(function(){
         // Application.ajaxStop(); // @todo until not working
