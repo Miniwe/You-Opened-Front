@@ -48,10 +48,6 @@
           background-color: #84596B;
           border-bottom: 1px dotted #f0f0f0;
       }
-      
-
-
-
 
       article.discussion {
           background-color: #B58AA5;
@@ -67,6 +63,12 @@
       
       .active {
           outline: 1px solid red;
+      }
+      
+      .float {
+          outline: 1px solid green;
+          position: float;
+          top: 0px;
       }
       
 
@@ -158,6 +160,72 @@
     <script type="text/javascript">
         (function($) {
           
+            function alignArticles ( )
+            {
+                /*
+                 * получаем активный
+                 * для каждого элемента parent делаем выравнивание
+                 * если его позиция меньше 0 тогда делаем его float и ставим на сдвиг относительно его предков
+                 * если больше 0 тогда убираем у него класс float
+                 */
+                var 
+                    sT = $(document.body).scrollTop(),
+                    activeArticle = $("article.active"),
+                    activeParents = getParentsList(activeArticle.attr("data-id"));
+                if ( !activeArticle.length ) 
+                {
+                    return false;
+                }
+
+                for ( i = activeParents.list.length; i--; )
+                {
+                    var tmpArticle = $("article[data-id="+ activeParents.list[i] +"]");
+                    console.log('tmp' + i, tmpArticle, tmpArticle.offset().top);
+                    
+                    if (tmpArticle.offset().top + getParentsList(activeParents.list[i]).offset < sT)
+                    {
+                        tmpArticle
+                            .css({"top": sT + getParentsList(activeParents.list[i]).offset + "px"})
+                            .addClass("float");
+                    }
+                    else
+                    {
+                        tmpArticle
+                            .removeClass("float");
+                    }
+                }
+                
+            }
+            
+            
+            var getParentsList = function (id)
+            {
+                var 
+                    el = null,
+                    result = {
+                    list     : [],
+                    offset : 0
+                };
+                if (getParentsList.cache[id] == undefined)
+                {
+                    result.list.push(id);
+                    
+                    el = $("article[data-id=" + $("article[data-id=" + id + "]").attr("data-parent") + "]");
+                    while ( el.length )
+                    {
+                        result.list.push($(el).attr("data-id"));
+                        result.offset += el.outerHeight(true);
+                        el = $("article[data-id=" + el.attr("data-parent") + "]");
+                    }
+                    
+                    getParentsList.cache[id] = result;
+                }
+                
+                return getParentsList.cache[id];
+            } 
+            
+            getParentsList.cache = {};
+            
             $(function() {
               $("article").click( function(){
                  $("article.active").not(this)
@@ -165,8 +233,8 @@
                     .removeClass("float");
                  
                  $(this).addClass("active");
-                 
-                 $(document.body).animate( {scrollTop: $(this).offset().top} );
+                
+                 $(document.body).animate( {scrollTop: $(document.body).scrollTop() + getParentsList($(this).attr("data-id")).offset} );
                  
               });
             });
@@ -175,7 +243,7 @@
             });
           
             $(window).bind("scroll", function() {
-                console.log("scroll");
+                alignArticles( );
             });
           
         })(jQuery);
