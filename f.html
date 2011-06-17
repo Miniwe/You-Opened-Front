@@ -182,25 +182,27 @@
                 for ( i = activeParents.list.length; i--; )
                 {
                     var tmpArticle = $("article[data-id="+ activeParents.list[i] +"]");
-                    
-                    if (getParentsList(activeParents.list[i]).offset <= sT + tmpArticle.offset().top )
+
+                    var next    = $(tmpArticle).nextAll("article").not(".float").first();
+                    var next_mt = 0;
+                    var pOffset = getParentsList(activeParents.list[i]).offset;
+                    if (pOffset <= sT + tmpArticle.offset().top )
                     {
                         tmpArticle
-                            .css({"top": getParentsList(activeParents.list[i]).offset + "px"})
+                            .css({"top": pOffset + "px", "margin-top":"0px"})
                             .addClass("float");
+                            next_mt = tmpArticle.outerHeight(true);
                     }
                     else
                     {
                         tmpArticle
                             .removeClass("float");
                     }
+                    console.log ("mo", next, next_mt, Math.max(next_mt,0));
+                    next.css({"margin-top": (Math.max(next_mt,0) + "px")});
+                    
                 }
                 
-                var pageOffset = 0;
-                $.each($("article.float"), function (i, el){
-                    pageOffset += $(el).outerHeight(true);
-                });
-                $("#main-container").css({"padding-top": (pageOffset )+ "px"});
             }
             
             
@@ -234,7 +236,8 @@
             
             $(function() {
               $("article").click( function(){
-                 $("article.active").not(this)
+                 $("article")
+                    .css({"margin-top": "none", "top": "none"})
                     .removeClass("active")
                     .removeClass("float");
                  
