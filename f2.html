@@ -1,0 +1,339 @@
+<!doctype html>
+<!-- paulirish.com/2008/conditional-stylesheets-vs-css-hacks-answer-neither/ -->
+<!--[if lt IE 7 ]> <html class="no-js ie6" lang="en"> <![endif]-->
+<!--[if IE 7 ]>    <html class="no-js ie7" lang="en"> <![endif]-->
+<!--[if IE 8 ]>    <html class="no-js ie8" lang="en"> <![endif]-->
+<!--[if (gte IE 9)|!(IE)]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+
+  <!-- Always force latest IE rendering engine (even in intranet) & Chrome Frame
+       Remove this if you use the .htaccess -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+  <title></title>
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <!-- Mobile viewport optimized: j.mp/bplateviewport -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Place favicon.ico & apple-touch-icon.png in the root of your domain and delete these references -->
+  <link rel="shortcut icon" href="favicon.ico">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+
+  <!-- External Fonts -->
+<!--  <link href='http://fonts.googleapis.com/css?family=Ubuntu:light,lightitalic,regular,italic,500,500italic,bold,bolditalic&subset=cyrillic,latin' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Cuprum&subset=cyrillic,latin' rel='stylesheet' type='text/css'>-->
+
+  <!-- CSS: implied media="all" -->
+  <link rel="stylesheet" href="css/style.css?v=2">
+
+  <!-- Uncomment if you are specifically targeting less enabled mobile browsers
+  <link rel="stylesheet" media="handheld" href="css/handheld.css?v=2">  -->
+
+  <!-- All JavaScript at the bottom, except for Modernizr which enables HTML5 elements & feature detects -->
+  <script src="js/libs/modernizr-1.7.min.js"></script>
+  <style type="text/css">
+     
+      #main-container {
+          width: 100%;
+          margin: 0 auto;
+      }
+      
+      article {
+          height: 5em;
+          padding:1em;
+/*          outline: 1px dashed #ffffff;*/
+          background-color: #84596B;
+/*          border-bottom: 1px dotted #f0f0f0;*/
+      }
+
+      article.discussion {
+          background-color: #B58AA5;
+      }
+      
+      article.key {
+          background-color: #CECFCE;
+      }
+      
+      article.post {
+          background-color: #FFFFFF;
+      }
+      
+      .active {
+/*          outline: 1px solid red;*/
+      }
+      
+      .float {
+/*          outline: 1px solid green;*/
+          position: fixed;
+          top: 0px;
+          width: inherit;
+          z-index: 1000;
+/*          -webkit-box-shadow: inset 0px 0px 0px 1px #000;*/
+
+      }
+      
+
+  </style>
+</head>
+    
+<body>
+        <div id="main-container">          
+            
+        <article data-id="pined" data-parent="">pined <div style=""> id:pined <br> parent:</div></article>
+
+        <article data-id="1" data-parent="pined" class="discussion"> <div style=""> id:1 <br> parent:pined</div></article>
+        <article data-id="2" data-parent="pined" class="discussion"> <div style=""> id:2 <br> parent:pined</div></article>
+        <article data-id="3" data-parent="2" class="key"> <div style=""> id:3 <br> parent:2</div></article>
+        <article data-id="4" data-parent="2" class="key"> <div style=""> id:4 <br> parent:2</div></article>
+        <article data-id="5" data-parent="4" class="post">41 <div style=""> id:5 <br> parent:4</div></article>
+        <article data-id="6" data-parent="4" class="post">4 <div style=""> id:6 <br> parent:4</div></article>
+        <article data-id="7" data-parent="4" class="post">4 <div style=""> id:7 <br> parent:4</div></article>
+        <article data-id="8" data-parent="7" class="post">47 <div style=""> id:8 <br> parent:7</div></article>
+        <article data-id="9" data-parent="7" class="post">47 <div style=""> id:9 <br> parent:7</div></article>
+        <article data-id="11" data-parent="9" class="post">9 <div style=""> id:11 <br> parent:9</div></article>
+        <article data-id="12" data-parent="9" class="post">9 <div style=""> id:12 <br> parent:9</div></article>
+        <article data-id="10" data-parent="7" class="post">7 <div style=""> id:10 <br> parent:7</div></article>
+        <article data-id="13" data-parent="4" class="post">1-n <div style=""> id:13 <br> parent:4</div></article>
+        <article data-id="14" data-parent="2" class="key"> <div style=""> id:14 <br> parent:2</div></article>
+        <article data-id="15" data-parent="2" class="key"> <div style=""> id:15 <br> parent:2</div></article>
+        <article data-id="16" data-parent="2" class="key"> <div style=""> id:16 <br> parent:2</div></article>
+        <article data-id="17" data-parent="16" class="post"> <div style=""> id:17 <br> parent:16</div></article>
+        <article data-id="18" data-parent="16" class="post"> <div style=""> id:18 <br> parent:16</div></article>
+        <article data-id="19" data-parent="16" class="post"> <div style=""> id:19 <br> parent:16</div></article>
+        <article data-id="20" data-parent="16" class="post"> <div style=""> id:20 <br> parent:16</div></article>
+        <article data-id="21" data-parent="16" class="post"> <div style=""> id:21 <br> parent:16</div></article>
+        <article data-id="22" data-parent="16" class="post"> <div style=""> id:22 <br> parent:16</div></article>
+        <article data-id="23" data-parent="2" class="key"> <div style=""> id:23 <br> parent:2</div></article>
+        <article data-id="24" data-parent="2" class="key"> <div style=""> id:24 <br> parent:2</div></article>
+        <article data-id="25" data-parent="2" class="key"> <div style=""> id:25 <br> parent:2</div></article>
+        <article data-id="26" data-parent="2" class="key"> <div style=""> id:26 <br> parent:2</div></article>
+        <article data-id="27" data-parent="2" class="key"> <div style=""> id:27 <br> parent:2</div></article>
+        <article data-id="28" data-parent="27" class="post"> <div style=""> id:28 <br> parent:27</div></article>
+        <article data-id="29" data-parent="27" class="post"> <div style=""> id:29 <br> parent:27</div></article>
+        <article data-id="30" data-parent="27" class="post"> <div style=""> id:30 <br> parent:27</div></article>
+        <article data-id="31" data-parent="2" class="key"> <div style=""> id:31 <br> parent:2</div></article>
+        <article data-id="32" data-parent="2" class="key"> <div style=""> id:32 <br> parent:2</div></article>
+        <article data-id="33" data-parent="2" class="key"> <div style=""> id:33 <br> parent:2</div></article>
+        <article data-id="34" data-parent="2" class="key"> <div style=""> id:34 <br> parent:2</div></article>
+        <article data-id="35" data-parent="pined" class="discussion"> <div style=""> id:35 <br> parent:pined</div></article>
+        <article data-id="36" data-parent="pined" class="discussion"> <div style=""> id:36 <br> parent:pined</div></article>
+
+        <article data-id="unpined" data-parent="">un-pined <div style=""> id:unpined <br> parent:</div></article>
+
+        <article data-id="38" data-parent="unpined" class="discussion"> <div style=""> id:38 <br> parent:unpined</div></article>
+        <article data-id="39" data-parent="unpined" class="discussion">39 <div style=""> id:39 <br> parent:unpined</div></article>
+        <article data-id="48" data-parent="39" class="key">48 <div style=""> id:48 <br> parent:39</div></article>
+        <article data-id="45" data-parent="48" class="post">48-45 <div style=""> id:45 <br> parent:48</div></article>
+        <article data-id="46" data-parent="48" class="post">48-46 <div style=""> id:46 <br> parent:48</div></article>
+        <article data-id="47" data-parent="48" class="post">48-471-n <div style=""> id:47 <br> parent:48</div></article>
+        <article data-id="49" data-parent="39" class="key">49 <div style=""> id:49 <br> parent:39</div></article>
+        <article data-id="50" data-parent="39" class="key">50 <div style=""> id:50 <br> parent:39</div></article>
+        <article data-id="51" data-parent="50" class="post">50-51 <div style=""> id:51 <br> parent:50</div></article>
+        <article data-id="52" data-parent="50" class="post">50-52 <div style=""> id:52 <br> parent:50</div></article>
+        <article data-id="53" data-parent="50" class="post">50-53 <div style=""> id:53 <br> parent:50</div></article>
+        <article data-id="54" data-parent="50" class="post">50-54 <div style=""> id:54 <br> parent:50</div></article>
+        <article data-id="55" data-parent="50" class="post">50-55 <div style=""> id:55 <br> parent:50</div></article>
+        <article data-id="56" data-parent="50" class="post">50-56 <div style=""> id:56 <br> parent:50</div></article>
+        <article data-id="57" data-parent="39" class="key"> <div style=""> id:57 <br> parent:39</div></article>
+        <article data-id="58" data-parent="39" class="key"> <div style=""> id:58 <br> parent:39</div></article>
+        <article data-id="37" data-parent="unpined" class="discussion"> <div style=""> id:37 <br> parent:unpined</div></article>
+        <article data-id="40" data-parent="unpined" class="discussion"> <div style=""> id:40 <br> parent:unpined</div></article>
+        <article data-id="41" data-parent="unpined" class="discussion"> <div style=""> id:41 <br> parent:unpined</div></article>
+        <article data-id="42" data-parent="unpined" class="discussion"> <div style=""> id:42 <br> parent:unpined</div></article>
+        <article data-id="43" data-parent="unpined" class="discussion"> <div style=""> id:43 <br> parent:unpined</div></article>
+        <article data-id="44" data-parent="unpined" class="discussion"> <div style=""> id:44 <br> parent:unpined</div></article>
+        <article data-id="60" data-parent="unpined" class="discussion"> <div style=""> id:60 <br> parent:unpined</div></article>
+        <article data-id="61" data-parent="unpined" class="discussion"> <div style=""> id:61 <br> parent:unpined</div></article>
+        <article data-id="62" data-parent="unpined" class="discussion"> <div style=""> id:62 <br> parent:unpined</div></article>
+        <article data-id="63" data-parent="unpined" class="discussion"> <div style=""> id:63 <br> parent:unpined</div></article>
+        <article data-id="64" data-parent="unpined" class="discussion"> <div style=""> id:64 <br> parent:unpined</div></article>
+
+    </div>
+      
+    <!-- JavaScript at the bottom for fast page loading -->
+      
+    <!-- Grab Google CDN's jQuery, with a protocol relative URL; fall back to local if necessary -->
+    <script src='js/libs/jquery-1.5.1.min.js'></script>
+      
+      
+    <!-- scripts concatenated and minified via ant build script-->
+      
+    <script type="text/javascript">
+        (function($) {
+          
+            function alignArticles ( )
+            {
+                var curArticle = null,
+                    pOffset    = 0,
+                    gOffset    = 0,
+                    next       = null,
+                    nOffset    = 0;
+                
+                var 
+                    sT = $(document.body).scrollTop(),
+                    activeArticle = $("article.active"),
+                    activeParents = getParentsList(activeArticle.attr("data-id"));
+                    
+                if ( !activeArticle.length )
+                {
+                    return false;
+                }
+                    
+                // align before
+                for ( i = activeParents.list.length; i--; )
+                {
+                    curArticle = $("article[data-id="+ activeParents.list[i] +"]");
+                    
+                    pOffset = getParentsList(activeParents.list[i]).offset;
+                    gOffset = getPrevHeights(activeParents.list[i]).offset; 
+                    
+                    if (gOffset < sT + pOffset)
+                    {
+                        curArticle
+                            .css({"top": pOffset + "px"})
+                            .addClass("float");
+                        
+                        $(curArticle).next(".replacement").remove();
+                        $(curArticle)
+                            .after('<div class="replacement" \n\
+                                        style="height:'+$(curArticle).outerHeight(true)+'px">\n\
+                                   </div>'
+                            );
+                    }
+                    else
+                    {
+                        $(curArticle).next(".replacement").remove();
+                        curArticle
+                            .removeClass("float");
+
+                    }
+                    
+                    next = $(curArticle).nextAll("article[data-parent="+ $(curArticle).attr("data-parent") +"]").first();
+                    if (!next.length)
+                    {
+                        /*
+                         * родитель -> следущий после родителя
+                         * 
+                         */
+                        next = $("article[data-id="+ $(curArticle).attr("data-parent") +"]").first();
+                        next = $(next).nextAll("article[data-parent="+ $(next).attr("data-parent") +"]").first();
+                    }
+                    
+                    if (next.length > 0)
+                    {
+                        nOffset = getPrevHeights(next.attr("data-id")).offset; 
+                        console.log(next, nOffset, pOffset, gOffset, sT, nOffset-sT);
+                        if (pOffset + $(curArticle).outerHeight(true) > nOffset-sT)
+                        {
+                            // уменьшить текущий top на разницу межде сдвигом следующего 
+                            $(curArticle).css({"top": ( nOffset-sT - $(curArticle).outerHeight(true) )+"px"});
+                        }
+                    }
+                    
+                }
+                
+                return true;
+            }
+            
+            
+            var getPrevHeights = function (id)
+            {
+                var 
+                    el = null,
+                    result = {
+                    list     : [],
+                    offset : 0
+                };
+                if (getPrevHeights.cache[id] == undefined)
+                {
+                    $.each(
+                        $("article[data-id=" + id + "]").prevAll("article"),
+                        function (i, el) {
+                            result.list.push($(el).attr("data-id"));
+                            result.offset += $(el).outerHeight(true);
+                        }
+                    );
+                    
+                    getPrevHeights.cache[id] = result;
+                }
+                
+                return getPrevHeights.cache[id];
+            } 
+            
+            getPrevHeights.cache = {};
+            
+            var getParentsList = function (id)
+            {
+                var 
+                    el = null,
+                    result = {
+                    list     : [],
+                    offset : 0
+                };
+                if (getParentsList.cache[id] == undefined)
+                {
+                    result.list.push(id);
+                    
+                    el = $("article[data-id=" + $("article[data-id=" + id + "]").attr("data-parent") + "]");
+                    while ( el.length )
+                    {
+                        result.list.push($(el).attr("data-id"));
+                        result.offset += el.outerHeight(true);
+                        el = $("article[data-id=" + el.attr("data-parent") + "]");
+                    }
+                    
+                    getParentsList.cache[id] = result;
+                }
+                
+                return getParentsList.cache[id];
+            } 
+            
+            getParentsList.cache = {};
+            
+            $(function() {
+              $("article").click( function(){
+                 var 
+                   sT = $(document.body).scrollTop();
+                   
+                 $(".replacement").remove();
+                 $("article")
+                    .css({"margin-top": "none", "top": "none"})
+                    .removeClass("active")
+                    .removeClass("float");
+                 
+                 $(this).addClass("active");
+                
+                 $(document.body).animate({ scrollTop: getPrevHeights($(this).attr("data-id")).offset - getParentsList($(this).attr("data-id")).offset }, 
+                    function(){
+                        alignArticles();
+                    }
+                 );
+
+              });
+            });
+          
+            $(window).bind("load", function() {
+                var cnt = 0;
+                $.each($("article"), function (i,el){
+                    $(el).css({"z-index": 1000 - cnt});
+                    cnt ++;
+                });
+            
+            });
+          
+            $(window).bind("scroll", function() {
+//                $(":animated").stop();
+                alignArticles( );
+            });
+          
+        })(jQuery);
+      
+    </script>
+    <!-- end scripts-->
+      
+      
+</body>
+</html> 
