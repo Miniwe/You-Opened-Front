@@ -5,6 +5,7 @@
 
 function Discussion (Application, data) 
 {
+    
     Discussion.superclass.constructor.call( this );
 
     this.Application = Application;

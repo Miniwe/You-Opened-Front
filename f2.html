@@ -37,16 +37,19 @@
   <style type="text/css">
      
       #main-container {
-          width: 100%;
+          width: 60%;
           margin: 0 auto;
       }
       
       article {
           height: 5em;
-          padding:1em;
+/*          padding:1em;*/
 /*          outline: 1px dashed #ffffff;*/
           background-color: #84596B;
 /*          border-bottom: 1px dotted #f0f0f0;*/
+      }
+      article > div{
+          padding: 1em;
       }
 
       article.discussion {
@@ -224,12 +227,12 @@
                     
                     if (next.length > 0)
                     {
-                        nOffset = getPrevHeights(next.attr("data-id")).offset; 
+                        nOffset = getPrevHeights(next.attr("data-id")).offset ; 
                         console.log(next, nOffset, pOffset, gOffset, sT, nOffset-sT);
                         if (pOffset + $(curArticle).outerHeight(true) > nOffset-sT)
                         {
                             // уменьшить текущий top на разницу межде сдвигом следующего 
-                            $(curArticle).css({"top": ( nOffset-sT - $(curArticle).outerHeight(true) )+"px"});
+                            $(curArticle).css({"top": ( nOffset - sT - $(curArticle).outerHeight(true) )+"px"});
                         }
                     }
                     
@@ -253,7 +256,7 @@
                         $("article[data-id=" + id + "]").prevAll("article"),
                         function (i, el) {
                             result.list.push($(el).attr("data-id"));
-                            result.offset += $(el).outerHeight(true);
+                            result.offset += $(el).outerHeight(/*true*/);
                         }
                     );
                     
