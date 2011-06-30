@@ -66,12 +66,12 @@
       }
       
       .float {
-          outline: 1px solid green;
+/*          outline: 1px solid green;*/
           position: fixed;
           top: 0px;
           width: inherit;
           z-index: 1000;
-          -webkit-box-shadow: inset 0px 0px 0px 1px #000;
+/*          -webkit-box-shadow: inset 0px 0px 0px 1px #000;*/
 
       }
       
@@ -166,7 +166,12 @@
           
             function alignArticles ( )
             {
-                console.log("in");
+                var curArticle = null,
+                    pOffset    = 0,
+                    gOffset    = 0,
+                    next       = null,
+                    nOffset    = 0;
+                
                 var 
                     sT = $(document.body).scrollTop(),
                     activeArticle = $("article.active"),
@@ -176,54 +181,61 @@
                 {
                     return false;
                 }
-                
+                    
+                // align before
                 for ( i = activeParents.list.length; i--; )
                 {
-                    var curArticle = $("article[data-id="+ activeParents.list[i] +"]");
+                    curArticle = $("article[data-id="+ activeParents.list[i] +"]");
                     
-                    var pOffset = getParentsList(activeParents.list[i]).offset;
-                    var gOffset = getPrevHeights(activeParents.list[i]).offset; /* РІС‹СЃРѕС‚Р° РІСЃРµС… РїСЂРµРґС‹РґСѓС‰РёС… СЌР»РµРјРµРЅС‚РѕРІ */ 
+                    pOffset = getParentsList(activeParents.list[i]).offset;
+                    gOffset = getPrevHeights(activeParents.list[i]).offset; 
                     
-                    console.log(activeParents.list[i], pOffset, gOffset, sT);
-                    if (gOffset > sT)
+                    if (gOffset < sT + pOffset)
                     {
-
+                        curArticle
+                            .css({"top": pOffset + "px"})
+                            .addClass("float");
+                        
+                        $(curArticle).next(".replacement").remove();
+                        $(curArticle)
+                            .after('<div class="replacement" \n\
+                                        style="height:'+$(curArticle).outerHeight(true)+'px">\n\
+                                   </div>'
+                            );
                     }
                     else
                     {
+                        $(curArticle).next(".replacement").remove();
+                        curArticle
+                            .removeClass("float");
 
                     }
-//                    if (pOffset > sT + gOffset)
-//                    {
-//                        curArticle
-//                            .css({"top": pOffset + "px", "margin-top": "0px"})
-//                            .addClass("float");
-//                    }
-//                    else
-//                    {
-//                        curArticle
-//                            .removeClass("float");
-//                    }
+                    
+                    next = $(curArticle).nextAll("article[data-parent="+ $(curArticle).attr("data-parent") +"]").first();
+                    if (!next.length)
+                    {
+                        /*
+                         * родитель -> следущий после родителя
+                         * 
+                         */
+                        next = $("article[data-id="+ $(curArticle).attr("data-parent") +"]").first();
+                        next = $(next).nextAll("article[data-parent="+ $(next).attr("data-parent") +"]").first();
+                    }
+                    
+                    if (next.length > 0)
+                    {
+                        nOffset = getPrevHeights(next.attr("data-id")).offset; 
+                        console.log(next, nOffset, pOffset, gOffset, sT, nOffset-sT);
+                        if (pOffset + $(curArticle).outerHeight(true) > nOffset-sT)
+                        {
+                            // уменьшить текущий top на разницу межде сдвигом следующего 
+                            $(curArticle).css({"top": ( nOffset-sT - $(curArticle).outerHeight(true) )+"px"});
+                        }
+                    }
                     
                 }
                 
-//                var nexts = {};
-//                
-//                $.each($(".float"), function(i, el){
-//                    var next = $(this).nextAll("article").not(".float").first();
-//                    var next_id = $(next).attr("data-id");
-//                    if (nexts[next_id] == undefined)
-//                    {
-//                        nexts[next_id] = {
-//                            offsetTop: 0
-//                        }
-//                    }
-//                    nexts[next_id].offsetTop += $(el).outerHeight(true);
-//                    
-//                    next.css("margin-top", nexts[next_id].offsetTop);
-//                    
-//                });
-                
+                return true;
             }
             
             
@@ -283,6 +295,10 @@
             
             $(function() {
               $("article").click( function(){
+                 var 
+                   sT = $(document.body).scrollTop();
+                   
+                 $(".replacement").remove();
                  $("article")
                     .css({"margin-top": "none", "top": "none"})
                     .removeClass("active")
@@ -290,14 +306,22 @@
                  
                  $(this).addClass("active");
                 
-                 $(document.body).animate({ scrollTop: getParentsList($(this).attr("data-id")).offset });
-//                alignArticles( );
-//                 $(document.body).animate( {scrollTop: 0} );
-                 
+                 $(document.body).animate({ scrollTop: getPrevHeights($(this).attr("data-id")).offset - getParentsList($(this).attr("data-id")).offset }, 
+                    function(){
+                        alignArticles();
+                    }
+                 );
+
               });
             });
           
             $(window).bind("load", function() {
+                var cnt = 0;
+                $.each($("article"), function (i,el){
+                    $(el).css({"z-index": 1000 - cnt});
+                    cnt ++;
+                });
+            
             });
           
             $(window).bind("scroll", function() {
