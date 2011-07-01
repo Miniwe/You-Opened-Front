@@ -34,7 +34,12 @@ var Application = function ( opts )
     this.ajaxRequests = [];
     this.ajaxCount = 0;
     this.ajaxTimer = 0;
-    
+   
+    /*
+     * Кеширование шаблонов
+     * Возвращает управление в основную программму только подгрузка завершена
+     * сделать через dereferer 
+     */
     this.cacheTemplates = function ()
     {
         
@@ -66,6 +71,11 @@ var Application = function ( opts )
         return dfd.promise();
     };
     
+    /*
+     * Оставнока всех ajax запросов
+     * @todo 1) надо доделать
+     * @todo 2) возможно надо сделать возможность останавливать определенный класс запросов 
+     */
     this.ajaxStop = function ( ) // @todo until dont working
     {
         for (var i=0,l=this.ajaxRequests.length;i<l;i++)
@@ -78,6 +88,9 @@ var Application = function ( opts )
         return false;
     };
     
+    /*
+     * Обновление данных пользователя и соотвествующего состояния интерфейса 
+     */
     this.userState = function ( )
     {
         var Application = this;
@@ -95,7 +108,6 @@ var Application = function ( opts )
                 
                 Application.siteUserTimer = setTimeout(function() {
                     Application.userState()
-//                    console.log('+1');
                 }, 30000);
                 
             },
@@ -105,6 +117,14 @@ var Application = function ( opts )
         );
     };
     
+    /*
+     * Глобальная функция отправки запросов на сервер
+     * Все остаальные получают данные через нее
+     * @param url String
+     * @param success funciton 
+     * @param error funciton
+     * @param data object
+     */
     this.ajaxRequest = function (url, success, error, data)
     {
         var data = data || {};
@@ -146,6 +166,10 @@ var Application = function ( opts )
         this.ajaxRequests.push( $.ajax( ajaxOpts ) );
     };
     
+    /*
+     * Обновление данных пользователя
+     * @param data object of arrays {discussions:[],posts:[],users:[],... ect }
+     */
     this.updateSiteUser = function ( data ) {
         if (!this.sessionkey || !data.users || data.users.length != 1)
             return false;
@@ -161,6 +185,9 @@ var Application = function ( opts )
         }
      };
         
+    /*
+     * анимация загрузчика
+     */        
     this.animateLoader = function ( ) {
         
         var el = $("#loader .progress"); 
@@ -193,6 +220,9 @@ var Application = function ( opts )
             
     };
     
+    /*
+     * Вывод сообщения
+     */
     this.msg = function (message, mode)
     {
         if (mode == 'console')
@@ -206,20 +236,25 @@ var Application = function ( opts )
         
     };
     
+    /* 
+     * Отрисовка дискашенов в незапиненой области 
+     */
     this.renderDiscussions = function ()
     {
         for (i in this.discussions)
         {
             this.discussions[i].render("#d-Unpinned", "discussion", "appendTo");
-            
-            this.discussions[i].loadKeys();
-            this.discussions[i].loadAvatars(0, 20);
         }
         
         this.alignRatings( );
 
     };
     
+    /*
+     * Подгрузка запиненных дискашенов по пользователю
+     * @param User f.user.js
+     */
+        
     this.loadPinned = function ( User )
     {
         // Move pinned To Top
@@ -247,8 +282,6 @@ var Application = function ( opts )
                     if ( $("#discussion-" + Dcs.id).length > 0 )
                     {
                         var View = Dcs.render("#d-Pinned", "discussion", "appendTo");
-                        Dcs.renderKeys();
-
                     }
                     else
                     {
@@ -258,22 +291,30 @@ var Application = function ( opts )
                 
             }, function(){
                 Application.msg("Couldn't search");
+                this.pinnedToTop ( User ); // перемещение pinned наверх - возможнои overhead 
             });        
         
-        // Mode All Pinned To Top - не нужна так как новые сами вставляются вверх
-        // this.pinnedToTop ( User );
     };
 
+    /*
+     * Перемещение pinned дискашенов наверх 
+     * 
+     * @param User object f.user.js - текущий пользователь
+     * 
+     */
     this.pinnedToTop = function ( User )
     {
-        if (!User) return false;
+        if (!User) return false; // @todo такого не может быть в нормально ситуации - убрать после проверки
         for (var i=0, l= User.pinned.length; i < l; i++)
         {
             $("#discussion-" + User.pinned[i]).appendTo("#d-Pinned");
         }
-        // тут сделать чтоб пиненые переносились наверх а непиненные вниз - но только если они уже не там
+        // @todo тут сделать чтоб пиненые переносились наверх а непиненные вниз - но только если они уже не там
     };
 
+    /*
+     *  Подгрузка самых топовых дискашенов
+     */
     this.loadTopDiscussions = function ()
     {
       var Application = this;  
@@ -293,20 +334,40 @@ var Application = function ( opts )
             Application.msg("Count`t get base discussion list");
         }
       );
+          
     };
     
+    
+    /*
+     * Подсвечивание тегов
+     * @param str String - строка для подсвечивания
+     * @param hclass String - класс каким надо посвечивать
+     */
     this.highlight = function ( str, hclass)
     {
         $('article').removeHighlight( hclass );
         $('article').highlight( str, hclass );
     };
     
+    /*
+     * Запрос на получение дискашенов и постов по заданным параметрам
+     * и вывод их в рабочую область
+     * 
+     * - Ключи обновляются в результате запроса для дискашенов
+     * 
+     * - Сначала удаляются все статьи (!) потом добавляются новые 
+     * в unpined раздел. Учитаывать что сейчас могут удаляться и pined и unpinned поля
+     * 
+     * @param url string - строка URL 
+     * @param params object - объект с параметрами
+     * @param callback funciton - функция которая запускается после выполнения запроса
+     */
     this.loadDiscussionsByParams = function ( url, params, callback )
     {
         var Application = this;
         this.ajaxRequest( url , 
             function(data){
-                $("#main article").remove();
+                $("#main article.post, #main article.dicsussion, #main article.key").remove();
                 
                 var newData = Application.parseData(data);
                 for (var i=0; i< newData.discussions.length; i++)
@@ -348,8 +409,14 @@ var Application = function ( opts )
             },
             params);
             return false;
+            this.r
     };
     
+    /*
+     * Точка входа для приложения
+     * - Запуск
+     * - Обновление состояния экрана в зависимости от пользователя
+     */
     this.run = function ()
     {
         
@@ -380,6 +447,10 @@ var Application = function ( opts )
             });
     };
     
+    /*
+     * Определение команд в зависимости от изменения строки адреса
+     * @param hash String||undefined - возможность задать команду вручную
+     */
     this.router = function ( hash ) 
     {
         var hash = hash || document.location.hash;
@@ -430,9 +501,13 @@ var Application = function ( opts )
                 ;
         }
         
-//        console.log("parsed hash", result);
     }
     
+    /*
+     *  Библиотечканя функция конвертации массива данных формы в объект
+     *  @param formArray @todo describe type
+     *  @return object
+     */
     this.formArrayToData = function ( formArray ) 
     {
         var out = {};
@@ -444,6 +519,9 @@ var Application = function ( opts )
         return out;
     };
     
+    /*
+     * Обновления полосок рейтингов
+     */
     this.alignRatings = function ( ) 
     {
         for (i in this.discussions)
@@ -484,12 +562,23 @@ var Application = function ( opts )
         });
     };
  
+    /*
+     * Залогирование пользователя 
+     * и запуск обновления интерфейса в зависимости от него
+     * 
+     * @param data
+     */
     this.loginSiteUser = function (data)
     {
         this.siteUser = new User(this, data );
         Application.updateInterfaceByUser();
     };
  
+    /*
+     * Разлогирование пользователя 
+     * и запуск обновления интерфейса в зависимости от него
+     * 
+     */
     this.logoutSiteUser = function ()
     {
         this.siteUser = null;
@@ -522,14 +611,11 @@ var Application = function ( opts )
         // unpin all
         // pin by user
         $(".pinning").removeClass("pinned");
-//            console.log(this.siteUser.pinned);
         for (var i=0, l=this.siteUser.pinned.length; i<l; i++)
         {
             $("article[data-id='" + this.siteUser.pinned[i] + "']").find(".pinning").addClass("pinned");
-//                console.log("article[data-id='" + this.siteUser.pinned[i] + "']");
 
         }
-//            console.log(this.siteUser);
 
         if (this.siteUser.messagesCount)
         {
@@ -768,12 +854,75 @@ var Application = function ( opts )
     
     this.alignFloat = function ( )
     {
+       var curArticle = null,
+            pOffset    = 0,
+            gOffset    = 0,
+            next       = null,
+            nOffset    = 0;
+
+        var 
+            sT = $(document.body).scrollTop(),
+            activeArticle = $("article.active"),
+            activeParents = this.getParentsList(activeArticle.attr("data-id"));
+
+        if ( !activeArticle.length )
+        {
+            return false;
+        }
+
+        // align before
+        for ( i = activeParents.list.length; i--; )
+        {
+            curArticle = $("article[data-id="+ activeParents.list[i] +"]");
+
+            pOffset = this.getParentsList(activeParents.list[i]).offset;
+            gOffset = this.getPrevHeights(activeParents.list[i]).offset; 
+
+            if (gOffset < sT + pOffset)
+            {
+                curArticle
+                    .css({"top": pOffset + "px"})
+                    .addClass("float");
+
+                $(curArticle).next(".replacement").remove();
+                $(curArticle)
+                    .after('<div class="replacement" \n\
+                                style="height:'+$(curArticle).outerHeight(true)+'px">\n\
+                           </div>'
+                    );
+            }
+            else
+            {
+                $(curArticle).next(".replacement").remove();
+                curArticle
+                    .removeClass("float");
+
+            }
+
+            next = $(curArticle).nextAll("article[data-parent="+ $(curArticle).attr("data-parent") +"]").first();
+            if (!next.length)
+            {
+                next = $("article[data-id="+ $(curArticle).attr("data-parent") +"]").first();
+                next = $(next).nextAll("article[data-parent="+ $(next).attr("data-parent") +"]").first();
+            }
+
+            if (next.length > 0)
+            {
+                nOffset = this.getPrevHeights(next.attr("data-id")).offset; 
+                if (pOffset + $(curArticle).outerHeight(true) > nOffset-sT)
+                {
+                    $(curArticle).css({"top": ( nOffset-sT - $(curArticle).outerHeight(true) )+"px"});
+                }
+            }
+
+        }
+
+        return true;
         
     };
     
     this.updateMain = function ( newData )
     {
-        //console.log(newData);
         for (var i=0; i< newData.posts.length; i++)
         {
             var Post = Application.posts[newData.posts[i]];
@@ -784,6 +933,60 @@ var Application = function ( opts )
         }
         
     };
+    
+    this.getPrevHeights = function (id)
+    {
+        var 
+            el = null,
+            result = {
+            list     : [],
+            offset : 0
+        };
+        if (this.getPrevHeights.cache[id] == undefined)
+        {
+            $.each(
+                $("article[data-id=" + id + "]").prevAll("article"),
+                function (i, el) {
+                    result.list.push($(el).attr("data-id"));
+                    result.offset += $(el).outerHeight(true);
+                }
+            );
+
+            this.getPrevHeights.cache[id] = result;
+        }
+
+        return this.getPrevHeights.cache[id];
+    } 
+
+    this.getPrevHeights.cache = {};
+
+    this.getParentsList = function (id)
+    {
+        var 
+            el = null,
+            result = {
+            list     : [],
+            offset : 0
+        };
+        if (this.getParentsList.cache[id] == undefined)
+        {
+            result.list.push(id);
+
+            el = $("article[data-id=" + $("article[data-id=" + id + "]").attr("data-parent") + "]");
+            while ( el.length )
+            {
+                result.list.push($(el).attr("data-id"));
+                result.offset += el.outerHeight(true);
+                el = $("article[data-id=" + el.attr("data-parent") + "]");
+            }
+
+            this.getParentsList.cache[id] = result;
+        }
+
+        return this.getParentsList.cache[id];
+    } 
+
+    this.getParentsList.cache = {};
     
     return this;
     

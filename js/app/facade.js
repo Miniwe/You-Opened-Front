@@ -66,7 +66,6 @@ function Facade ()
             
             default:
                 /*
-                console.log('mode', $.tmpl(tmpl, this)[mode]);
                 if ($.tmpl(tmpl, this)[mode] != undefined)
                 {
                     var func = $.tmpl(tmpl, this)[mode];
@@ -252,7 +251,6 @@ function Facade ()
     this.removePostChilds = function ( id )
     {
         var facade = this;
-//        console.log(id, "#main article[data-parent-post='" + id + "']", $("#main article[data-parent-post='" + id + "']"));
         $.each($("#main article[data-parent-post='" + id + "']"), function(i,el)
         {
             facade.removePostChilds($(el).attr("data-id"));
