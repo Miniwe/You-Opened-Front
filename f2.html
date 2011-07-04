@@ -173,7 +173,8 @@
                     pOffset    = 0,
                     gOffset    = 0,
                     next       = null,
-                    nOffset    = 0;
+                    nOffset    = 0,
+                    tmpTop     = 0;
                 
                 var 
                     sT = $(document.body).scrollTop(),
@@ -195,8 +196,8 @@
                     
                     if (gOffset < sT + pOffset)
                     {
+                        tmpTop = pOffset;
                         curArticle
-                            .css({"top": pOffset + "px"})
                             .addClass("float");
                         
                         $(curArticle).next(".replacement").remove();
@@ -224,13 +225,13 @@
                     if (next.length > 0)
                     {
                         nOffset = getPrevHeights(next.attr("data-id")).offset ; 
-                        console.log(next, nOffset, pOffset, gOffset, sT, nOffset-sT);
                         if (pOffset + $(curArticle).outerHeight(true) > nOffset-sT)
                         {
-                            // уменьшить текущий top на разницу межде сдвигом следующего 
-                            $(curArticle).css({"top": ( nOffset - sT - $(curArticle).outerHeight(true) )+"px"});
+                            tmpTop = ( nOffset - sT - $(curArticle).outerHeight(true) );
                         }
                     }
+                    
+                    $(curArticle).css({"top": tmpTop + "px"});
                     
                 }
                 

@@ -1,4 +1,5 @@
-<article class="key" id="post-${id}" data-id="${id}" data-parent="" data-parent-post="${parentPost}" data-parent-discussion="${parentDiscussion}">
+<article class="key" id="post-${id}" data-id="${id}" data-parent="${parentViewId}" data-parent-post="${parentPost}" data-parent-discussion="${parentDiscussion}">
+    <div>
     <div class="left">
         <div class="socialrating" title="${socialrating}"></div>
         <div class="rating" title="${rating}"></div>
@@ -57,5 +58,6 @@
                    href="#tag-${id}">${wordString}</a>
             {{/each}}
         </div>
+    </div>
     </div>
 </article>

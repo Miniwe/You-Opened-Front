@@ -24,7 +24,10 @@ a {
     text-decoration: none;
 }
 #main {
-    padding: 30px 20% 0;
+    padding: 0;
+/*    padding: 30px 0;*/
+    width: 60%;
+    margin: 0 auto;    
 }
 
 #templates {
@@ -32,15 +35,18 @@ a {
 }
 
 article.discussion {
-    padding:0 0 1em;
     color: #dddddd; 
     -webkit-transition:color 0.3s ease-in-out;
     -webkit-transition-duration: 0.3s;
 /*    box-shadow: 0px 0px 1.6em 0px #222222;*/
 /*    border : 1px solid #333333;*/
 /*    background: #111111  url(../img/bg2.png) left 0px;*/
+}
+
+article.discussion > div {
     margin-top: 1.6em;
     margin-bottom: 1.2em;
+    padding:0 0 1em;
 }
 
 article.discussion ul {
@@ -753,17 +759,18 @@ header article.addcomment .text{
 #d-Unpinned {
 /*    border:1px solid green;*/
 }
-#d-Pinned > header, #d-Unpinned > header {
+#d-Pinned > div, #d-Unpinned > div{
+   margin-top: 6px;
+}
+#d-Pinned > div > header, #d-Unpinned > div > header {
     border:1px inset #888888;
+    padding: .4em .8em;
     box-shadow: inset 0px 0px 1.6em .4em #000000;
     color: #ffffff;
-    padding: .4em .8em;
     text-transform: uppercase;
     font-size: .8em;
     font-weight: bold;
-    margin-top: 6px;
 }
-
 article.active, .active.discussion, .active.key, .active.post {
 /*    background: red none;*/
 }
@@ -805,4 +812,11 @@ a:hover{
 time {
     font-weight: normal;
     font-size: 12px;
+}
+
+article.float {
+    position: fixed;
+    top: 0px;
+    width: inherit;
+    z-index: 1000;
 }

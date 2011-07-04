@@ -102,7 +102,7 @@
                             Dcs.keys[j] = Dcs.posts[j];
                         }
                     }
-                    var View = Dcs.render("#main", "discussion", "prependTo");
+                    var View = Dcs.render("#d-Unpinned", "discussion", "prependTo", "d-Unpinned");
 
                     Dcs.renderKeys();
                     
@@ -112,7 +112,7 @@
                     var Post = Application.posts[newData.posts[i]];
                     if (Post.parentDiscussion ==0 )
                     {
-                        Post.render("#main", "key", "appendTo");
+                        Post.render("#d-Unpinned", "key", "appendTo", "d-Unpinned");
                     }
                 }
                 Application.pinnedToTop ( Application.siteUser );
@@ -215,7 +215,6 @@
     $(window).bind("scroll", function() {
         $("body").css({"background-position": "left " + ($(document.body).scrollTop() / 10)+ "px"});
         $(".discussion").css({"background-position": "left " + ($(document.body).scrollTop() / 2)+ "px"});
-        
         Application.alignFloat()
     });      
   

@@ -36,9 +36,10 @@ var Application = function ( opts )
     this.ajaxTimer = 0;
    
     /*
-     * Кеширование шаблонов
-     * Возвращает управление в основную программму только подгрузка завершена
-     * сделать через dereferer 
+     * @name Кеширование шаблонов 
+     * 
+     * Возвращает управление в основную программму когда подгрузка завершена
+     * сделано через dereferer 
      */
     this.cacheTemplates = function ()
     {
@@ -78,6 +79,7 @@ var Application = function ( opts )
      */
     this.ajaxStop = function ( ) // @todo until dont working
     {
+        this.c
         for (var i=0,l=this.ajaxRequests.length;i<l;i++)
         {
 //            if (typeof this.ajaxRequests[i].abort == "function" )
@@ -243,7 +245,7 @@ var Application = function ( opts )
     {
         for (i in this.discussions)
         {
-            this.discussions[i].render("#d-Unpinned", "discussion", "appendTo");
+            this.discussions[i].render("#d-Unpinned", "discussion", "appendTo", "d-Unpinned");
         }
         
         this.alignRatings( );
@@ -281,7 +283,7 @@ var Application = function ( opts )
                     }
                     if ( $("#discussion-" + Dcs.id).length > 0 )
                     {
-                        var View = Dcs.render("#d-Pinned", "discussion", "appendTo");
+                        var View = Dcs.render("#d-Pinned", "discussion", "appendTo", "d-Pinned");
                     }
                     else
                     {
@@ -304,6 +306,7 @@ var Application = function ( opts )
      */
     this.pinnedToTop = function ( User )
     {
+        return false;
         if (!User) return false; // @todo такого не может быть в нормально ситуации - убрать после проверки
         for (var i=0, l= User.pinned.length; i < l; i++)
         {
@@ -384,7 +387,7 @@ var Application = function ( opts )
                             Dcs.keys[j] = Dcs.posts[j];
                         }
                     }
-                    var View = Dcs.render("#d-Unpinned", "discussion", "prependTo");
+                    var View = Dcs.render("#d-Unpinned", "discussion", "prependTo", "d-Unpinned");
 
                     Dcs.renderKeys();
                 }
@@ -393,7 +396,7 @@ var Application = function ( opts )
                     var Post = Application.posts[newData.posts[i]];
                     if (Post.parentDiscussion == 0 )
                     {
-                        Post.render("#d-Unpinned", "key", "appendTo");
+                        Post.render("#d-Unpinned", "key", "appendTo", "d-Unpinned");
                     }
                 }
                 
@@ -731,33 +734,13 @@ var Application = function ( opts )
             Application.ajaxRequest("/slicepostmessage.json", 
                 function(data){
                     var newData = Application.parseData(data);
-                    /*
-                    for (var i=0; i< newData.discussions.length; i++)
-                    {
-                        var Dcs = Application.discussions[newData.discussions[i]];
-
-                        Dcs.keys = {}; // удаляем существующие ключи
-
-                        for (var j=0; j< newData.posts.length; j++)
-                        {
-                            if (Dcs.id == Application.posts[newData.posts[j]].parentDiscussion)
-                            {
-                                Dcs.posts[j] = Application.posts[newData.posts[j]];
-                                Dcs.keys[j] = Dcs.posts[j];
-                            }
-                        }
-                        var View = Dcs.render("#d-Unpinned", "discussion", "prependTo");
-
-                        Dcs.renderKeys();
-
-                    }
-                    */
+                    
                     for (var i=0; i< newData.posts.length; i++)
                     {
                         var post = Application.posts[newData.posts[i]];
                         if (post.parentDiscussion == 0 )
                         {
-                            var View = post.render("#d-Unpinned", "key", "prependTo");
+                            var View = post.render("#d-Unpinned", "key", "prependTo", "d-Unpinned");
                             
                             post.scrollToView(View);
                         }
@@ -854,11 +837,16 @@ var Application = function ( opts )
     
     this.alignFloat = function ( )
     {
-       var curArticle = null,
+        console.log('in', $("article.active"));
+//        this.getPrevHeights.cache = {};
+//        this.getParentsList.cache = {};
+//        
+        var curArticle = null,
             pOffset    = 0,
             gOffset    = 0,
             next       = null,
-            nOffset    = 0;
+            nOffset    = 0,
+            tmpTop     = 0;
 
         var 
             sT = $(document.body).scrollTop(),
@@ -880,8 +868,8 @@ var Application = function ( opts )
 
             if (gOffset < sT + pOffset)
             {
+                tmpTop = pOffset;
                 curArticle
-                    .css({"top": pOffset + "px"})
                     .addClass("float");
 
                 $(curArticle).next(".replacement").remove();
@@ -896,7 +884,6 @@ var Application = function ( opts )
                 $(curArticle).next(".replacement").remove();
                 curArticle
                     .removeClass("float");
-
             }
 
             next = $(curArticle).nextAll("article[data-parent="+ $(curArticle).attr("data-parent") +"]").first();
@@ -908,12 +895,14 @@ var Application = function ( opts )
 
             if (next.length > 0)
             {
-                nOffset = this.getPrevHeights(next.attr("data-id")).offset; 
+                nOffset = this.getPrevHeights(next.attr("data-id")).offset ; 
                 if (pOffset + $(curArticle).outerHeight(true) > nOffset-sT)
                 {
-                    $(curArticle).css({"top": ( nOffset-sT - $(curArticle).outerHeight(true) )+"px"});
+                    tmpTop = ( nOffset - sT - $(curArticle).outerHeight(true) );
                 }
             }
+
+            $(curArticle).css({"top": tmpTop + "px"});
 
         }
 
@@ -928,7 +917,7 @@ var Application = function ( opts )
             var Post = Application.posts[newData.posts[i]];
             if ($("#post-"+Post.id).length < 0)
             {
-                Post.render("#d-Unpinned", "key", "prependTo");
+                Post.render("#d-Unpinned", "key", "prependTo", "d-Unpinned");
             }
         }
         

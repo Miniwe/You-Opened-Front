@@ -87,14 +87,14 @@ Discussion.prototype = {
             this.ratingCoef = 0;
         }
     },
-    render : function (el, tmpl, mode)
+    render : function (el, tmpl, mode, parent)
     {
         this.prepareRender();
     
         this.loadKeys();
         this.loadAvatars(0, 20);
     
-        var View = this.renderSelf (el, tmpl, mode);
+        var View = this.renderSelf (el, tmpl, mode, parent);
         var facade = this;
 
     
@@ -317,7 +317,7 @@ Discussion.prototype = {
         {
             if (!this.keys[i]) continue; // #todo - проверить почему попадают сюда фукции массива - вроде не должны
             maxKeyRating = Math.max (maxKeyRating, this.keys[i].rating);
-            this.keys[i].render(View.find("ul.keys"), "innerkey", "appendTo");
+            this.keys[i].render(View.find("ul.keys"), "innerkey", "appendTo", this.id);
             
             
             $('<div class="bullet_cont"><div class="bullet" data-rating="'+this.keys[i].rating+'" data-id="'+ this.keys[i].id +'" style="zoom: 1"></div></div>')
@@ -366,7 +366,7 @@ Discussion.prototype = {
         {
             if (!this.keys[i]) continue; // #todo - проверить почему попадают сюда фукции массива - вроде не должны
             if ($("#key"+this.keys[i].id).length > 0) continue;  
-            this.keys[i].render($("#discussion-" + this.id),"key", "insertAfter");
+            this.keys[i].render($("#discussion-" + this.id),"key", "insertAfter", this.id);
         };
 
     },
@@ -376,7 +376,7 @@ Discussion.prototype = {
         for (i in this.posts)
         {
             if ($("#key"+this.keys[i].id).length > 0) continue;  
-            this.keys[i].render($("#discussion-" + this.id),"key", "insertAfter");
+            this.keys[i].render($("#discussion-" + this.id),"key", "insertAfter", this.id);
         };
     
     },

@@ -132,12 +132,12 @@ Post.prototype = {
         }
     },
     
-    render : function (el, tmpl, mode)
+    render : function (el, tmpl, mode, parent)
     {
   
         this.prepareRender();
 
-        var View = this.renderSelf(el, tmpl, mode)
+        var View = this.renderSelf(el, tmpl, mode, parent)
         var facade = this;
         
         // draw avatar
@@ -168,7 +168,7 @@ Post.prototype = {
                                 Dcs.posts[j] = Application.posts[newData.posts[j]];
                                 Dcs.keys[j] = Dcs.posts[j];
                             }
-                            var View = Dcs.render("#d-Unpinned", "discussion", "prependTo");
+                            var View = Dcs.render("#d-Unpinned", "discussion", "prependTo", "d-Unpinned");
 
 
                             Dcs.renderKeys();
@@ -266,7 +266,7 @@ Post.prototype = {
                 // Render PARENT
                 if  (facade.parent && $(".post[data-id='"+ facade.parent.id+"']").length < 1)
                 {
-                    facade.parent.render($("#post-" + facade.id), "post", "insertBefore");
+                    facade.parent.render($("#post-" + facade.id), "post", "insertBefore", facade.id);
                 }
             },
             function () {
@@ -286,7 +286,7 @@ Post.prototype = {
         for (i in this.posts)
         {
             //      if ($(".post[data-id='"+this.posts[i].id+"']").length > 0) continue;  
-            this.posts[i].render($("#post-" + this.id), "post", "insertAfter");
+            this.posts[i].render($("#post-" + this.id), "post", "insertAfter", this.id);
         };
     },
     updateView : function ()

@@ -38,10 +38,13 @@ function Facade ()
         return false;
       
     };
-    this.renderSelf = function (el, tmpl, mode)
+    this.renderSelf = function (el, tmpl, mode, parent)
     {
+        
         var View = $(document.body);
-
+        
+        this.parentViewId = parent;
+        
         switch (mode)
         {
             case "appendTo":
