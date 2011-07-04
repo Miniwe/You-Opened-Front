@@ -3,7 +3,6 @@
  */
 function Post (Application, data)
 {
-    console.log(data);
     Post.superclass.constructor.call( this );
     
     this.Application = Application;

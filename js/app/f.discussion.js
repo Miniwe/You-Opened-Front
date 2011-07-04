@@ -91,6 +91,9 @@ Discussion.prototype = {
     {
         this.prepareRender();
     
+        this.loadKeys();
+        this.loadAvatars(0, 20);
+    
         var View = this.renderSelf (el, tmpl, mode);
         var facade = this;
 
