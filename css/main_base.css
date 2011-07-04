@@ -23,23 +23,18 @@ body {
 a {
     text-decoration: none;
 }
-
 #main {
+    padding: 0;
+/*    padding: 30px 0;*/
     width: 60%;
     margin: 0 auto;    
-    padding-top: 36px;
 }
 
-
-article.discussion, article.key, article.post {
-  outline: 1px solid gray;
-}
-article.discussion > div, article.key >  div, article.post > div{
-  padding: 1em;
+#templates {
+    display: none;
 }
 
 article.discussion {
-    background: #111111  url(../img/bg2.png) left 0px;
     color: #dddddd; 
     -webkit-transition:color 0.3s ease-in-out;
     -webkit-transition-duration: 0.3s;
@@ -49,6 +44,9 @@ article.discussion {
 }
 
 article.discussion > div {
+    margin-top: 1.6em;
+    margin-bottom: 1.2em;
+    padding:0 0 1em;
 }
 
 article.discussion ul {
@@ -762,11 +760,11 @@ header article.addcomment .text{
 /*    border:1px solid green;*/
 }
 #d-Pinned > div, #d-Unpinned > div{
-/*   margin-top: 6px;*/
+   margin-top: 6px;
 }
 #d-Pinned > div > header, #d-Unpinned > div > header {
     border:1px inset #888888;
-    padding: .8em .8em;
+    padding: .4em .8em;
     box-shadow: inset 0px 0px 1.6em .4em #000000;
     color: #ffffff;
     text-transform: uppercase;

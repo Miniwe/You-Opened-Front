@@ -456,6 +456,7 @@ var Application = function ( opts )
      */
     this.router = function ( hash ) 
     {
+        return false;
         var hash = hash || document.location.hash;
         
         var result = hash.match(/(discussion|post|user|avatar|tag|loadtopdiscussions|directmessage)(-?([0-9]+))*/);
@@ -849,7 +850,7 @@ var Application = function ( opts )
             tmpTop     = 0;
 
         var 
-            sT = $(document.body).scrollTop(),
+            sT = $(document.body).scrollTop() - $("#container > header").outerHeight(true),
             activeArticle = $("article.active"),
             activeParents = this.getParentsList(activeArticle.attr("data-id"));
 
@@ -901,7 +902,8 @@ var Application = function ( opts )
                     tmpTop = ( nOffset - sT - $(curArticle).outerHeight(true) );
                 }
             }
-
+            
+            tmpTop += $("#container > header").outerHeight(true);
             $(curArticle).css({"top": tmpTop + "px"});
 
         }

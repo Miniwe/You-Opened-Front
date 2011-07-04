@@ -206,8 +206,29 @@
                 Application.msg("Couldn't login user");
             });
         return false;
-    })
+    });
             
+      $("article").click( function(){
+         var 
+           sT = $(document.body).scrollTop();
+
+         $(".replacement").remove();
+         $("article")
+            .css({"margin-top": "none", "top": "none"})
+            .removeClass("active")
+            .removeClass("float");
+
+         $(this).addClass("active");
+
+         $(document.body).animate({ scrollTop: Application.getPrevHeights($(this).attr("data-id")).offset 
+                                    - Application.getParentsList($(this).attr("data-id")).offset
+                                    + $("#container > header").outerHeight(true)}, 
+            function(){
+                Application.alignFloat();
+            }
+         );
+
+      });
 
     
     });
