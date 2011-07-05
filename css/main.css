@@ -24,10 +24,98 @@ a {
     text-decoration: none;
 }
 
+#container > header {
+    background: #111111  url(../img/bg.png) left 0px;
+    box-shadow: inset 0px 0px 1.6em 0px #000000;
+    border:1px inset #666666;
+    -webkit-transition:height 0.3s ease-in-out;
+    -webkit-transition-duration: 0.3s;
+    position: fixed;
+    top:0px;
+    width:100%;
+    z-index: 10000;
+}
+
+#container > header:hover {
+}
+
+#container > header .inner{
+    margin: 0 14%;
+    height: inherit;
+}
+
+#container > header .inner2{
+    margin: 0 14%;
+}
+
+.darkLine{
+    height:2px;
+}
+
+#loader{
+    width: 82px;
+    height: 21px;
+/*    margin-left:-5px;*/
+    background: url(../img/bg.png);
+    position: absolute;
+    cursor: pointer;
+}
+
+#loader .shadow{
+    width: inherit;
+    height: inherit;
+    position: absolute;
+    background: url(../img/bg_shadow.png) center center no-repeat;
+}
+#loader .progress{
+    width: inherit;
+    height: inherit;
+    position: absolute;
+    overflow: hidden;
+    color: #ffffff;
+    padding-top: 2px;
+    padding-left: 6px;
+    opacity: 0;
+}
+
+#loader .progress .bar{
+    height: 18px;
+    margin-right: 2px;
+    width: 4px;
+    background-color: #008b95;
+    float: left;
+    box-shadow: inset 0px 0px 2px 0 #000000;
+}
+
+/* -------------------------------------------------------------------------- */
+
 #main {
     width: 60%;
     margin: 0 auto;    
-    padding-top: 36px;
+/*    padding-top: 36px;*/
+}
+
+#d-Pinned {
+/*    border:1px solid red;*/
+    background: #111111  url(../img/bg2.png) left 0px;
+    z-index: 1020;
+}
+#d-Unpinned {
+/*    border:1px solid green;*/
+    background: #111111  url(../img/bg2.png) left 0px;
+    z-index: 1030;
+}
+#d-Pinned > div, #d-Unpinned > div{
+    background: #111111  url(../img/bg2.png) left 0px;
+}
+#d-Pinned > div > header, #d-Unpinned > div > header {
+    border:1px inset #888888;
+    padding: .4em .8em;
+    box-shadow: inset 0px 0px 1.6em .4em #000000;
+    color: #ffffff;
+    text-transform: uppercase;
+    font-size: .8em;
+    font-weight: bold;
 }
 
 
@@ -48,9 +136,6 @@ article.discussion {
 /*    background: #111111  url(../img/bg2.png) left 0px;*/
 }
 
-article.discussion > div {
-}
-
 article.discussion ul {
     border:1px inset #444444;
     padding:.3em 6em;
@@ -61,10 +146,6 @@ article.discussion ul {
     height: 5.6em;
 /*    display: none;*/
     background: #111111  url(../img/bg2.png) left 0px;
-}
-
-article.discussion:hover, article.discussion:hover header, article.discussion:hover ul{
-    color: #ffffff;
 }
 
 article.discussion ul > li{
@@ -83,6 +164,26 @@ article.discussion ul > li{
 article.discussion ul > li:first-child{
     display: block;
 }
+
+article.discussion:hover, article.discussion:hover header, article.discussion:hover ul{
+    color: #ffffff;
+}
+
+.active {
+    /*          outline: 1px solid red;*/
+}
+
+.float {
+    /*          outline: 1px solid green;*/
+    position: fixed;
+    top: 0px;
+    width: inherit;
+    z-index: 1000;
+    /*          -webkit-box-shadow: inset 0px 0px 0px 1px #000;*/
+
+}
+/* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
+
 
 article.discussion .left{
     float: left;
@@ -338,6 +439,137 @@ footer {
     color: #ff0000;
 }
 
+
+/* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
+
+
+.postpin, .avatarcont{
+    float: left;
+    width: 82px;
+}
+
+.postmsg {
+     min-height: 4.6em;
+}
+
+/*.postmsg a.outerref:before{*/
+.postmsg a:before{
+     content: url(../img/innnerref.png);
+}
+
+.postmsg a.outerref:before{
+     content: none;
+}
+
+
+
+a.avatar {
+    width: 64px;
+    height: 64px;
+}
+a.avatar canvas{
+    background-color: #ffffff;
+    border:1px inset #888888;
+}
+a.avatar img.direct{
+    position: absolute;
+    z-index: 1000;
+    margin-left : 2px;
+    margin-top : 2px;
+    
+}
+
+article.addcomment .text{
+    background: none;
+    border:1px solid #333333;
+    box-shadow: 0px 0px 1.6em 0px #222222;
+}
+
+input.cancel {
+    cursor: pointer;
+}
+ 
+.inline-left {
+    height:30px;
+    display: inline-block;
+    float: left;
+    line-height: 30px;
+    margin: 0 0.4em;
+    font-family: Cuprum;
+    font-size: 1.5em;
+}
+
+.inline-right {
+    display: none;
+    height:30px;
+    display: inline-block;
+    float: right;
+    line-height: 30px;
+    margin: 0 0.4em;
+    font-family: Cuprum;
+    font-size: 1.4em;
+}
+
+
+.rightfloat {
+    position: absolute; 
+    right:0px;
+    width: 20%;
+}
+.leftfloat {
+    position: absolute;
+    left:0px;    
+    width: 20%;
+}
+.taglist, .avalist, .yoltags {
+    width: 200px;
+}
+.avalist {
+    margin:1em;
+    box-shadow: inset 0px 0px 1.6em 0px #000000;
+    padding: .8em;
+    display: none;
+}
+.taglist {
+    margin:1em;
+    box-shadow: inset 0px 0px 1.6em 0px #000000;
+    padding: .8em;
+    display: none;
+}
+
+.yoltags {
+    margin:1em;
+    box-shadow: inset 0px 0px 1.6em 0px #000000;
+    padding: .8em;
+    display: none;
+    text-align: center;
+}
+
+.yoltags a, .yoltags a:link, .yoltags a:visited{
+    display:inline-block;
+    font-size: 1.2em; 
+    color: #70ffdd;
+    opacity: .8;
+    margin: .2em;
+    text-transform: uppercase;
+    font-family: Cuprum;
+    vertical-align: baseline;
+}
+
+.yoltags a:hover, .yoltags a:hover{
+    opacity: 1;
+}
+
+.avataruri {
+    width: 64px;
+    height: 64px;
+    background: #ffffff none no-repeat center center;
+    border:1px inset #888888;
+    background-size: 64px 64px; 
+     -webkit-background-size: 64px 64px; 
+}
+/* -------------------------------------------------------------------------- */
+
 article.key {
 /*    padding: 1em 0;*/
 /*    box-shadow: inset 0px 0px 1.6em 0px #222222;*/
@@ -400,11 +632,6 @@ article.key .right .inner{
     -webkit-transition-duration: 0.3s
 }
 
-.postpin, .avatarcont{
-    float: left;
-    width: 82px;
-}
-
 article.key .postpin, article.post .postpin {
     opacity: 0;
     -webkit-transition: opacity 0.3s ease-in-out;
@@ -413,19 +640,6 @@ article.key .postpin, article.post .postpin {
 
 article.key:hover .postpin, article.post:hover .postpin {
     opacity: .9;
-}
-
-.postmsg {
-     min-height: 4.6em;
-}
-
-/*.postmsg a.outerref:before{*/
-.postmsg a:before{
-     content: url(../img/innnerref.png);
-}
-
-.postmsg a.outerref:before{
-     content: none;
 }
 
 article.key .tags{
@@ -517,308 +731,4 @@ article.post .right .inner{
 }
 article.post:hover .right .inner, article.key:hover .right .inner{
     opacity: .9;
-}
-
-
-a.avatar {
-    width: 64px;
-    height: 64px;
-}
-a.avatar canvas{
-    background-color: #ffffff;
-    border:1px inset #888888;
-}
-a.avatar img.direct{
-    position: absolute;
-    z-index: 1000;
-    margin-left : 2px;
-    margin-top : 2px;
-    
-}
-
-article.addcomment .text{
-    background: none;
-    border:1px solid #333333;
-    box-shadow: 0px 0px 1.6em 0px #222222;
-}
-
-input.cancel {
-    cursor: pointer;
-}
- 
-#container > header {
-    background: #111111  url(../img/bg.png) left 0px;
-    box-shadow: inset 0px 0px 1.6em 0px #000000;
-    border:1px inset #666666;
-    -webkit-transition:height 0.3s ease-in-out;
-    -webkit-transition-duration: 0.3s;
-    position: fixed;
-    top:0px;
-    width:100%;
-    z-index: 10000;
-}
-
-#container > header:hover {
-}
-
-#container > header .inner{
-    margin: 0 14%;
-    height: inherit;
-}
-
-#container > header .inner2{
-    margin: 0 14%;
-}
-
-.darkLine{
-    height:2px;
-}
-
-#loader{
-    width: 82px;
-    height: 21px;
-/*    margin-left:-5px;*/
-    background: url(../img/bg.png);
-    position: absolute;
-    cursor: pointer;
-}
-
-#loader .shadow{
-    width: inherit;
-    height: inherit;
-    position: absolute;
-    background: url(../img/bg_shadow.png) center center no-repeat;
-}
-#loader .progress{
-    width: inherit;
-    height: inherit;
-    position: absolute;
-    overflow: hidden;
-    color: #ffffff;
-    padding-top: 2px;
-    padding-left: 6px;
-    opacity: 0;
-}
-
-#loader .progress .bar{
-    height: 18px;
-    margin-right: 2px;
-    width: 4px;
-    background-color: #008b95;
-    float: left;
-    box-shadow: inset 0px 0px 2px 0 #000000;
-}
-
-/* -------------------------------------------------------------------------- */
-
-.inline-left {
-    height:30px;
-    display: inline-block;
-    float: left;
-    line-height: 30px;
-    margin: 0 0.4em;
-    font-family: Cuprum;
-    font-size: 1.5em;
-}
-
-.inline-right {
-    height:30px;
-    display: inline-block;
-    float: right;
-    line-height: 30px;
-    margin: 0 0.4em;
-    font-family: Cuprum;
-    font-size: 1.4em;
-}
-
-#container > header .openform {
-    cursor: pointer;
-    color: #87958d;
-    text-shadow: -1px -1px 2px #669966;
-}
-#container > header .openform:hover {
-    color: #25ce6b;
-}
-
-#container > header .info {
-    font-family: sans-serif;
-    font-size: 1em;
-    color: #80ffdd;
-    padding: 0 1em;
-}
-
-#container > header .action {
-    cursor: pointer;
-    color: #87958d;
-    text-shadow: -1px -1px 2px #666699;
-}
-#container > header .action:hover {
-    color: #25ce6b;
-}
-
-#container > header form {
-    margin-top:1em;
-}
-
-#container > header label {
-    display: inline-block;
-}
-
-#login_form, #registration_form, #newpost_form {
-    display: none;
-}
-
-#searchform {
-    font-family: inehrit;
-    font-size: 1em;
-}
-
-#showlogin, #showregistration, #logout, #shownewpost{
-    display: none;
-}
-
-
-article.addcomment .text{ /* дополнение - надо потом объединить если на этом остановлюсь с остальным*/
-    background: #111111  url(../img/bg.png) left 0px;
-    box-shadow: inset 0px 0px 1.6em 0px #000000;
-    border:1px inset #666666;
-}
-
-header article.addcomment {
-    background: none;
-}
-header article.addcomment .text{
-    background: none;
-    box-shadow: none;
-    border: none;
-}
-
-.hidden{
-    display: none;
-}
-
-.rightfloat {
-    position: absolute; 
-    right:0px;
-    width: 20%;
-}
-.leftfloat {
-    position: absolute;
-    left:0px;    
-    width: 20%;
-}
-.taglist, .avalist, .yoltags {
-    width: 200px;
-}
-.avalist {
-    margin:1em;
-    box-shadow: inset 0px 0px 1.6em 0px #000000;
-    padding: .8em;
-    display: none;
-}
-.taglist {
-    margin:1em;
-    box-shadow: inset 0px 0px 1.6em 0px #000000;
-    padding: .8em;
-    display: none;
-}
-
-.yoltags {
-    margin:1em;
-    box-shadow: inset 0px 0px 1.6em 0px #000000;
-    padding: .8em;
-    display: none;
-    text-align: center;
-}
-
-.yoltags a, .yoltags a:link, .yoltags a:visited{
-    display:inline-block;
-    font-size: 1.2em; 
-    color: #70ffdd;
-    opacity: .8;
-    margin: .2em;
-    text-transform: uppercase;
-    font-family: Cuprum;
-    vertical-align: baseline;
-}
-
-.yoltags a:hover, .yoltags a:hover{
-    opacity: 1;
-}
-
-.avataruri {
-    width: 64px;
-    height: 64px;
-    background: #ffffff none no-repeat center center;
-    border:1px inset #888888;
-    background-size: 64px 64px; 
-     -webkit-background-size: 64px 64px; 
-}
-
-#d-Pinned {
-/*    border:1px solid red;*/
-}
-#d-Unpinned {
-/*    border:1px solid green;*/
-}
-#d-Pinned > div, #d-Unpinned > div{
-/*   margin-top: 6px;*/
-}
-#d-Pinned > div > header, #d-Unpinned > div > header {
-    border:1px inset #888888;
-    padding: .8em .8em;
-    box-shadow: inset 0px 0px 1.6em .4em #000000;
-    color: #ffffff;
-    text-transform: uppercase;
-    font-size: .8em;
-    font-weight: bold;
-}
-article.active, .active.discussion, .active.key, .active.post {
-/*    background: red none;*/
-}
-
-.highlight_perma{
-    box-shadow: inset 0px 0px 0.8em .4em #FF1950;
-}
-
-.highlight_hover{
-    box-shadow: inset 0px 0px 0.8em .4em #FFA73F;
-}
-
-.highlight { background-color: yellow }
-
-.directusers a{
-    color: #74c0cf;
-    font-weight: bold;
-    font-style: italic;
-    margin-right: 1em;
-}
-.directusers a:hover{
-    text-decoration: underline;
-}
-
-a {
-    color: #74c0cf;
-}
-a:hover{
-    color: #cf74c0;
-    text-decoration: underline;
-}
-
-#directmessage {
-    color: Red;
-    display: none;
-    font-size: 17px;
-}
-
-time {
-    font-weight: normal;
-    font-size: 12px;
-}
-
-article.float {
-    position: fixed;
-    top: 0px;
-    width: inherit;
-    z-index: 1000;
 }

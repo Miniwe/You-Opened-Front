@@ -208,21 +208,22 @@
         return false;
     });
             
-      $("article").click( function(){
+      $("article").live("click", function(){
+        console.log('in 2');
          var 
            sT = $(document.body).scrollTop();
 
          $(".replacement").remove();
          $("article")
-            .css({"margin-top": "none", "top": "none"})
+            .css({"top": ""})
             .removeClass("active")
             .removeClass("float");
 
          $(this).addClass("active");
-
+         console.log($(this),  Application.getPrevHeights($(this).attr("data-id")), Application.getParentsList($(this).attr("data-id")));
          $(document.body).animate({ scrollTop: Application.getPrevHeights($(this).attr("data-id")).offset 
                                     - Application.getParentsList($(this).attr("data-id")).offset
-                                    + $("#container > header").outerHeight(true)}, 
+                                    /*+ $("#container > header").outerHeight(true)*/}, 
             function(){
                 Application.alignFloat();
             }

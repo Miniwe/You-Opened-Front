@@ -247,6 +247,7 @@ Post.prototype = {
     },
     loadParent: function ()
     {
+        return true;
         // load discussion posts
         var facade = this;
         

@@ -138,9 +138,9 @@ var Application = function ( opts )
             url       : this.globalPath + this.frameworkPath + url,
             success   : function (data, textStatus, jqXHR) { 
                 
-                // pre actions 
+                // [pre actions]
                 success.call(Application, data, textStatus, jqXHR);
-                // post actions 
+                // [post actions] 
                 
             },
             dataType  : 'jsonp',
@@ -161,10 +161,7 @@ var Application = function ( opts )
                 }, 25);
             }
         }; 
-        
-//        if (this.globalPath.indexOf(window.location.hostname) < 0)
-//        {
-//        }
+
         this.ajaxRequests.push( $.ajax( ajaxOpts ) );
     };
     
@@ -245,7 +242,7 @@ var Application = function ( opts )
     {
         for (i in this.discussions)
         {
-            this.discussions[i].render("#d-Unpinned", "discussion", "appendTo", "d-Unpinned");
+            this.discussions[i].render("#d-Unpinned", "discussion", "insertAfter", "d-Unpinned");
         }
         
         this.alignRatings( );
@@ -456,7 +453,6 @@ var Application = function ( opts )
      */
     this.router = function ( hash ) 
     {
-        return false;
         var hash = hash || document.location.hash;
         
         var result = hash.match(/(discussion|post|user|avatar|tag|loadtopdiscussions|directmessage)(-?([0-9]+))*/);
@@ -838,10 +834,6 @@ var Application = function ( opts )
     
     this.alignFloat = function ( )
     {
-        console.log('in', $("article.active"));
-//        this.getPrevHeights.cache = {};
-//        this.getParentsList.cache = {};
-//        
         var curArticle = null,
             pOffset    = 0,
             gOffset    = 0,
@@ -850,7 +842,7 @@ var Application = function ( opts )
             tmpTop     = 0;
 
         var 
-            sT = $(document.body).scrollTop() - $("#container > header").outerHeight(true),
+            sT = $(document.body).scrollTop(),
             activeArticle = $("article.active"),
             activeParents = this.getParentsList(activeArticle.attr("data-id"));
 
@@ -885,6 +877,7 @@ var Application = function ( opts )
                 $(curArticle).next(".replacement").remove();
                 curArticle
                     .removeClass("float");
+
             }
 
             next = $(curArticle).nextAll("article[data-parent="+ $(curArticle).attr("data-parent") +"]").first();
@@ -902,8 +895,7 @@ var Application = function ( opts )
                     tmpTop = ( nOffset - sT - $(curArticle).outerHeight(true) );
                 }
             }
-            
-            tmpTop += $("#container > header").outerHeight(true);
+
             $(curArticle).css({"top": tmpTop + "px"});
 
         }

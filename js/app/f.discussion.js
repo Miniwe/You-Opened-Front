@@ -53,24 +53,20 @@ extend(Discussion, Facade);
 Discussion.prototype = {
     openFacade : function ( View)
     {
-        $("article.active").removeClass("active");
-        
         View = View || $("#discussion-" + this.id);
-        
         View.addClass("active");
         
         // $("#main .key, #main .post").remove(); // todo remove child elements only
         
         this.removeDiscussionChilds(this.id);
         
-        this.renderAvatars( View );
-        this.renderTagCoud( View );
+//        this.renderAvatars( View );
+//        this.renderTagCoud( View );
 
         // draw TagCloud
 
         this.expandKeys(); 
 
-        this.scrollToView(View);
     },
     prepareRender : function()
     {
@@ -97,7 +93,6 @@ Discussion.prototype = {
         var View = this.renderSelf (el, tmpl, mode, parent);
         var facade = this;
 
-    
         View.find("header").click(function (){
             facade.openFacade( View );
         });
