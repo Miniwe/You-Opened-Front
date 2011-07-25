@@ -44,66 +44,65 @@
   <!-- scripts concatenated and minified via ant build script-->
   
   <script type="text/javascript">
-    // @todo
-    // найти библиотеку подгрузки скриптов
-    // и начать ее использовать вместо самопального маханизма
-    // а может и нет
-    // тут сделать сразузапускающуюся функцию которая и отработает
-   
-    function updateScriptsLoaderStatus(msg)
-    {
-        // update scriptS loader status here
-    }
-    
-    function loadNext( ind  )
-    {
-        updateScriptsLoaderStatus('<span style="color: red">Loading JS: ' + 
-            (ind+1) + '/' + scripts.length + '</span>');
-        
-        if (ind == scripts.length)
+
+    (function () {
+
+        var scripts = [
+            "js/libs/jquery-1.6.2.min.js",
+
+//            "js/plugins.js",
+//            "js/app/facade.js",
+//
+//            "js/libs/jquery.tmpl.min.js",
+//            "js/libs/jquery.cookie.js",
+//            "js/libs/jquery.md5.js",
+//            "js/libs/jquery.identicon5.packed.js",
+//            "js/libs/jquery.form.js",
+//            "js/libs/jquery.highlight-3.js",
+//            "js/libs/jquery.autocomplete.js",
+//            "js/libs/jquery.tinysort.min.js",
+//            "js/libs/jquery.tagcanvas.js",
+
+//            "js/app/application.js",
+//
+//            "js/app/f.word.js",
+//            "js/app/f.tag.js",
+//            "js/app/f.user.js",
+//            "js/app/f.post.js",
+//            "js/app/f.discussion.js",
+
+//            "js/script.js"
+        ];
+
+        function updateScriptsLoaderStatus(msg)
         {
-            updateScriptsLoaderStatus('<span style="color: red">JS loading complete</span>');
-            return true;
+            // update scriptS loader status here
+            console.log('' + msg); // <- simple message
         }
-        var d = new Date();
-        var filename = scripts[ind];
-        var fileref = document.createElement('script')
-        fileref.onload = function () {
-            loadNext( ++ind  );
-        };
-        fileref.setAttribute("type","text/javascript")
-        fileref.setAttribute("src", filename + "?d="+d.getTime());
-        document.getElementsByTagName("head")[0].appendChild(fileref)
-    }
-    
-    var scripts = [
-        "js/libs/jquery-1.6.2.min.js",
+
+        (function loadNext( ind  )
+        {
+            updateScriptsLoaderStatus('Loading JS: ' + (ind+1) + '/' + scripts.length + '');
+
+            if (ind == scripts.length)
+            {
+                updateScriptsLoaderStatus('JS loading complete');
+                return true;
+            }
+            var d = new Date();
+            var filename = scripts[ind];
+            var fileref = document.createElement('script')
+            fileref.onload = function () {
+                loadNext( ++ind  );
+            };
+            fileref.setAttribute("type","text/javascript")
+            fileref.setAttribute("src", filename + "?d="+d.getTime());
+            document.getElementsByTagName("head")[0].appendChild(fileref)
+        } (0) );
         
-        "js/plugins.js",
-        "js/app/facade.js",
-
-        "js/libs/jquery.tmpl.min.js",
-        "js/libs/jquery.cookie.js",
-        "js/libs/jquery.md5.js",
-        "js/libs/jquery.identicon5.packed.js",
-        "js/libs/jquery.form.js",
-        "js/libs/jquery.highlight-3.js",
-        "js/libs/jquery.autocomplete.js",
-        "js/libs/jquery.tinysort.min.js",
-//        "js/libs/jquery.tagcanvas.js",
-        
-        "js/app/application.js",
-
-        "js/app/f.word.js",
-        "js/app/f.tag.js",
-        "js/app/f.user.js",
-        "js/app/f.post.js",
-        "js/app/f.discussion.js",
-
-        "js/script.js"
-    ];
+    }());
     
-    loadNext( 0 );
+    
   </script>
   <!-- end scripts-->
 
