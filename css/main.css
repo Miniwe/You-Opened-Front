@@ -92,7 +92,7 @@ a {
 #main {
     width: 60%;
     margin: 0 auto;    
-/*    padding-top: 36px;*/
+    padding-top: 36px;
 }
 
 #d-Pinned {
@@ -120,7 +120,7 @@ a {
 
 
 article.discussion, article.key, article.post {
-  outline: 1px solid gray;
+/*  outline: 1px solid gray;*/
 }
 article.discussion > div, article.key >  div, article.post > div{
   padding: 1em;
@@ -731,4 +731,97 @@ article.post .right .inner{
 }
 article.post:hover .right .inner, article.key:hover .right .inner{
     opacity: .9;
+}
+
+/* -------------------------------------------------------------------------- */
+
+
+#login_form, #registration_form, #newpost_form {
+    display: none;
+}
+
+#searchform {
+    font-family: inehrit;
+    font-size: 1em;
+}
+
+#showlogin, #showregistration, #logout, #shownewpost{
+    display: none;
+}
+
+
+article.addcomment .text{ /* дополнение - надо потом объединить если на этом остановлюсь с остальным*/
+    background: #111111  url(../img/bg.png) left 0px;
+    box-shadow: inset 0px 0px 1.6em 0px #000000;
+    border:1px inset #666666;
+}
+
+header article.addcomment {
+    background: none;
+}
+header article.addcomment .text{
+    background: none;
+    box-shadow: none;
+    border: none;
+}
+
+.hidden{
+    display: none;
+}
+
+select, input, textarea, button { font-size: 12px; }
+
+
+.inline-left {
+    height:30px;
+    display: inline-block;
+    float: left;
+    line-height: 30px;
+    margin: 0 0.4em;
+    font-family: Cuprum;
+    font-size: 1.5em;
+}
+
+.inline-right {
+    height:30px;
+    display: inline-block;
+    float: right;
+    line-height: 30px;
+    margin: 0 0.4em;
+    font-family: Cuprum;
+    font-size: 1.4em;
+}
+
+
+#container > header .openform {
+    cursor: pointer;
+    color: #87958d;
+    text-shadow: -1px -1px 2px #669966;
+}
+#container > header .openform:hover {
+    color: #25ce6b;
+}
+
+#container > header .info {
+    font-family: sans-serif;
+    font-size: 1em;
+    color: #80ffdd;
+    padding: 0 1em;
+}
+
+#container > header .action {
+    cursor: pointer;
+    color: #87958d;
+    text-shadow: -1px -1px 2px #666699;
+}
+#container > header .action:hover {
+    color: #25ce6b;
+}
+
+#container > header form {
+    margin-top:1em;
+}
+
+#container > header label {
+    display: inline-block;
 }

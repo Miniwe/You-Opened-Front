@@ -307,8 +307,12 @@ var Application = function ( opts )
         if (!User) return false; // @todo такого не может быть в нормально ситуации - убрать после проверки
         for (var i=0, l= User.pinned.length; i < l; i++)
         {
-            $("#discussion-" + User.pinned[i]).appendTo("#d-Pinned");
+            $("#discussion-" + User.pinned[i])
+                .attr("data-parent", "d-Pinned")
+                .appendTo("#d-Pinned");
         }
+        this.getParentsList.cache = {};
+        this.getPrevHeights.cache = {};
         // @todo тут сделать чтоб пиненые переносились наверх а непиненные вниз - но только если они уже не там
     };
 
@@ -367,7 +371,8 @@ var Application = function ( opts )
         var Application = this;
         this.ajaxRequest( url , 
             function(data){
-                $("#main article.post, #main article.dicsussion, #main article.key").remove();
+                $("#main article.post, #main article.dicsussion, #main article.key")
+                    .remove();
                 
                 var newData = Application.parseData(data);
                 for (var i=0; i< newData.discussions.length; i++)
@@ -472,7 +477,8 @@ var Application = function ( opts )
                 break;
             case "directmessage":
                 this.loadDiscussionsByParams("/slicegettopsocialratingfacadeinputsbyactiontype.json", {
-                    facadeid   : (Application.siteUser != undefined)?Application.siteUser.id:0,
+                    facadeid   : (Application.siteUser != undefined)
+                                    ?Application.siteUser.id:0,
                     actiontype : "Message",
                     count      :  100
                 }, function(){
@@ -491,7 +497,8 @@ var Application = function ( opts )
                     tagid : result[3],
                     returndiscussions : "true"
                 }, function(){
-                    Application.highlight(Application.tags[result[3]].wordString, "highlight_perma");
+                    Application.highlight(Application.tags[result[3]].wordString, 
+                    "highlight_perma");
                 });
                 break;
             case "loadtopdiscussions":
@@ -527,8 +534,10 @@ var Application = function ( opts )
         for (i in this.discussions)
         {
             this.maxRating        = Math.max(this.discussions[i].rating, this.maxRating);
-            this.maxSocialRating  = Math.max(this.discussions[i].socialrating, this.maxSocialRating);
-            this.maxBranchesCount = Math.max(this.discussions[i].branchesCount, this.maxBranchesCount);
+            this.maxSocialRating  = Math.max(this.discussions[i].socialrating, 
+                                             this.maxSocialRating);
+            this.maxBranchesCount = Math.max(this.discussions[i].branchesCount,
+                                             this.maxBranchesCount);
             this.maxPostsCount    = Math.max(this.discussions[i].postsCount, this.maxPostsCount);
         }
         
@@ -540,7 +549,8 @@ var Application = function ( opts )
         var Application = this;
         
         $.each( $(".socialrating"), function (i, el){
-            var nW = parseInt($(el).attr("title"),10) * Application.maxSocialRatingCoef + 3;
+            var nW = parseInt($(el).attr("title"),10) * Application.maxSocialRatingCoef 
+                + 3;
             $(el).animate({"width": nW + "px"});
             $(el).css({"visibility":(parseInt($(el).attr("title"),10) == 0)?"hidden":""});
             
@@ -556,7 +566,8 @@ var Application = function ( opts )
             $(el).css({"visibility":(parseInt($(el).attr("title"),10) == 0)?"hidden":""});
         });
         $.each( $(".branches"), function (i, el){
-            var nW = parseInt($(el).attr("title"),10) * Application.maxBranchesCountCoef + 3;
+            var nW = parseInt($(el).attr("title"),10) * Application.maxBranchesCountCoef 
+                + 3;
             $(el).animate({"width": nW + "px"});
             $(el).css({"visibility":(parseInt($(el).attr("title"),10) == 0)?"hidden":""});
         });
@@ -613,7 +624,8 @@ var Application = function ( opts )
         $(".pinning").removeClass("pinned");
         for (var i=0, l=this.siteUser.pinned.length; i<l; i++)
         {
-            $("article[data-id='" + this.siteUser.pinned[i] + "']").find(".pinning").addClass("pinned");
+            $("article[data-id='" + this.siteUser.pinned[i] + "']")
+            .find(".pinning").addClass("pinned");
 
         }
 
@@ -634,7 +646,8 @@ var Application = function ( opts )
     {
         size = size || 64;
         $.each(View.find('.avatar'), function (i, el){
-            if ($(el).attr("data-avataruri") != "" && $(el).attr("data-avataruri") != "null")
+            if ($(el).attr("data-avataruri") != "" && $(el).attr("data-avataruri") 
+                != "null")
             {
                 var src = $(el).attr("data-avataruri");
 //                src = src.replace("_normal", "");
@@ -842,7 +855,8 @@ var Application = function ( opts )
             tmpTop     = 0;
 
         var 
-            sT = $(document.body).scrollTop(),
+            sT = $(document.body).scrollTop() 
+                /* + $("#container > header").outerHeight(true)*/,
             activeArticle = $("article.active"),
             activeParents = this.getParentsList(activeArticle.attr("data-id"));
 
@@ -880,11 +894,14 @@ var Application = function ( opts )
 
             }
 
-            next = $(curArticle).nextAll("article[data-parent="+ $(curArticle).attr("data-parent") +"]").first();
+            next = $(curArticle).nextAll("article[data-parent=" 
+                + $(curArticle).attr("data-parent") +"]").first();
             if (!next.length)
             {
-                next = $("article[data-id="+ $(curArticle).attr("data-parent") +"]").first();
-                next = $(next).nextAll("article[data-parent="+ $(next).attr("data-parent") +"]").first();
+                next = $("article[data-id="+ $(curArticle).attr("data-parent") 
+                    +"]").first();
+                next = $(next).nextAll("article[data-parent="
+                    + $(next).attr("data-parent") +"]").first();
             }
 
             if (next.length > 0)
@@ -896,6 +913,7 @@ var Application = function ( opts )
                 }
             }
 
+//            tmpTop += $("#container > header").outerHeight(true);
             $(curArticle).css({"top": tmpTop + "px"});
 
         }
@@ -955,7 +973,8 @@ var Application = function ( opts )
         {
             result.list.push(id);
 
-            el = $("article[data-id=" + $("article[data-id=" + id + "]").attr("data-parent") + "]");
+            el = $("article[data-id=" + $("article[data-id=" + id + "]")
+                .attr("data-parent") + "]");
             while ( el.length )
             {
                 result.list.push($(el).attr("data-id"));

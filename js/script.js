@@ -208,9 +208,9 @@
         return false;
     });
             
-      $("article").live("click", function(){
-        console.log('in 2');
+      $("article.discussion header, article.key header, article.post header").live("click", function(){
          var 
+           curArticle = $(this).parents("article");
            sT = $(document.body).scrollTop();
 
          $(".replacement").remove();
@@ -219,11 +219,10 @@
             .removeClass("active")
             .removeClass("float");
 
-         $(this).addClass("active");
-         console.log($(this),  Application.getPrevHeights($(this).attr("data-id")), Application.getParentsList($(this).attr("data-id")));
-         $(document.body).animate({ scrollTop: Application.getPrevHeights($(this).attr("data-id")).offset 
-                                    - Application.getParentsList($(this).attr("data-id")).offset
-                                    /*+ $("#container > header").outerHeight(true)*/}, 
+         $(curArticle).addClass("active");
+         $(document.body).animate({ scrollTop: Application.getPrevHeights(curArticle.attr("data-id")).offset 
+                                    - Application.getParentsList(curArticle.attr("data-id")).offset
+                                    + $("#container > header").outerHeight(true)}, 
             function(){
                 Application.alignFloat();
             }
