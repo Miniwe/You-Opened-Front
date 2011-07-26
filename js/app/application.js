@@ -6,30 +6,19 @@ var Application = function ( opts )
     
     this.frameworkPath = "/framework";
     
-    this.bTmplCompleted = 0;
+    var bTmplCompleted = 0;
+    var templates = opts.templates || [];
     
     this.sessionkey = opts.sessionkey;
-    
-    this.templates = opts.templates || [];
     
     this.siteUserTimer    = null;
     this.siteUser         = null;
     
-    this.discussions = {};
+    this.branches    = {};
     this.posts       = {};
     this.tags        = {};  
     this.users       = {};
     this.words       = {};
-    
-    this.maxRating        = 1;
-    this.maxSocialRating  = 1;
-    this.maxBranchesCount = 1;
-    this.maxPostsCount    = 1;
-    
-    this.maxRatingCoef        = 1;
-    this.maxSocialRatingCoef  = 1;
-    this.maxBranchesCountCoef = 1;
-    this.maxPostsCountCoef    = 1;
     
     this.ajaxRequests = [];
     this.ajaxCount = 0;
