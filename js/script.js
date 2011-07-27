@@ -11,21 +11,17 @@
         Application({
             path : "http://youopened.com",
             templates : [
-                "discussion",
-                "key",
-                "post",
-                "innerkey",
-                "reply"
+                "branch",
+                "post"
             ]
             ,
            sessionkey : $.cookie("yo_sessionkey")?$.cookie("yo_sessionkey"):""
         }).run();
     
         // * * * jQuery function process place HERE * * *     
-        
+    });
     
     $(window).bind("scroll", function() {
-//        Application.alignFloat()
     });      
   
     $(window).bind("load", function() { 

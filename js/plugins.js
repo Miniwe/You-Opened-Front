@@ -93,3 +93,20 @@ function formatDate (indate)
     
     return d.toLocaleString(); // + " - " + outdate;
 }
+
+/*
+ *  Библиотечканя функция конвертации массива данных HTML-формы в объект
+ *  @param formArray @todo describe type
+ *  @return object
+ */
+function formArrayToData ( formArray ) 
+{
+    var out = {};
+    for (i in formArray)
+    {
+        out[formArray[i].name] = formArray[i].value;
+    }
+
+    return out;
+};
+

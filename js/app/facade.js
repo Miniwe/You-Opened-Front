@@ -12,7 +12,7 @@ function Facade ()
         var View = $(document.body);
         
         this.parentViewId = parent;
-        this.zIndex = parseInt($(el)[0].style.zIndex,10) - 10 || 10;
+//        this.zIndex = parseInt($(el)[0].style.zIndex,10) - 10 || 10;
         
         switch (mode)
         {
