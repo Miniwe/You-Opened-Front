@@ -208,8 +208,9 @@ var Application = function ( opts )
         
         for ( i = brAr.length; i--; )
         {
-            this.branches[brAr[i]].render($("#main-container"), 'branch', 'appendTo', 'insert');
+            this.branches[brAr[i]].render($("#main-container"), 'branch', 'appendTo', 'main-container');
         }
+        
     }
     
     /*
@@ -279,7 +280,9 @@ var Application = function ( opts )
                 branches    : [],
                 posts       : []
             }, 
-            i;
+            i, // loop counter
+            pid // parent branch id
+            ;
         
         if (!data) return newData;
         
@@ -315,7 +318,18 @@ var Application = function ( opts )
 
                 newData.branches.push(id);
             }
+            
+            /* для всех бранчей сдалать указатели на детей */
+            for ( id in this.branches)
+            {
+                var pid = this.branches[id].parentBranchId;
+                if (this.branches[pid])
+                {
+                    this.branches[pid].branches[id] = this.branches[id];
+                }
+            }
         }
+        
         
         return newData;
     };

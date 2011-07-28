@@ -129,7 +129,7 @@
     getParentsList.cache = {};
             
     $(function() {
-        $("article").click( function(){
+        $("article").live("click", function(){
             var 
             sT = $(document.body).scrollTop();
                    

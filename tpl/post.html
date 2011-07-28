@@ -1,62 +1,9 @@
-<article class="post" id="post-${id}" data-id="${id}" data-parent="${parentViewId}" data-parent-post="${parentPost}" data-parent-discussion="${parentDiscussion}" style="z-index: ${zIndex}">
+<article id="post-${id}" data-id="${id}" data-parent="${parentViewId}" class="post">
     <div>
-    <div class="left">
-        <div class="socialrating" title="${socialrating}"></div>
-        <div class="rating" title="${rating}"></div>
-        <div class="inner">
-            <span class="ratingLabel">${rating}</span>
-            <a href="#ratingPlus" class="changeRating changeRatingPlus" title="Rating plus" data-delta="1">
-                <img src="img/s.gif" alt="" />
-            </a>
-            <a href="#ratingMinus" class="changeRating changeRatingMinus" title="Rating minus" data-delta="-1">
-                <img src="img/s.gif" alt="" style="" />
-            </a>
-
-        </div>
-    </div>
-    <div class="right">
-        <div class="inner">
-            <a href="#addcomment" class="addComment" title="Add Comment">
-                <img src="img/s.gif" alt="" style="padding-top:1em;" />
-            </a>
-        </div>
-        <div class="branches" title="${branchesCount}"></div>
-        <div class="posts" title="${postsCount}"></div>
-    </div>
-    <div class="text">
-        <div>
-        <div class="postpin">
-        <a href="#pin" class="pinning" title="Pin it">
-            <img src="img/s.gif" />
-        </a>
-        </div>
-        <header>
-            {{if parentOutputsCount > 0}}
-            <span style="color:#00ff00;">Comment</span>
-            {{else}}
-            <span style="color:#ffbb66;">Message</span>
-            {{/if}}
-            ${id}: ${branchesCount}-${postsCount}-${postsCountCoef}
-            - <a href="http://youopened.com/yol/#post-${id}">ссылка</a>
-            <br >
-            <time date-val="${createtime}" datetime="${createtimef}">${createtimef}</time>
-        </header>
-        </div>
-        <div class="avatarcont">
-        <a href="#avatar-${user.id}" class="avatar" data-authorid="${$.md5(user.id.toString())}" data-avataruri="${user.avataruri}" title="${user.name}">
-        </a>
-        </div>
-        <div class="directusers">
-        </div>
-        <div class="postmsg">
-            {{html text}}
-        </div>
-        <div class="tags">
-            {{each tags}}
-                <a data-weight="${socialrating}" title="${socialrating}" 
-                   href="#tag-${id}">${wordString}</a>
-            {{/each}}
-        </div>
-    </div>
+        <header>${id}: ${text}</header>
+        <ul>
+        <li>create date:${createTimeF}</li>
+        <li>relevant weight: ${relevantWeight}</li>
+        </ul>
     </div>
 </article>

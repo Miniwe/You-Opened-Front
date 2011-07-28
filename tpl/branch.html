@@ -1,7 +1,15 @@
 <article data-id="${id}" data-parent="${parentViewId}" class="branch">
-    <div style="">
-        <caption>branch</caption>
-        <li>id:${id}</li>
-        <li>post:${post.id}</li>
-    
+    <div>
+        <header>${post.id}: ${post.text}</header>
+        <ul>
+        <li>id: ${id}</li>
+        <li>update date: ${createTimeF}</li>
+        <li>relevant weight: ${relevantWeight}</li>
+        </ul>
+        <ul class="branch_keys" style="outline:1px dotted red">
+        {{each keys}}
+            <li>${id}: ${text}</li>
+        {{/each}}
+        </ul>
+    </div>
 </article>

@@ -6,6 +6,17 @@
 function Facade ()
 {
     
+    this.removeAfter = function ( parentId )
+    {
+        
+        var facade  = this ;
+        $.each($("*[data-parent='" + parentId + "']"), function(i, el){
+            facade.removeAfter($(el).attr("data-id"));
+            $(el).remove();
+        });
+
+    };
+    
     this.renderSelf = function (el, tmpl, mode, parent)
     {
         

@@ -12,6 +12,7 @@
             path : "http://youopened.com",
             templates : [
                 "branch",
+                "key",
                 "post"
             ]
             ,

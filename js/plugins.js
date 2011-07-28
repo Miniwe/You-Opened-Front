@@ -87,7 +87,7 @@ function getIds (str)
 function formatDate (indate)
 {
     var outdate = indate;
-    outdate = Math.round(outdate);
+//    outdate = Math.round(outdate);
     var d = new Date();
     d.setTime(outdate * 1000);
     
