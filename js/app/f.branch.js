@@ -89,11 +89,14 @@ Branch.prototype = {
      this.navGraph = new NavGraph("navGraphCanvas" + this.id);
      
      this.navGraph.init();
-     
      this.navGraph.addData({
         id     : this.id,
-        weight : this.relevantWeight
+        weight : this.relevantWeight,
+        click  : function() {
+            alert ('open parent branch');
+        }
      }, this.prepareNavGraphData());
+     
      this.navGraph.startGraph();
         
     },
@@ -104,7 +107,10 @@ Branch.prototype = {
         {
             navData.push({
                 id     : this.branches[i].id,
-                weight : this.branches[i].relevantWeight
+                weight : this.branches[i].relevantWeight,
+                click  : function() {
+                    alert ('open child branch');
+                }
             });
         }
         return navData;

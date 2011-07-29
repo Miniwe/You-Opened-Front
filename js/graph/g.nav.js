@@ -1,6 +1,7 @@
 function NavGraph ( holder ) {
     NavGraph.superclass.constructor.call(this, holder);
     
+    this.activeBranch = null;
     this.parentBranch = {};
     this.branchesData = [];
     this.branchesWeightSumm = 0;
@@ -23,12 +24,26 @@ NavGraph.prototype = {
     init : function ()
     {
         var canvas = document.getElementById(this.holder);
+        var holder = $("#"+this.holder);
+        var navGraph = this;
         
-        canvas.width = $("#"+this.holder).width();
-        canvas.height = $("#"+this.holder).height();
+        canvas.width = holder.width();
+        canvas.height = holder.height();
         
         this.width   = canvas.width;
         this.height  = canvas.height;
+        
+        holder.mousemove(function(event){
+            var offset = $(this).offset();
+
+            navGraph.setPos({
+                x: event.pageX - offset.left ,
+                y: event.pageY - offset.top
+            });
+        });
+        holder.click(function(event){
+            navGraph.activeBranch.click();
+        });
 
     },
     addData : function ( parentBranch, data ) {
@@ -43,6 +58,7 @@ NavGraph.prototype = {
         this.branchesWeightSummCoef = Math.PI * 2 / this.branchesWeightSumm;
     },
     draw : function ( ) {
+        
         var partsCount = this.branchesData.length;
         
         var delta = this.branchesWeightSummCoef;
@@ -50,20 +66,41 @@ NavGraph.prototype = {
         var curAngle = 0;
         var prevAngle = 0;
         var deltaLit = 0.1;
-
+        
+        this.ctx.beginPath();
+        this.ctx.arc(40, 40, 11, 0, 2 * Math.PI, false);
+        this.ctx.closePath();
+        this.ctx.fillStyle = this.colors[this.colors.length-1];
+        this.ctx.fill();
+        if (this.ctx.isPointInPath(this.cPos.x, this.cPos.y))
+        {
+            this.ctx.strokeStyle = "fff";
+            this.ctx.lineWidth = 2;this.ctx.stroke();
+            this.activeBranch = this.parentBranch;
+        }
+        
         for (var i=this.branchesData.length; i--; )
         {
             curAngle = this.branchesData[i].weight * delta;
             
             this.ctx.beginPath();
-            this.ctx.lineWidth   = 1;
             this.ctx.arc(40, 40, 30, prevAngle , prevAngle + curAngle - deltaLit , false);
             this.ctx.arc(40, 40, 15, prevAngle + curAngle - deltaLit , prevAngle , true);
             this.ctx.closePath();
+
             this.ctx.fillStyle   = this.colors[ i*i ];
             this.ctx.fill();
             
+            if (this.ctx.isPointInPath(this.cPos.x, this.cPos.y))
+            {
+                this.ctx.strokeStyle = this.colors[ i*i ];
+                this.ctx.lineWidth = 4;this.ctx.stroke();
+                this.ctx.strokeStyle = "#fff";
+                this.ctx.lineWidth = 2;this.ctx.stroke();
+                this.activeBranch = this.branchesData[i];
+            }
             prevAngle += curAngle;
+            
         }
         
     },
