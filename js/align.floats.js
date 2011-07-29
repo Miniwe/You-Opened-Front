@@ -129,12 +129,13 @@
     getParentsList.cache = {};
             
     $(function() {
-        $("article").live("click", function(){
+        $("article header").live("click", function(){
             var 
-            sT = $(document.body).scrollTop();
+                sT = $(document.body).scrollTop(),
+                curArticle = $(this).parents("article");
                    
             $(".replacement").remove();
-            $("article")
+            curArticle
             .css({
                 "margin-top": "none", 
                 "top": "none"
@@ -142,10 +143,10 @@
             .removeClass("active")
             .removeClass("float");
                  
-            $(this).addClass("active");
+            curArticle.addClass("active");
                 
             $(document.body).animate({
-                scrollTop: getPrevHeights($(this).attr("data-id")).offset - getParentsList($(this).attr("data-id")).offset
+                scrollTop: getPrevHeights(curArticle.attr("data-id")).offset - getParentsList(curArticle.attr("data-id")).offset
             }, 
             function(){
                 alignArticles();

@@ -74,6 +74,7 @@ Branch.prototype = {
     },
     drawNavGraph : function ( View )
     {
+      var facade = this;
       var navGraph = View.find(".graphContainer");
       navGraph.attr("id", "navCont" + this.id)
       navGraph.find("*").remove();
@@ -93,23 +94,27 @@ Branch.prototype = {
         id     : this.id,
         weight : this.relevantWeight,
         click  : function() {
-            alert ('open parent branch');
+            facade.openFacade(View);
         }
-     }, this.prepareNavGraphData());
+     }, this.prepareNavGraphData( View ));
      
      this.navGraph.startGraph();
         
     },
-    prepareNavGraphData : function ( )
+    prepareNavGraphData : function ( View )
     {
-        var navData = [];
+        var navData = [],
+            facade = this,
+            curBranch = null;
         for (i in this.branches)
         {
+            curBranch = this.branches[i];
             navData.push({
                 id     : this.branches[i].id,
                 weight : this.branches[i].relevantWeight,
                 click  : function() {
-                    alert ('open child branch');
+                    var newView = curBranch.render(View, 'branch', 'insertAfter', facade.id).addClass("lighter");
+                    curBranch.openFacade(newView);
                 }
             });
         }
