@@ -1,10 +1,12 @@
 <article data-id="${id}" data-parent="${parentViewId}" class="branch">
     <div>
+        <div class="graphContainer"></div>
         <header>${post.id}: ${post.text}</header>
         <ul>
         <li>id: ${id}</li>
         <li>update date: ${createTimeF}</li>
         <li>relevant weight: ${relevantWeight}</li>
+        <li>zIndex: ${zIndex}</li>
         </ul>
         <ul class="branch_keys" style="outline:1px dotted red">
         {{each keys}}

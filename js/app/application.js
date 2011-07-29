@@ -238,7 +238,7 @@ var Application = function ( opts )
             console.log('loadIndexPage', 'request error');
         }
         , {
-//            query : "girls"
+            query : "girls"
         });
     }
     

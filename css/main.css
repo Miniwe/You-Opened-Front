@@ -20,9 +20,21 @@ body {
 }
 
 
+#main-header {
+    width: 60%;
+    margin: 0 auto;
+    background-color: #596B84;
+    color: #ffffff;
+}
+
+#main-header div {
+    padding: 1em;
+}
+
 #main-container {
     width: 60%;
     margin: 0 auto;
+    padding-bottom: 10%;
 }
 
 article {
@@ -82,4 +94,13 @@ article header {
 
 article header:hover {
     text-decoration: underline;
+}
+
+.graphContainer {
+    width: 80px;
+    height: 80px;
+    float: right;
+/*    background-color: #ffffff;*/
+/*    border: 1px inset #d7acc7;*/
+        
 }

@@ -21,6 +21,8 @@ function Branch (Application, id, data)
     this.keys     = {};
     this.posts    = {};
     
+    this.navGraph = null;
+    
     (this.update = function (data) {
         this.relevantWeight = data.RelevantWeight;
         
@@ -60,12 +62,52 @@ Branch.prototype = {
     
         var View = this.renderSelf (el, tmpl, mode, parent);
         var facade = this;
+        
+        this.drawNavGraph( View );
+
 
         View.find("header").click(function (){
             facade.openFacade( View );
         });
     
         return View;
+    },
+    drawNavGraph : function ( View )
+    {
+      var navGraph = View.find(".graphContainer");
+      navGraph.attr("id", "navCont" + this.id)
+      navGraph.find("*").remove();
+      $("<canvas></canvas>")
+        .appendTo(navGraph)
+        .addClass('navGraph')
+        .attr("id", "navGraphCanvas"+this.id)
+        .css({
+            width: navGraph.width(),
+            height: navGraph.height()
+        });
+     
+     this.navGraph = new NavGraph("navGraphCanvas" + this.id);
+     
+     this.navGraph.init();
+     
+     this.navGraph.addData({
+        id     : this.id,
+        weight : this.relevantWeight
+     }, this.prepareNavGraphData());
+     this.navGraph.startGraph();
+        
+    },
+    prepareNavGraphData : function ( )
+    {
+        var navData = [];
+        for (i in this.branches)
+        {
+            navData.push({
+                id     : this.branches[i].id,
+                weight : this.branches[i].relevantWeight
+            });
+        }
+        return navData;
     },
     hideInnerKeys : function ( View )
     {
