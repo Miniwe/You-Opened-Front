@@ -135,7 +135,7 @@
                 curArticle = $(this).parents("article");
                    
             $(".replacement").remove();
-            curArticle
+            $("article")
             .css({
                 "margin-top": "none", 
                 "top": "none"
@@ -144,7 +144,10 @@
             .removeClass("float");
                  
             curArticle.addClass("active");
-                
+//                
+//            console.log("header click", /*this, curArticle, */curArticle.attr("data-id"),
+//                    getPrevHeights(curArticle.attr("data-id")).offset, getParentsList(curArticle.attr("data-id")).offset);
+            
             $(document.body).animate({
                 scrollTop: getPrevHeights(curArticle.attr("data-id")).offset - getParentsList(curArticle.attr("data-id")).offset
             }, 

@@ -53,6 +53,14 @@ article.branch {
     outline: 1px solid #ffffff;
 }
 
+article.branch ul.branch_keys{
+    border:1px inset #B58AA5;
+}
+
+article.branch ul.branch_keys li {
+    padding: 0.4em;
+}
+
 article.branch.lighter{
     background-color: #d7acc7;
 }

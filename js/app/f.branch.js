@@ -65,7 +65,6 @@ Branch.prototype = {
         
         this.drawNavGraph( View );
 
-
         View.find("header").click(function (){
             facade.openFacade( View );
         });
@@ -94,7 +93,7 @@ Branch.prototype = {
         id     : this.id,
         weight : this.relevantWeight,
         click  : function() {
-            facade.openFacade(View);
+            View.find("header").click();
         }
      }, this.prepareNavGraphData( View ));
      
@@ -104,17 +103,20 @@ Branch.prototype = {
     prepareNavGraphData : function ( View )
     {
         var navData = [],
-            facade = this,
-            curBranch = null;
+            facade = this;
         for (i in this.branches)
         {
-            curBranch = this.branches[i];
+            var curBranch = this.branches[i];
             navData.push({
                 id     : this.branches[i].id,
                 weight : this.branches[i].relevantWeight,
                 click  : function() {
+                    
+                    facade.hideInnerKeys(View); 
+                    facade.removeAfter ( facade.id );
+                    
                     var newView = curBranch.render(View, 'branch', 'insertAfter', facade.id).addClass("lighter");
-                    curBranch.openFacade(newView);
+                    newView.find("header").click();
                 }
             });
         }
