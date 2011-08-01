@@ -45,7 +45,7 @@ NavGraph.prototype = {
         holder.click(function(event){
             if (navGraph.activeBranch != undefined)
             {
-                navGraph.activeBranch.click();
+                navGraph.activeBranch.click( navGraph.activeBranch.id );
             }
         });
 

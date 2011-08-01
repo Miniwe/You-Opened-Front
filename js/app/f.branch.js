@@ -108,7 +108,7 @@ Branch.prototype = {
      this.navGraph.addData({
         id     : this.id,
         weight : this.relevantWeight,
-        click  : function() {
+        click  : function ( id ) {
             View.find("header").click();
         }
      }, this.prepareNavGraphData( View ));
@@ -119,14 +119,17 @@ Branch.prototype = {
     prepareNavGraphData : function ( View )
     {
         var navData = [],
-            facade = this;
+            facade = this,
+            i;
+        
         for (i in this.branches)
         {
-            var curBranch = this.branches[i];
             navData.push({
                 id     : this.branches[i].id,
                 weight : this.branches[i].relevantWeight,
-                click  : function() {
+                click  : function( id ) {
+                    
+                    var curBranch = facade.Application.branches[id];
                     
                     facade.hideInnerKeys(View); 
                     facade.removeAfter ( facade.id );

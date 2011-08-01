@@ -119,7 +119,7 @@ article header:hover {
 .collapse_control {
     padding: 0;
     margin: 0;
-    -webkit-box-shadow: inset 0px 0px 1em #000;
+    -webkit-box-shadow: inset 0px 0px 1em #fff;
     text-align: center;
     cursor: pointer;
 }
