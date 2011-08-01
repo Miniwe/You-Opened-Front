@@ -1,7 +1,7 @@
 function NavGraph ( holder ) {
     NavGraph.superclass.constructor.call(this, holder);
     
-    this.activeBranch = null;
+    this.activeBranch = undefined;
     this.parentBranch = {};
     this.branchesData = [];
     this.branchesWeightSumm = 0;
@@ -27,8 +27,8 @@ NavGraph.prototype = {
         var holder = $("#"+this.holder);
         var navGraph = this;
         
-        canvas.width = holder.width();
-        canvas.height = holder.height();
+        canvas.width   = holder.width();
+        canvas.height  = holder.height();
         
         this.width   = canvas.width;
         this.height  = canvas.height;
@@ -41,8 +41,12 @@ NavGraph.prototype = {
                 y: event.pageY - offset.top
             });
         });
+        
         holder.click(function(event){
-            navGraph.activeBranch.click();
+            if (navGraph.activeBranch != undefined)
+            {
+                navGraph.activeBranch.click();
+            }
         });
 
     },

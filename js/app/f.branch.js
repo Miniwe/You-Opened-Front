@@ -49,7 +49,7 @@ Branch.prototype = {
     {
         this.hideInnerKeys(View); 
         this.removeAfter ( this.id );
-        this.expandBranches(View); 
+//        this.expandBranches(View); 
         this.expandKeys(View); 
     },
     prepareRender : function()
@@ -67,6 +67,22 @@ Branch.prototype = {
 
         View.find("header").click(function (){
             facade.openFacade( View );
+        });
+        
+        View.find(".collapse_control").click(function(){
+           
+           var control = $(this);
+           control.toggleClass("opened");
+           
+           if (control.hasClass("opened"))
+           {
+               View.find("header").click();
+           }
+           else
+           {
+                facade.showInnerKeys(View); 
+                facade.removeAfter ( facade.id );
+           }
         });
     
         return View;
@@ -132,12 +148,33 @@ Branch.prototype = {
     },
     expandKeys : function ( View )
     {
+        var branch = false;
         for (i in this.keys)
         {
-            // @render key here
-            this.keys[i].render(View, "key", "insertAfter", this.id);            
+            branch = this.branchExist(i);
+            if (!branch)
+            {
+                this.keys[i].render(View, "key", "insertAfter", this.id);            
+            }
+            else
+            {
+                branch.render(View, 'branch', 'insertAfter', this.id).addClass("lighter");
+            }
+            branch = false;
         };
 
+    },
+    branchExist : function (postId)
+    {
+        for (i in this.branches)
+        {
+            if (this.branches[i].postId == postId)
+            {
+                return this.branches[i];
+            }
+        }
+        
+        return false;
     },
     expandBranches: function ( View )
     {

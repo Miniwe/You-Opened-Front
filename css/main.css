@@ -115,3 +115,19 @@ article header:hover {
 /*    border: 1px inset #d7acc7;*/
         
 }
+
+.collapse_control {
+    padding: 0;
+    margin: 0;
+    -webkit-box-shadow: inset 0px 0px 1em #000;
+    text-align: center;
+    cursor: pointer;
+}
+
+.collapse_control span.arrow-s, .collapse_control.opened span.arrow-n{
+    display: inline-block;
+}
+
+.collapse_control span.arrow-n, .collapse_control.opened span.arrow-s{
+    display: none;
+}
