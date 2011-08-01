@@ -1,5 +1,5 @@
 <article data-id="${id}" data-parent="${parentViewId}" class="branch">
-    <div>
+    <div class="inner">
         <div class="graphContainer"></div>
         <header>${id}<br />${post.id}: ${post.text}</header>
         <ul>
@@ -14,6 +14,17 @@
             <li>${id}: ${text}</li>
         {{/each}}
         </ul>
+        <a href="#show_replay" style="color:#fff">Reply</a>
+    </div>
+    <div class="replay">
+        <form action="/framework/Slice.json" method="get">
+            <input type="text" name="procedure" value="PostMessage" />
+            <input type="text" name="parentPostId" value="${id}" />
+            <br />
+            <textarea name="text" style="width:100%;"></textarea>
+            <input type="submit" name="Submit" />
+            
+        </form>
     </div>
     <div class="collapse_control" data-parent="${parentViewId}">
         <span class="arrow-s"></span>
