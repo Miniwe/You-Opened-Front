@@ -334,6 +334,66 @@ var Application = function ( opts )
         return newData;
     };
     
+    /*
+     *  Библиотечканя функция конвертации массива данных формы в объект
+     *  @param formArray @todo describe type
+     *  @return object
+     */
+    this.formArrayToData = function ( formArray ) 
+    {
+        var out = {};
+        for (i in formArray)
+        {
+            out[formArray[i].name] = formArray[i].value;
+        }
+        
+        return out;
+    };    
+    
+    this.addReplyFormBehavior = function ( View )
+    {   
+        var Application = this;
+
+        View.find("form.replyform").submit(function(){
+
+            Application.removeReplyForm();
+            View.find(".show_reply").removeClass("opened");
+            
+            var data = Application.formArrayToData($(this).formToArray());
+            
+            Application.ajaxRequest("/Slice.json", 
+                function(data){
+                    var newData = Application.parseResponseData(data);
+                    
+                    console.log('reform', data, newData);
+                    /*
+                    for (var i=0; i< newData.posts.length; i++)
+                    {
+                        var post = Application.posts[newData.posts[i]];
+                        if (post.parentDiscussion == 0 )
+                        {
+                            var View = post.render("#d-Unpinned", "key", "prependTo", "d-Unpinned");
+                            
+                            post.scrollToView(View);
+                        }
+                    }
+                    */
+                    
+                }, function(){
+                    Application.msg("Couldn't post comment");
+                },
+                data
+                );        
+            return false;
+        });        
+        
+    };
+    
+    this.removeReplyForm  = function () 
+    {
+       $(".reply").hide().remove();
+    };
+    
     return this;
     
 };

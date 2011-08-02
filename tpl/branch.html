@@ -14,17 +14,10 @@
             <li>${id}: ${text}</li>
         {{/each}}
         </ul>
-        <a href="#show_replay" style="color:#fff">Reply</a>
-    </div>
-    <div class="replay">
-        <form action="/framework/Slice.json" method="get">
-            <input type="text" name="procedure" value="PostMessage" />
-            <input type="text" name="parentPostId" value="${id}" />
-            <br />
-            <textarea name="text" style="width:100%;"></textarea>
-            <input type="submit" name="Submit" />
-            
-        </form>
+        <a href="#show_reply" class="show_reply">
+            <span title="Reply">Reply</span>
+            <span title="Cancel reply">Cancel reply</span>
+        </a>
     </div>
     <div class="collapse_control" data-parent="${parentViewId}">
         <span class="arrow-s"></span>

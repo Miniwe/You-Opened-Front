@@ -11,6 +11,7 @@
         Application({
             path : "http://youopened.com",
             templates : [
+                "reply",
                 "branch",
                 "key",
                 "post"

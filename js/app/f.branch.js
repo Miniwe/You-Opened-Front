@@ -58,13 +58,20 @@ Branch.prototype = {
     },
     render : function (el, tmpl, mode, parent)
     {
-        this.prepareRender();
+        this.prepareRender ( );
     
         var View = this.renderSelf (el, tmpl, mode, parent);
+        
+        this.drawNavGraph ( View );
+
+        this.attachBehavior ( View );
+        
+        return View;
+    },
+    attachBehavior : function ( View )
+    {
         var facade = this;
         
-        this.drawNavGraph( View );
-
         View.find("header").click(function (){
             facade.openFacade( View );
         });
@@ -84,8 +91,30 @@ Branch.prototype = {
                 facade.removeAfter ( facade.id );
            }
         });
-    
-        return View;
+        
+        View.find(".show_reply").click(function(){
+           
+           var control = $(this);
+           
+           control.toggleClass("opened");
+           
+           if (control.hasClass("opened"))
+           {
+               $.tmpl("reply", {
+                   id : facade.postId
+               }).insertAfter( View.find(".inner") ).show();
+               
+               facade.Application.addReplyFormBehavior( View );
+           }
+           else
+           {
+               facade.Application.removeReplyForm()
+           }
+           
+           return false;
+        });
+        
+        
     },
     drawNavGraph : function ( View )
     {

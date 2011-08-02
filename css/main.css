@@ -131,3 +131,14 @@ article header:hover {
 .collapse_control span.arrow-n, .collapse_control.opened span.arrow-s{
     display: none;
 }
+
+a.show_reply {
+    color: #fff; 
+}
+.show_reply span[title="Reply"], .show_reply.opened span[title="Cancel reply"]{
+    display: inline-block;
+}
+
+.show_reply span[title="Cancel reply"], .show_reply.opened span[title="Reply"]{
+    display: none;
+}
