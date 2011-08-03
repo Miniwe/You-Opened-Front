@@ -350,7 +350,7 @@ var Application = function ( opts )
         return out;
     };    
     
-    this.addReplyFormBehavior = function ( View )
+    this.addReplyFormBehavior = function ( facade, View )
     {   
         var Application = this;
 
@@ -365,19 +365,14 @@ var Application = function ( opts )
                 function(data){
                     var newData = Application.parseResponseData(data);
                     
-                    console.log('reform', data, newData);
-                    /*
+                    facade.openFacade(View);
+                    
                     for (var i=0; i< newData.posts.length; i++)
                     {
                         var post = Application.posts[newData.posts[i]];
-                        if (post.parentDiscussion == 0 )
-                        {
-                            var View = post.render("#d-Unpinned", "key", "prependTo", "d-Unpinned");
-                            
-                            post.scrollToView(View);
-                        }
+                        var postView = $("article[data-id='" + post.id + "']");
+                        post.openFacade(postView);
                     }
-                    */
                     
                 }, function(){
                     Application.msg("Couldn't post comment");

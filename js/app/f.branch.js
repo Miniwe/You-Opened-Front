@@ -15,7 +15,7 @@ function Branch (Application, id, data)
     this.post = this.Application.posts[this.postId];
   
     this.updateTime      =  data.UpdateTime;
-    this.updateTimeF     = formatDate(data.updateTime);
+    this.updateTimeF     = formatDate(this.updateTime);
   
     this.branches = {};
     this.keys     = {};
@@ -50,7 +50,13 @@ Branch.prototype = {
         this.hideInnerKeys(View); 
         this.removeAfter ( this.id );
 //        this.expandBranches(View); 
-        this.expandKeys(View); 
+        this.loadChilds( View );        
+//        this.expandKeys(View); 
+    },
+    closeFacade : function (View)
+    {
+        this.showInnerKeys(View); 
+        this.removeAfter ( this.id );
     },
     prepareRender : function()
     {
@@ -79,16 +85,16 @@ Branch.prototype = {
         View.find(".collapse_control").click(function(){
            
            var control = $(this);
+           
            control.toggleClass("opened");
            
            if (control.hasClass("opened"))
            {
-               View.find("header").click();
+               facade.openFacade( View );
            }
            else
            {
-                facade.showInnerKeys(View); 
-                facade.removeAfter ( facade.id );
+               facade.closeFacade( View );
            }
         });
         
@@ -104,7 +110,7 @@ Branch.prototype = {
                    id : facade.postId
                }).insertAfter( View.find(".inner") ).show();
                
-               facade.Application.addReplyFormBehavior( View );
+               facade.Application.addReplyFormBehavior( facade, View );
            }
            else
            {
@@ -196,6 +202,57 @@ Branch.prototype = {
         };
 
     },
+    expandPosts : function ( View )
+    {
+        var branch = false;
+        for (i in this.posts)
+        {
+            branch = this.branchExist(i);
+            if (!branch)
+            {
+                this.posts[i].render(View, "key", "insertAfter", this.id);            
+            }
+            else
+            {
+                branch.render(View, 'branch', 'insertAfter', this.id).addClass("lighter");
+            }
+            branch = false;
+        };
+
+    },
+    loadChilds : function ( View )
+    {
+        var facade = this;
+        this.Application.ajaxRequest('/Slice.json',
+            function ( response ) {
+                
+                facade.removeAfter ( facade.id );
+                
+                var newData = this.parseResponseData(response);
+
+                for (var i = newData.posts.length; i--; )
+                {
+                    if (facade.Application.posts[newData.posts[i]].parentPostId == facade.postId)
+                    {
+                        facade.posts[newData.posts[i]]
+                        = facade.Application.posts[newData.posts[i]];
+
+                    }
+                }
+
+                // Render
+                facade.expandPosts( View );
+            },
+            function () {
+
+                facade.Application.msg("Count`t get post list for branch: " + facade.id);
+
+            },
+            {
+                parentPostId  : this.postId
+            }
+        );        
+    },    
     branchExist : function (postId)
     {
         for (i in this.branches)

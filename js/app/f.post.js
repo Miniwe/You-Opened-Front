@@ -12,7 +12,7 @@ function Post (Application, id, data)
     this.authorId        = data.AuthorId;
   
     this.createTime      =  data.CreateTime;
-    this.createTimeF     = formatDate(data.createTime);
+    this.createTimeF     = formatDate(this.createTime);
     
     this.text            = data.Text;
     

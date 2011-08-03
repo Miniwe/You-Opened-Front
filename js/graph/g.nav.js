@@ -2,6 +2,7 @@ function NavGraph ( holder ) {
     NavGraph.superclass.constructor.call(this, holder);
     
     this.activeBranch = undefined;
+    this.hoverBranch  = undefined;
     this.parentBranch = {};
     this.branchesData = [];
     this.branchesWeightSumm = 0;
@@ -13,8 +14,6 @@ function NavGraph ( holder ) {
     this.colors = [
         "#FFC600", "#C0A02F", "#A78200", "#FFDD68", "#FFF0BB", "#59FF00", "#62C02F", "#3AA700", "#9CFF68", "#D2FFBB", "#FF0037", "#C02F4E", "#A70024", "#FF6888", "#FFBBC9", "#1700FF", "#3C2FC0", "#0F00A7", "#7568FF", "#C1BBFF"
     ];      
-    
-    
    
 }
 
@@ -43,9 +42,10 @@ NavGraph.prototype = {
         });
         
         holder.click(function(event){
-            if (navGraph.activeBranch != undefined)
+            if (navGraph.hoverBranch != undefined)
             {
-                navGraph.activeBranch.click( navGraph.activeBranch.id );
+                navGraph.hoverBranch.click( navGraph.hoverBranch.id );
+                navGraph.activeBranch = navGraph.hoverBranch;
             }
         });
 
@@ -80,7 +80,12 @@ NavGraph.prototype = {
         {
             this.ctx.strokeStyle = "fff";
             this.ctx.lineWidth = 2;this.ctx.stroke();
-            this.activeBranch = this.parentBranch;
+            this.hoverBranch = this.parentBranch;
+        }
+        if (this.activeBranch)
+        {
+            this.ctx.strokeStyle = "000";
+            this.ctx.lineWidth = 2; this.ctx.stroke();
         }
         
         for (var i=this.branchesData.length; i--; )
@@ -101,7 +106,7 @@ NavGraph.prototype = {
                 this.ctx.lineWidth = 4;this.ctx.stroke();
                 this.ctx.strokeStyle = "#fff";
                 this.ctx.lineWidth = 2;this.ctx.stroke();
-                this.activeBranch = this.branchesData[i];
+                this.hoverBranch = this.branchesData[i];
             }
             prevAngle += curAngle;
             
