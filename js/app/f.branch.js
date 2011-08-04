@@ -9,35 +9,61 @@ function Branch (Application, id, data)
 
     this.Application = Application;
   
-    this.id = id;
+    this.id     = id;
+    
     this.postId = data.PostId;
-    this.parentBranchId    = data.ParentBranchId;
-    this.post = this.Application.posts[this.postId];
-  
-    this.updateTime      =  data.UpdateTime;
-    this.updateTimeF     = formatDate(this.updateTime);
+    this.post   = this.Application.posts[this.postId];
+    
+    this.parentBranchId = data.ParentBranchId;
   
     this.branches = {};
     this.keys     = {};
     this.posts    = {};
     
     this.navGraph = null;
+
+    this.parseSubBranches = function ( branches )
+    { 
+        var i = 0;
+        
+        for ( id in branches )
+        {
+            if (this.branches[id] == undefined)
+            {
+                this.branches[id] = new Branch( this.Application, id, branches[id] );
+            }
+            else
+            {
+                this.branches[id].update( branches[id] );
+            }
+        }
+    };
     
-    (this.update = function (data) {
-        this.relevantWeight = data.RelevantWeight;
+    this.update = function (data) {
+        var i = 0;
+        this.postCount       = data.PostCount;
+        this.updateTime      = data.UpdateTime;
+        this.updateTimeF     = formatDate(data.UpdateTime);
+        this.relevantWeight  = data.RelevantWeight;
         
-        this.keysCount = data.KeyPostIds.length;
-        this.postsCount = data.PostCount;
+        this.isBush          = data.IsBush;
+        this.bushRelevantWeight = data.BushRelevantWeight;
         
+        this.keysCount  = data.KeyPostIds.length;
         this.keyPostIds = data.KeyPostIds;
         
         this.keys = {};
+        
         for ( i = this.keyPostIds.length; i--; )
         {
             this.keys[this.keyPostIds[i]] = Application.posts[this.keyPostIds[i]];
         }
         
-    }).call(this, data);
+        this.parseSubBranches ( data.Branches );
+        
+    }
+    
+    this.update(data);
   
 //  return this;
 }
@@ -48,29 +74,64 @@ Branch.prototype = {
     openFacade : function (View)
     {
         this.hideInnerKeys(View); 
-        this.removeAfter ( this.id );
+        
+        this.removeAfterBranches ( this.id );
+//        this.removeAfter ( this.id );
+        
+//        this.removeAfter ( this.id );
 //        this.expandBranches(View); 
-        this.loadChilds( View );        
+        this.loadChilds( View );
 //        this.expandKeys(View); 
     },
     closeFacade : function (View)
     {
         this.showInnerKeys(View); 
+        
+        this.removeAfterBranches ( this.id );
         this.removeAfter ( this.id );
     },
     prepareRender : function()
     {
         return true;
     },
-    render : function (el, tmpl, mode, parent)
+    render : function ( params )
     {
-        this.prepareRender ( );
-    
-        var View = this.renderSelf (el, tmpl, mode, parent);
+        this.prepareRender ();
         
-        this.drawNavGraph ( View );
+        var View = params.el;
+        
+        if (params.conditionKeys)
+        {
+            if ( this.keysCount )
+            {
+                View = this.renderSelf (params.el, params.tmpl, params.mode, params.parent);
+                this.drawNavGraph ( View );
+                this.attachBehavior ( View );
+            }
+        }
+        else
+        {
+            View = this.renderSelf (params.el, params.tmpl, params.mode, params.parent);
+            this.drawNavGraph ( View );
+            this.attachBehavior ( View );
+        }
 
-        this.attachBehavior ( View );
+        if ( params.conditionChilds )
+        {
+            for (id in this.branches)
+            {
+                this.branches[id].render({
+                    el     : View, 
+                    tmpl   : 'branch', 
+                    mode   : 'insertAfter',
+                    parent : this.id, 
+                    conditionChilds : params.conditionChilds,
+                    conditionKeys : params.conditionKeys
+                });
+            };
+            
+            $("article[data-parent='" + this.id + "']").addClass("lighter");
+        }
         
         return View;
     },
@@ -167,7 +228,7 @@ Branch.prototype = {
                     var curBranch = facade.Application.branches[id];
                     
                     facade.hideInnerKeys(View); 
-                    facade.removeAfter ( facade.id );
+                    facade.removeAfterBranches ( facade.id );
                     
                     var newView = curBranch.render(View, 'branch', 'insertAfter', facade.id).addClass("lighter");
                     newView.find("header").click();
@@ -182,6 +243,7 @@ Branch.prototype = {
     },
     showInnerKeys : function ( View )
     {
+        if (View == undefined) return false;
         View.find(".branch_keys").show();
     },
     expandKeys : function ( View )
@@ -204,16 +266,24 @@ Branch.prototype = {
     },
     expandPosts : function ( View )
     {
-        var branch = false;
-        for (i in this.posts)
+        var i, 
+            branch = false;
+        
+        console.log('all posts', this.posts);
+        
+        for ( i in this.posts )
         {
             branch = this.branchExist(i);
+            
+            console.log("this.posts[i]", i, this.posts[i], branch);
             if (!branch)
             {
+                console.log('post render');
                 this.posts[i].render(View, "key", "insertAfter", this.id);            
             }
             else
             {
+                console.log('branch render');
                 branch.render(View, 'branch', 'insertAfter', this.id).addClass("lighter");
             }
             branch = false;
@@ -223,29 +293,42 @@ Branch.prototype = {
     loadChilds : function ( View )
     {
         var facade = this;
-        this.Application.ajaxRequest('/Slice.json',
+        this.Application.ajaxRequest( '/Slice.json',
             function ( response ) {
                 
-                facade.removeAfter ( facade.id );
+                var newData = this.parseResponseData( response );
+
+                /*
+                 * убираем не непосредсвенных детей
+                 *  ** убирать посты свои смысла нет, новые только добавляются
+                 *  ** убирать детей веток надо - значит перебираем ветки
+                 * открыаываем посты 
+                 * если есть соотвествующий branch то 
+                 *  если он открыт то его обновляем, его наследников всех уровней удаляем, ключи показываем
+                 *  если нет то рисуем пост без внутренних частей (тут может быть фильтр)
+                 */
                 
-                var newData = this.parseResponseData(response);
-
-                for (var i = newData.posts.length; i--; )
+                for ( id in facade.branches )
+                {   
+                    var facadeView = $("article[data-id='" + facade.branches[id] + "']")
+                    facade.branches[id].closeFacade( facadeView );
+                }
+                
+                for ( var i = newData.posts.length; i--; )
                 {
-                    if (facade.Application.posts[newData.posts[i]].parentPostId == facade.postId)
+                    if ( facade.Application.posts[ newData.posts[ i ] ].parentPostId == facade.postId )
                     {
-                        facade.posts[newData.posts[i]]
-                        = facade.Application.posts[newData.posts[i]];
-
+                        facade.posts[ newData.posts[ i ] ]
+                            = facade.Application.posts[ newData.posts[ i ] ];
                     }
                 }
-
-                // Render
+//                
+//                // Render
                 facade.expandPosts( View );
             },
             function () {
 
-                facade.Application.msg("Count`t get post list for branch: " + facade.id);
+                facade.Application.msg( "Count`t get post list for branch: " + facade.id );
 
             },
             {
@@ -253,7 +336,7 @@ Branch.prototype = {
             }
         );        
     },    
-    branchExist : function (postId)
+    branchExist : function ( postId )
     {
         for (i in this.branches)
         {
@@ -265,15 +348,28 @@ Branch.prototype = {
         
         return false;
     },
-    expandBranches: function ( View )
+    expandBranches: function ( View, branches )
     {
-        for (i in this.branches)
+        for (i in branches)
         {
             // @render subbranch here
-            this.branches[i].render(View, 'branch', 'insertAfter', this.id).addClass("lighter");
+            branches[i].render(View, 'branch', 'insertAfter', this.id).addClass("lighter");
             
         };
 
+    },
+    removeAfterBranches : function ( parentId )
+    {
+        for ( id in this.Application.branches )
+        {
+            if (this.Application.branches[id].parentBranchId == parentId)
+            {   
+                this.removeAfterBranches( this.Application.branches[id].id );
+                this.removeAfter( this.Application.branches[id].id );
+                $("article[data-id='"+ this.Application.branches[id].id +"']").remove();
+            }
+            
+        }
     }
 }
 

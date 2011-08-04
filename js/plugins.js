@@ -35,8 +35,8 @@ function extend(Child, Parent) {
     Child.superclass = Parent.prototype;
 }
   
-  
-Array.prototype.filterByValue = function(fun /*, thisp*/)
+/*  
+Array.prototype.filterByValue = function(fun ) //, thisp
 {
     var len = this.length;
     if (typeof fun != "function")
@@ -56,7 +56,7 @@ Array.prototype.filterByValue = function(fun /*, thisp*/)
 
     return res;
 };
-  
+*/  
 function getById(element, index, array, sval)
 {
     return (element.id == sval);

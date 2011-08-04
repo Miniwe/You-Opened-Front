@@ -194,21 +194,29 @@ var Application = function ( opts )
     };
     
     /* 
-     * Отрисовка веток
+     * Отрисовка стартового набора веток
      *  @param branchesArray - массив веток которые необходимо отрисовать
      *  @param clearFlag - true=запускает предварительно очистку страницы
      */
     this.drawBranches = function ( brAr, clearFlag )
     {
-        var i;
+        var View, i;
         if ( clearFlag )
         {
             this.clearPage();
         }
         
+        
         for ( i = brAr.length; i--; )
         {
-            this.branches[brAr[i]].render($("#main-container"), 'branch', 'appendTo', 'main-container');
+            View = this.branches[brAr[i]].render({
+                el     : $("#main-container"), 
+                tmpl   : 'branch', 
+                mode   : 'appendTo',
+                parent : 'main-container',
+                conditionChilds : true,
+                conditionKeys : true
+            });
         }
         
     }
@@ -218,7 +226,7 @@ var Application = function ( opts )
      */
     this.clearPage = function ()
     {
-        $("#main-container").find("*").remove();
+        $("#main-container").find("article").remove();
     }
     /*
      * Загрузка страницы по умолчанию 
@@ -315,21 +323,12 @@ var Application = function ( opts )
                 {
                     this.branches[id].update( data.Branches[id] );
                 }
-
+                
                 newData.branches.push(id);
-            }
-            
-            /* для всех бранчей сдалать указатели на детей */
-            for ( id in this.branches)
-            {
-                var pid = this.branches[id].parentBranchId;
-                if (this.branches[pid])
-                {
-                    this.branches[pid].branches[id] = this.branches[id];
-                }
             }
         }
         
+        console.log("start branches", this.branches);
         
         return newData;
     };
