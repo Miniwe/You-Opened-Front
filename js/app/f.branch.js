@@ -77,7 +77,9 @@ Branch.prototype = {
     {
         this.hideInnerKeys(View); 
         
+        
         this.removeAfterBranches ( this.id );
+//        this.removeAfter ( this.id );
 //        this.removeAfter ( this.id );
         
 //        this.removeAfter ( this.id );

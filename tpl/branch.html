@@ -1,6 +1,15 @@
 <article data-id="${id}" data-parent="${parentViewId}" class="branch">
     <div class="inner">
         <div class="graphContainer"></div>
+        <div style="float: right; color: #fff;">
+            <span>Filter:</span>
+            <label>On<input type="radio" name="filter-${id}" value="On" checked="true" /></label>
+            <label>Off<input type="radio" name="filter-${id}" value="Off" /></label>
+            |
+            <span>Mode:</span>
+            <label>Flat<input type="radio" name="mode-${id}" value="plain" checked="true" /></label>
+            <label>Hierarhy<input type="radio" name="mode-${id}" value="hierarhy" /></label>
+        </div>
         <header>${id}<br />${post.id}: ${post.text}</header>
         <ul>
         <li>id: ${id}</li>

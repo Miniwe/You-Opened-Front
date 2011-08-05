@@ -21,6 +21,8 @@
   position: relative;
   vertical-align: middle;
   width: 0;
+  -webkit-box-shadow: inset 0px 0px 0px 1px #000;
+  background-color: #fff;
 }
 
 .arrow-n {
