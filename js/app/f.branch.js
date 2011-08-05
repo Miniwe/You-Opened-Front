@@ -31,11 +31,13 @@ function Branch (Application, id, data)
             if (this.branches[id] == undefined)
             {
                 this.branches[id] = new Branch( this.Application, id, branches[id] );
+                this.Application.branches[id] = this.branches[id];
             }
             else
             {
                 this.branches[id].update( branches[id] );
             }
+            
         }
     };
     
@@ -99,7 +101,7 @@ Branch.prototype = {
         this.prepareRender ();
         
         var View = params.el;
-        
+        console.log("params.el", params.el);
         if (params.conditionKeys)
         {
             if ( this.keysCount )
@@ -138,6 +140,13 @@ Branch.prototype = {
     attachBehavior : function ( View )
     {
         var facade = this;
+        var parentFacade = facade.Application.branches[facade.parentBranchId];
+            
+        View.hover(function( ){
+                parentFacade.navGraph.highlightBranch = facade.id;
+            }, function( ){
+                parentFacade.navGraph.highlightBranch = 0;
+        });
         
         View.find("header").click(function (){
             facade.openFacade( View );
@@ -220,6 +229,8 @@ Branch.prototype = {
         
         for (i in this.branches)
         {
+            if (!this.branches[i].relevantWeight) continue;
+            
             navData.push({
                 id     : this.branches[i].id,
                 weight : this.branches[i].relevantWeight,
@@ -230,7 +241,19 @@ Branch.prototype = {
                     facade.hideInnerKeys(View); 
                     facade.removeAfterBranches ( facade.id );
                     
-                    var newView = curBranch.render(View, 'branch', 'insertAfter', facade.id).addClass("lighter");
+                    console.log(id, facade.Application.branches, curBranch);
+                    console.log("View", View);
+                    
+//                    var newView = curBranch.render(View, 'branch', 'insertAfter', facade.id).addClass("lighter");
+                    var newView = curBranch.render({
+                        el     : View, 
+                        tmpl   : 'branch', 
+                        mode   : 'insertAfter',
+                        parent : facade.id, 
+                        conditionChilds : true,
+                        conditionKeys : true
+                    }).addClass("lighter");
+                    
                     newView.find("header").click();
                 }
             });

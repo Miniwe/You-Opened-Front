@@ -3,6 +3,7 @@ function NavGraph ( holder ) {
     
     this.activeBranch = undefined;
     this.hoverBranch  = undefined;
+    this.highlightBranch = undefined;
     this.parentBranch = {};
     this.branchesData = [];
     this.branchesWeightSumm = 0;
@@ -51,6 +52,7 @@ NavGraph.prototype = {
 
     },
     addData : function ( parentBranch, data ) {
+        console.log('next branch', parentBranch.id, parentBranch, data)
         this.parentBranch = parentBranch;
         this.branchesData = data;
         
@@ -59,6 +61,7 @@ NavGraph.prototype = {
             this.branchesWeightSumm += parseFloat(this.branchesData[i].weight);
         }
         
+//        this.branchesWeightSumm = parentBranch.weight;
         this.branchesWeightSummCoef = Math.PI * 2 / this.branchesWeightSumm;
     },
     draw : function ( ) {
@@ -82,9 +85,16 @@ NavGraph.prototype = {
             this.ctx.lineWidth = 2;this.ctx.stroke();
             this.hoverBranch = this.parentBranch;
         }
-        if (this.activeBranch)
+        
+        if (this.activeBranch && this.activeBranch.id == this.parentBranch.id)
         {
-            this.ctx.strokeStyle = "000";
+            this.ctx.strokeStyle = "#000";
+            this.ctx.lineWidth = 2; this.ctx.stroke();
+        }
+        
+        if (this.highlightBranch == this.parentBranch.id)
+        {
+            this.ctx.strokeStyle = "#f00";
             this.ctx.lineWidth = 2; this.ctx.stroke();
         }
         
@@ -107,6 +117,17 @@ NavGraph.prototype = {
                 this.ctx.strokeStyle = "#fff";
                 this.ctx.lineWidth = 2;this.ctx.stroke();
                 this.hoverBranch = this.branchesData[i];
+            }
+            
+            if (this.activeBranch && this.activeBranch.id == this.branchesData[i].id)
+            {
+                this.ctx.strokeStyle = "#000";
+                this.ctx.lineWidth = 2; this.ctx.stroke();
+            }
+            if (this.highlightBranch == this.branchesData[i].id)
+            {
+                this.ctx.strokeStyle = "#f00";
+                this.ctx.lineWidth = 2; this.ctx.stroke();
             }
             prevAngle += curAngle;
             

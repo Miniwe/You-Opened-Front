@@ -19,7 +19,7 @@ function Facade ()
     
     this.renderSelf = function (el, tmpl, mode, parent)
     {
-        
+        console.log("el", el);
         var View = $(document.body);
         
         this.parentViewId = parent;
