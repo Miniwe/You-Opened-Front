@@ -23,6 +23,8 @@ var Application = function ( opts )
     this.ajaxRequests = [];
     this.ajaxCount = 0;
     this.ajaxTimer = 0;
+    
+    this.activeBranch = 0;
    
     /*
      * @name Кеширование шаблонов 
@@ -237,6 +239,9 @@ var Application = function ( opts )
         
         this.ajaxRequest('/Slice.json'
         , function ( response ) {
+            
+            $("#params-container").show();
+            
             var newData = this.parseResponseData(response);
             
             Application.drawBranches(newData.branches, true);
@@ -245,11 +250,36 @@ var Application = function ( opts )
         , function (){
             console.log('loadIndexPage', 'request error');
         }
-        , {
-            query : "girls"
-        });
+        , 
+            Application.prepareParams( )
+        );
     }
     
+
+    /*
+     * Сборка параметров для запроса
+     */
+    this.prepareParams = function ( postId )
+    {
+        var params = {};
+
+        if (postId != undefined)
+        {
+            params.parentPostId = postId;
+        }
+        if ($("#query").val() != "" && $("#params-form [name=filter]:checked").val() == "On" )
+        {
+            params.query = $("#query").val();
+        }
+        
+        if ($("#depth").val() > 1 && $("#params-form [name=mode]:checked").val() == "plain" )
+        {
+            params.depth = $("#depth").val();
+        }
+        
+        return params;
+    }
+        
     /*
      * Загрузка страницы ошибки по умолчанию 
      */
@@ -328,8 +358,6 @@ var Application = function ( opts )
             }
         }
         
-        console.log("start branches", this.branches);
-        
         return newData;
     };
     
@@ -386,6 +414,40 @@ var Application = function ( opts )
     this.removeReplyForm  = function () 
     {
        $(".reply").hide().remove();
+    };
+    
+    this.updateView  = function () 
+    {
+        if (this.activeBranch)
+        {
+            var tmpView = $("article[data-id="+ this.activeBranch.id +"]");
+            
+            if (tmpView.offset().top+tmpView.outerHeight(true) < $(document.body).scrollTop())
+            {
+                tmpView.find(".graphContainer")
+//                .css({"margin-left":"0px", "top":"0px" })
+                .addClass("active")
+//                .animate({"margin-left":"100px", "top":"10px" })
+                ;
+            }
+            else
+            {
+                tmpView.find(".graphContainer")
+//                .css({"margin-left":"0px", "top":"0px" })
+                .removeClass("active");
+            }
+            
+            var parent = tmpView.attr("data-parent");
+            var nextSiblingView = tmpView.nextAll("[data-parent=" + parent + "]").first();
+            if (nextSiblingView.length > 0 && ( nextSiblingView.offset().top < $(document.body).scrollTop() ) )
+            {
+                tmpView.find(".graphContainer")
+//                .css({"margin-left":"0px", "top":"0px" })
+                .removeClass("active");
+            }
+                
+                
+        }
     };
     
     return this;

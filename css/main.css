@@ -110,11 +110,16 @@ article header:hover {
 .graphContainer {
     width: 80px;
     height: 80px;
-    float: right;
 /*    background-color: #ffffff;*/
 /*    border: 1px inset #d7acc7;*/
         
 }
+.graphContainer.active{
+    position: fixed;
+    margin-left:100px;
+    top:10px;
+}
+
 
 .collapse_control {
     padding: 0;
@@ -141,4 +146,22 @@ a.show_reply {
 
 .show_reply span[title="Cancel reply"], .show_reply.opened span[title="Reply"]{
     display: none;
+}
+
+#params-container {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    border:1px solid #eeeeee;
+    padding: 10px;
+    width: 230px;
+    line-height: 2em;
+    background-color: #fff;
+    -webkit-box-shadow: inset 0px 3px 3px #eee, 3px 3px 6px #ddd;
+}
+
+#params-form {
+    border:1px solid #e6e6e6;
+    background-color: #eeeeee;
+    padding: 10px;
 }

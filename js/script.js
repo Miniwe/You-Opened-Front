@@ -4,11 +4,11 @@
 
 (function($) {
   
+    var app;
     // * * * global functions * * *
     // * * * same as $(document).ready(); * * *
     $(function() {
-        
-        Application({
+        app = Application({
             path : "http://youopened.com",
             templates : [
                 "reply",
@@ -18,12 +18,15 @@
             ]
             ,
            sessionkey : $.cookie("yo_sessionkey")?$.cookie("yo_sessionkey"):""
-        }).run();
+        })
+        
+        app.run();
     
         // * * * jQuery function process place HERE * * *     
     });
     
     $(window).bind("scroll", function() {
+        app.updateView();
     });      
   
     $(window).bind("load", function() { 

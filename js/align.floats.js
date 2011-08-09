@@ -1,4 +1,4 @@
-(function($) {
+ (function($) {
           
     function alignArticles ( )
     {
@@ -74,59 +74,55 @@
     }
             
             
-    var getPrevHeights = function (id)
-    {
-        var 
-        el = null,
-        result = {
-            list     : [],
-            offset : 0
-        };
-        if (getPrevHeights.cache[id] == undefined)
-        {
-            $.each(
-                $("article[data-id=" + id + "]").prevAll("article"),
-                function (i, el) {
-                    result.list.push($(el).attr("data-id"));
-                    result.offset += $(el).outerHeight(/*true*/);
-                }
-                );
-                    
-            getPrevHeights.cache[id] = result;
-        }
-                
-        return getPrevHeights.cache[id];
-    } 
+    
             
-    getPrevHeights.cache = {};
-            
-    var getParentsList = function (id)
-    {
-        var 
-        el = null,
-        result = {
-            list     : [],
-            offset : 0
-        };
-        if (getParentsList.cache[id] == undefined)
-        {
-            result.list.push(id);
-                    
-            el = $("article[data-id=" + $("article[data-id=" + id + "]").attr("data-parent") + "]");
-            while ( el.length )
+            function getPrevHeights (id)
             {
-                result.list.push($(el).attr("data-id"));
-                result.offset += el.outerHeight(true);
-                el = $("article[data-id=" + el.attr("data-parent") + "]");
-            }
-                    
-            getParentsList.cache[id] = result;
-        }
+                var 
+                    el = null,
+                    result = {
+                    list     : [],
+                    offset : 0
+                };
                 
-        return getParentsList.cache[id];
-    } 
+                    $.each(
+                        $("article[data-id=" + id + "]").prevAll("article"),
+                        function (i, el) {
+                            result.list.push($(el).attr("data-id"));
+                            result.offset += $(el).outerHeight(/*true*/);
+                        }
+                    );
+                    
+                
+                return result;
+            } 
             
-    getParentsList.cache = {};
+            function getParentsList (id)
+            {
+                var 
+                    el = null,
+                    result = {
+                    list     : [],
+                    offset : 0
+                };
+                
+                    result.list.push(id);
+                    
+                    el = $("article[data-id=" + $("article[data-id=" + id + "]").attr("data-parent") + "]");
+                    
+                    while ( el.length )
+                    {
+                        result.list.push($(el).attr("data-id"));
+                        
+                        result.offset += el.outerHeight(true);
+                        
+                        el = $("article[data-id=" + el.attr("data-parent") + "]");
+                        
+                    }
+                    
+                    return  result;
+            } 
+             
             
     $(function() {
         $("article header").live("click", function(){
@@ -135,6 +131,7 @@
                 curArticle = $(this).parents("article");
                    
             $(".replacement").remove();
+            
             $("article")
             .css({
                 "margin-top": "none", 
@@ -144,9 +141,6 @@
             .removeClass("float");
                  
             curArticle.addClass("active");
-//                
-//            console.log("header click", /*this, curArticle, */curArticle.attr("data-id"),
-//                    getPrevHeights(curArticle.attr("data-id")).offset, getParentsList(curArticle.attr("data-id")).offset);
             
             $(document.body).animate({
                 scrollTop: getPrevHeights(curArticle.attr("data-id")).offset - getParentsList(curArticle.attr("data-id")).offset
@@ -160,6 +154,7 @@
     });
 
     $(window).bind("load", function() {
+        /*
         var cnt = 0;
         $.each($("article"), function (i,el){
             $(el).css({
@@ -167,6 +162,7 @@
                 });
             cnt ++;
         });
+        */
     });
           
     $(window).bind("scroll", function() {

@@ -21,6 +21,12 @@ function Branch (Application, id, data)
     this.posts    = {};
     
     this.navGraph = null;
+    
+    this.marker = {
+        parentPostId: (data.Marker.parentPostId != undefined) ? data.Marker.parentPostId : this.postId,
+        query: (data.Marker.query != undefined) ? data.Marker.query : "",
+        depth : (data.Marker.depth != undefined) ? data.Marker.depth : 1
+    };
 
     this.parseSubBranches = function ( branches )
     { 
@@ -53,6 +59,12 @@ function Branch (Application, id, data)
         
         this.keysCount  = data.KeyPostIds.length;
         this.keyPostIds = data.KeyPostIds;
+
+        this.marker = {
+            parentPostId: (data.Marker.parentPostId != undefined) ? data.Marker.parentPostId : this.postId,
+            query: (data.Marker.query != undefined) ? data.Marker.query : "",
+            depth : (data.Marker.depth != undefined) ? data.Marker.depth : 1
+        };
         
         this.keys = {};
         
@@ -75,24 +87,31 @@ extend(Branch, Facade);
 Branch.prototype = {
     openFacade : function (View)
     {
+        View.find(".collapse_control").addClass("opened");
         this.hideInnerKeys(View); 
         
+        if (this.Application.activeBranch) 
+        {
+            $("article[data-id="+ this.Application.activeBranch.id +"]").find(".graphContainer").removeClass("active");
+
+        }
+        
+        this.Application.activeBranch = this;
         
         this.removeAfterBranches ( this.id );
-//        this.removeAfter ( this.id );
-//        this.removeAfter ( this.id );
-        
-//        this.removeAfter ( this.id );
-//        this.expandBranches(View); 
         this.loadChilds( View );
-//        this.expandKeys(View); 
     },
     closeFacade : function (View)
     {
+        View.find(".collapse_control").removeClass("opened");
+        
         this.showInnerKeys(View); 
         
         this.removeAfterBranches ( this.id );
-        this.removeAfter ( this.id );
+        
+        this.removeAfterPosts ( this.id );
+        
+        
     },
     prepareRender : function()
     {
@@ -103,7 +122,6 @@ Branch.prototype = {
         this.prepareRender ();
         
         var View = params.el;
-        console.log("params.el", params.el);
         if (params.conditionKeys)
         {
             if ( this.keysCount )
@@ -143,12 +161,15 @@ Branch.prototype = {
     {
         var facade = this;
         var parentFacade = facade.Application.branches[facade.parentBranchId];
+        if (parentFacade && parentFacade.navGraph != undefined)
+        {
+            View.hover(function( ){
+                    parentFacade.navGraph.highlightBranch = facade.id;
+                }, function( ){
+                    parentFacade.navGraph.highlightBranch = 0;
+            });
             
-        View.hover(function( ){
-                parentFacade.navGraph.highlightBranch = facade.id;
-            }, function( ){
-                parentFacade.navGraph.highlightBranch = 0;
-        });
+        }
         
         View.find("header").click(function (){
             facade.openFacade( View );
@@ -243,8 +264,6 @@ Branch.prototype = {
                     facade.hideInnerKeys(View); 
                     facade.removeAfterBranches ( facade.id );
                     
-                    console.log(id, facade.Application.branches, curBranch);
-                    console.log("View", View);
                     
 //                    var newView = curBranch.render(View, 'branch', 'insertAfter', facade.id).addClass("lighter");
                     var newView = curBranch.render({
@@ -289,85 +308,89 @@ Branch.prototype = {
         };
 
     },
+    expandPost : function ( post, View )
+    {
+        var branch = this.branchExist(post.id);
+            
+        if (!branch)
+        {
+            post.render(View, "key", "insertAfter", this.id);            
+        }
+        else
+        {
+            branch.render({
+                el     : View, 
+                tmpl   : 'branch', 
+                mode   : 'insertAfter',
+                parent : this.id, 
+                conditionChilds : true,
+                conditionKeys : false
+            }).addClass("lighter");
+        }
+        branch = false;        
+    },
     expandPosts : function ( View )
     {
-        var i, 
-            branch = false;
-        
-        console.log('all posts', this.posts);
-        
-        for ( i in this.posts )
-        {
-            branch = this.branchExist(i);
+        var id;
             
-            console.log("this.posts[i]", i, this.posts[i], branch);
-            if (!branch)
-            {
-                console.log('post render');
-                this.posts[i].render(View, "key", "insertAfter", this.id);            
-            }
-            else
-            {
-                console.log('branch render');
-                branch.render(View, 'branch', 'insertAfter', this.id).addClass("lighter");
-            }
-            branch = false;
+        for ( id in this.Application.posts )
+        {
+            if ( this.Application.posts[id].parentPostId != this.postId ) continue;
+      
+            this.expandPost(this.Application.posts[id], View);
+            
         };
 
     },
     loadChilds : function ( View )
     {
-        var facade = this;
+        var facade = this,
+            id = 0;
+        
         this.Application.ajaxRequest( '/Slice.json',
             function ( response ) {
                 
+                facade.removeAfterBranches ( facade.id );
+
+                facade.removeAfterPosts ( facade.id );    
+                
                 var newData = this.parseResponseData( response );
 
-                /*
-                 * убираем не непосредсвенных детей
-                 *  ** убирать посты свои смысла нет, новые только добавляются
-                 *  ** убирать детей веток надо - значит перебираем ветки
-                 * открыаываем посты 
-                 * если есть соотвествующий branch то 
-                 *  если он открыт то его обновляем, его наследников всех уровней удаляем, ключи показываем
-                 *  если нет то рисуем пост без внутренних частей (тут может быть фильтр)
-                 */
-                
-                for ( id in facade.branches )
-                {   
-                    var facadeView = $("article[data-id='" + facade.branches[id] + "']")
-                    facade.branches[id].closeFacade( facadeView );
-                }
-                
-                for ( var i = newData.posts.length; i--; )
+                if ( $("#params-form [name=mode]:checked").val() == "plain" )
                 {
-                    if ( facade.Application.posts[ newData.posts[ i ] ].parentPostId == facade.postId )
+                    for ( var i = newData.posts.length; i--; )
                     {
-                        facade.posts[ newData.posts[ i ] ]
-                            = facade.Application.posts[ newData.posts[ i ] ];
+                        if (facade.Application.posts[ newData.posts[ i ] ].id == facade.postId) { continue };
+                            
+                        facade.Application.posts[ newData.posts[ i ] ].render(View, "key", "insertAfter", facade.id);
                     }
                 }
-//                
-//                // Render
-                facade.expandPosts( View );
+                else {
+                    for ( var i = newData.posts.length; i--; )
+                    {
+                        if ( facade.Application.posts[ newData.posts[ i ] ].parentPostId == facade.postId )
+                        {
+                            facade.expandPost ( facade.Application.posts[ newData.posts[ i ] ], View );
+                        }
+                    }
+                }
+
             },
             function () {
 
                 facade.Application.msg( "Count`t get post list for branch: " + facade.id );
 
             },
-            {
-                parentPostId  : this.postId
-            }
+            facade.Application.prepareParams( this.postId )
         );        
     },    
     branchExist : function ( postId )
     {
-        for (i in this.branches)
+        for (i in this.Application.branches)
         {
-            if (this.branches[i].postId == postId)
+            if (this.Application.branches[i].postId == postId)
             {
-                return this.branches[i];
+                return this.Application.branches[i];
             }
         }
         
@@ -385,16 +408,24 @@ Branch.prototype = {
     },
     removeAfterBranches : function ( parentId )
     {
+        
+        var id = 0;
+        
         for ( id in this.Application.branches )
         {
-            if (this.Application.branches[id].parentBranchId == parentId)
+                
+            if ( this.Application.branches[id].parentBranchId == parentId )
             {   
+                
                 this.removeAfterBranches( this.Application.branches[id].id );
-                this.removeAfter( this.Application.branches[id].id );
                 $("article[data-id='"+ this.Application.branches[id].id +"']").remove();
             }
             
         }
+    },
+    removeAfterPosts : function ( parentId )
+    {
+        $("article[data-parent='"+ parentId +"']").remove();
     }
 }
 

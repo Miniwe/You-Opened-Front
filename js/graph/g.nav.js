@@ -52,7 +52,6 @@ NavGraph.prototype = {
 
     },
     addData : function ( parentBranch, data ) {
-        console.log('next branch', parentBranch.id, parentBranch, data)
         this.parentBranch = parentBranch;
         this.branchesData = data;
         
@@ -61,7 +60,7 @@ NavGraph.prototype = {
             this.branchesWeightSumm += parseFloat(this.branchesData[i].weight);
         }
         
-//        this.branchesWeightSumm = parentBranch.weight;
+        this.branchesWeightSumm = parentBranch.weight;
         this.branchesWeightSummCoef = Math.PI * 2 / this.branchesWeightSumm;
     },
     draw : function ( ) {

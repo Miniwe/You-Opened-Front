@@ -39,7 +39,6 @@ function GraphArea( holder )
     var drawGraph  = [];
 
     this.clear = function () {
-//        console.log('clear');
         this.ctx.clearRect(0,0, this.width, this.height);
 	this.ctx.beginPath();
     }; // /clear
