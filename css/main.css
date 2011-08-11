@@ -34,7 +34,7 @@ body {
 #main-container {
     width: 60%;
     margin: 0 auto;
-    padding-bottom: 10%;
+    padding-bottom: 100%;
 }
 
 article {
@@ -62,7 +62,7 @@ article.branch ul.branch_keys li {
 }
 
 article.branch.lighter{
-    background-color: #d7acc7;
+/*    background-color: #d7acc7;*/
 }
 
 article.key {
@@ -75,8 +75,9 @@ article.post {
     outline: 1px solid #eeeeee;
 }
 
-.active {
+article.active {
     /*          outline: 1px solid red;*/
+    background-color: #B58AFF;
 }
 
 .float {
@@ -164,4 +165,12 @@ a.show_reply {
     border:1px solid #e6e6e6;
     background-color: #eeeeee;
     padding: 10px;
+}
+
+.lighter canvas{
+/*    display: none;    */
+}
+
+.active.lighter canvas{
+/*    display: block;    */
 }

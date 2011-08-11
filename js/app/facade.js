@@ -6,6 +6,12 @@
 function Facade ()
 {
     
+    
+    this.removeAfterPosts = function ( parentId )
+    {
+        $("article[data-parent='"+ parentId +"']").remove();
+    };
+    
     this.removeAfter = function ( parentId )
     {
         

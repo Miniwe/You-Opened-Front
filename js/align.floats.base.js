@@ -1,5 +1,4 @@
-/*
- *  (function($) {
+ (function($) {
           
     function alignArticles ( )
     {
@@ -91,7 +90,7 @@
                         $("article[data-id=" + id + "]").prevAll("article"),
                         function (i, el) {
                             result.list.push($(el).attr("data-id"));
-                            result.offset += $(el).outerHeight(/*true*-/);
+                            result.offset += $(el).outerHeight(/*true*/);
                         }
                     );
                     
@@ -155,80 +154,21 @@
 
         });
     });
-    
+
+    $(window).bind("load", function() {
+        /*
+        var cnt = 0;
+        $.each($("article"), function (i,el){
+            $(el).css({
+                "z-index": 1000 - cnt
+                });
+            cnt ++;
+        }); 
+        */
+    });
+          
     $(window).bind("scroll", function() {
         alignArticles( );
     });
           
-})(jQuery);
-*/
-(function($) {
-    
-    function alignArticles( sT )
-    {
-        var 
-            curArticle = $("article.active");
-                    
-        if ( !curArticle.length )
-        {
-            return false;
-        }
-        var 
-            oT = curArticle.offset().top;
-        
-        console.log(oT, sT);
-        if ( oT < sT)
-        {
-            console.log('1');
-            curArticle.
-                    addClass('float');
-
-            if ( curArticle.next(".replacement").length < 1)
-            {
-                console.log('3');
-                curArticle
-                    .after('<div class="replacement" \n\
-                        style="height:' + curArticle .outerHeight(true) + 'px">\n\
-                   </div>');
-            }
-        }
-        else
-        {
-            console.log('2');
-            curArticle.
-                    removeClass('float');
-            $(".replacement").remove();
-        }
-
-    }
-    
-    $(function() {
-        $("article header").live("click", function(){
-            var 
-                sT = $(document.body).scrollTop(),
-                curArticle = $(this).parents("article"),
-                id = curArticle.attr("data-id");
-                   
-            $("article")
-                .removeClass("active")
-                .removeClass("float")
-                .css({ "top": "none" });
-                 
-            curArticle.addClass("active");
-            
-            $(document.body).animate({
-                scrollTop: curArticle.offset().top
-            }, 
-            function(){
-                alignArticles( sT );
-            }
-            );
-
-        });
-    });
-    
-    $(window).bind("scroll", function() {
-        alignArticles( $(document.body).scrollTop() );
-    });
-                    
 })(jQuery);

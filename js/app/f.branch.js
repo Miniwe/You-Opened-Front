@@ -127,14 +127,20 @@ Branch.prototype = {
             if ( this.keysCount )
             {
                 View = this.renderSelf (params.el, params.tmpl, params.mode, params.parent);
-                this.drawNavGraph ( View );
+                if ( params.conditionNavigation )
+                {
+                    this.loadNavGraphData ( View );
+                }
                 this.attachBehavior ( View );
             }
         }
         else
         {
             View = this.renderSelf (params.el, params.tmpl, params.mode, params.parent);
-            this.drawNavGraph ( View );
+            if ( params.conditionNavigation )
+            {
+                this.loadNavGraphData ( View );
+            }
             this.attachBehavior ( View );
         }
 
@@ -215,6 +221,31 @@ Branch.prototype = {
         
         
     },
+    loadNavGraphData : function ( View )
+    {
+        var facade = this,
+            id = 0;
+        
+        this.Application.ajaxRequest( '/Slice.json',
+            function ( response ) {
+                var newData = this.parseResponseData( response );
+                
+                /*
+                 * идем по постам
+                 * собираем в нужный массив
+                 * 
+                 */
+                
+            },
+            function () {
+                facade.Application.msg( "Count`t get nav graph data for branch: " + facade.id );
+            },
+            {
+                parentPostId : facade.postId,
+                depth : 2
+            }
+        );        
+    },
     drawNavGraph : function ( View )
     {
       var facade = this;
@@ -235,6 +266,7 @@ Branch.prototype = {
      this.navGraph.init();
      this.navGraph.addData({
         id     : this.id,
+        postCount : this.postCount,
         weight : this.relevantWeight,
         click  : function ( id ) {
             View.find("header").click();
@@ -256,6 +288,7 @@ Branch.prototype = {
             
             navData.push({
                 id     : this.branches[i].id,
+                postCount : this.branches[i].postCount,
                 weight : this.branches[i].relevantWeight,
                 click  : function( id ) {
                     
@@ -295,14 +328,24 @@ Branch.prototype = {
         var branch = false;
         for (i in this.keys)
         {
-            branch = this.branchExist(i);
+            branch = this.Application.branchExist(i);
             if (!branch)
             {
-                this.keys[i].render(View, "key", "insertAfter", this.id);            
+                this.keys[i].render({
+                    el: View, 
+                    tmpl: "key", 
+                    mode :"insertAfter",
+                    parent: this.id
+            }   );            
             }
             else
             {
-                branch.render(View, 'branch', 'insertAfter', this.id).addClass("lighter");
+                branch.render({
+                    el     : View, 
+                    tmpl   : 'branch', 
+                    mode   : 'insertAfter',
+                    parent : this.id
+                }).addClass("lighter");
             }
             branch = false;
         };
@@ -310,11 +353,16 @@ Branch.prototype = {
     },
     expandPost : function ( post, View )
     {
-        var branch = this.branchExist(post.id);
+        var branch = this.Application.branchExist(post.id);
             
         if (!branch)
         {
-            post.render(View, "key", "insertAfter", this.id);            
+            post.render({
+                el: View, 
+                tmpl: "key", 
+                mode :"insertAfter",
+                parent: this.id
+            });            
         }
         else
         {
@@ -362,7 +410,12 @@ Branch.prototype = {
                     {
                         if (facade.Application.posts[ newData.posts[ i ] ].id == facade.postId) { continue };
                             
-                        facade.Application.posts[ newData.posts[ i ] ].render(View, "key", "insertAfter", facade.id);
+                        facade.Application.posts[ newData.posts[ i ] ].render({
+                            el: View, 
+                            tmpl: "key", 
+                            mode :"insertAfter",
+                            parent: facade.id
+                        });
                     }
                 }
                 else {
@@ -384,24 +437,17 @@ Branch.prototype = {
             facade.Application.prepareParams( this.postId )
         );        
     },    
-    branchExist : function ( postId )
-    {
-        for (i in this.Application.branches)
-        {
-            if (this.Application.branches[i].postId == postId)
-            {
-                return this.Application.branches[i];
-            }
-        }
-        
-        return false;
-    },
     expandBranches: function ( View, branches )
     {
         for (i in branches)
         {
             // @render subbranch here
-            branches[i].render(View, 'branch', 'insertAfter', this.id).addClass("lighter");
+            branches[i].render({
+                el: View, 
+                tmpl: "branch", 
+                mode :"insertAfter",
+                parent: this.id
+            }).addClass("lighter");
             
         };
 
@@ -422,10 +468,6 @@ Branch.prototype = {
             }
             
         }
-    },
-    removeAfterPosts : function ( parentId )
-    {
-        $("article[data-parent='"+ parentId +"']").remove();
     }
 }
 

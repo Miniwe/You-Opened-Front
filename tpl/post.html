@@ -1,5 +1,5 @@
 <article id="post-${id}" data-id="${id}" data-parent="${parentViewId}" class="post">
-    <div>
+    <div class="inner">
         <header>${id}: ${text}</header>
         <ul>
         <li>create date:${createTimeF}</li>
@@ -7,5 +7,9 @@
         <li>zIndex: ${zIndex}</li>
         <li>parent: ${parentViewId}</li>
         </ul>
+        <a href="#show_reply" class="show_reply" style="color: #000;">
+            <span title="Reply">Reply</span>
+            <span title="Cancel reply">Cancel reply</span>
+        </a>
     </div>
 </article>
