@@ -29,6 +29,7 @@ extend(Post, Facade);
 Post.prototype = {
     openFacade : function ( View )
     {
+        window.location = "#post-"+this.id;
         this.loadChilds( View );        
     },
     prepareRender : function()
@@ -51,6 +52,21 @@ Post.prototype = {
         
         View.find("header").click(function (){
             facade.openFacade( View );
+        });
+        
+        View.find(".gotobranch").click(function (){
+            var go_params = $(this).attr("data-ref").match(/\#[a-z]+\-[a-w0-9_]+/g); 
+            var parent_id = $(this).parents('article').attr("data-parent");
+            var branch_id = go_params[0].split("-")[1];
+            var post_id = go_params[1].split("-")[1];
+            
+            facade.Application.branches[ parent_id ].closeFacade( );
+            
+            facade.Application.branches[ branch_id ].openFacade( );
+            
+            facade.openFacade(View);
+            
+            return false;
         });
         
         View.find(".show_reply").click(function(){

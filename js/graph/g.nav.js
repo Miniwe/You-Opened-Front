@@ -145,15 +145,35 @@ NavGraph.prototype = {
             prevAngle += curAngle;
             
         }
+        if (this.activeBranch)
+        {
+            this.drawTriControl( );
+        }
         
     },
-    startGraph : function ()
+    drawTriControl : function ( )
+    {
+        var width = 30,
+            height = 20,
+            padding = 10;
+        this.ctx.beginPath();
+        this.ctx.moveTo((this.width - width)/2 + width/2, this.height - padding);	
+        this.ctx.lineTo((this.width - width)/2 - width/2 + width/2, this.height - padding - height);	
+        this.ctx.lineTo((this.width - width)/2 + width/2 + width/2, this.height - padding - height);	
+        this.ctx.lineTo((this.width - width)/2 + width/2, this.height - padding);	
+        this.ctx.closePath();      
+        
+        this.ctx.fillStyle   = "444ff4"; this.ctx.fill();
+        this.ctx.strokeStyle = "#8ff888";
+        this.ctx.lineWidth = 2; this.ctx.stroke();        
+    },
+    startGraph : function ( )
     {
 //        this.subscribe('userEvents', this.checkMousePos);
 //        this.subscribe('gameLogic',  this.resetTop);
-        this.subscribe('drawGraph',  this.draw);
+        this.subscribe( 'drawGraph',  this.draw );
     },
-    stopGraph : function ()
+    stopGraph : function ( )
     {
 //        this.unsubscribe('userEvents', this.checkMousePos);
 //        this.unsubscribe('gameLogic',  this.changeOffset);

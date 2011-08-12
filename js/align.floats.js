@@ -176,28 +176,30 @@
         var 
             oT = curArticle.offset().top;
         
-        console.log(oT, sT);
+//        console.log(oT, sT);
         if ( oT < sT)
         {
-            console.log('1');
+//            console.log('1');
             curArticle.
                     addClass('float');
-
-            if ( curArticle.next(".replacement").length < 1)
-            {
-                console.log('3');
-                curArticle
-                    .after('<div class="replacement" \n\
-                        style="height:' + curArticle .outerHeight(true) + 'px">\n\
-                   </div>');
-            }
         }
         else
         {
-            console.log('2');
+//            console.log('2');
             curArticle.
                     removeClass('float');
-            $(".replacement").remove();
+        }
+        
+        if (curArticle.hasClass('float'))
+        {
+            curArticle.next(".replacement").remove();
+        }
+        else    
+        {
+            curArticle
+                .after('<div class="replacement" \n\
+                    style="height:' + curArticle .outerHeight(true) + 'px">\n\
+               </div>');
         }
 
     }
@@ -212,7 +214,7 @@
             $("article")
                 .removeClass("active")
                 .removeClass("float")
-                .css({ "top": "none" });
+                .css({"top": "none"});
                  
             curArticle.addClass("active");
             

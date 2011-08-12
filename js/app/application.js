@@ -216,8 +216,8 @@ var Application = function ( opts )
                 tmpl   : 'branch', 
                 mode   : 'appendTo',
                 parent : 'main-container',
-                conditionChilds : true,
-                conditionKeys : true
+                conditionChilds : false,
+                conditionKeys : false
             });
         }
         
@@ -235,11 +235,11 @@ var Application = function ( opts )
      */
     this.loadIndexPage = function ( )
     {
+        
         var Application = this;
         
         this.ajaxRequest('/Slice.json'
         , function ( response ) {
-            
             $("#params-container").show();
             
             var newData = this.parseResponseData(response);
@@ -449,7 +449,20 @@ var Application = function ( opts )
                 
         }
     };
-    
+
+    this.branchExist = function ( postId )
+    {
+        for (i in this.Application.branches)
+        {
+            if (this.Application.branches[i].postId == postId)
+            {
+                return this.Application.branches[i];
+            }
+        }
+        
+        return false;
+    };
+
     return this;
     
 };

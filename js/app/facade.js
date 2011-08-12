@@ -56,9 +56,11 @@ function Facade ()
             default:
                 this.Application.msg("Incorrect render mode for " + tmpl);
         }
+        
         View.css({
            "z-index": this.zIndex 
         });
+        
         return View;
     };
     

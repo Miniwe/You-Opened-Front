@@ -1,8 +1,6 @@
 <article data-id="${id}" data-parent="${parentViewId}" class="branch">
     <div class="inner">
-        <div style="float: right;border:1pxsolid red; width:80px; height:80px;"><div class="graphContainer"></div></div>
-        <div style="float: right; color: #fff;">
-        </div>
+        <div style="float: right; width:80px; height:110px;"><div class="graphContainer"></div></div>
         <header>${id}<br />${post.id}: ${post.text}</header>
         <ul>
         <li>id: ${id}</li>
@@ -16,6 +14,9 @@
             <li>${id}: ${text}</li>
         {{/each}}
         </ul>
+        <div style="float: right;">
+            <a href="#prevkey" style="color: #fff;">prev key</a> | current key | <a href="#nexkey" style="color: #fff;">next key</a>
+        </div>
         <a href="#show_reply" class="show_reply">
             <span title="Reply">Reply</span>
             <span title="Cancel reply">Cancel reply</span>

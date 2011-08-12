@@ -87,6 +87,8 @@ extend(Branch, Facade);
 Branch.prototype = {
     openFacade : function (View)
     {
+        View = (View)?View:$("article[data-id="+ this.id +"]");
+        
         View.find(".collapse_control").addClass("opened");
         this.hideInnerKeys(View); 
         
@@ -99,13 +101,17 @@ Branch.prototype = {
         this.Application.activeBranch = this;
         
         this.removeAfterBranches ( this.id );
-        this.loadChilds( View );
-    },
-    closeFacade : function (View)
-    {
-        View.find(".collapse_control").removeClass("opened");
+        this.loadChilds(View);
         
-        this.showInnerKeys(View); 
+        
+    },
+    closeFacade : function ( View )
+    {
+        View = (View)?View:$("article[data-id="+ this.id +"]");
+        
+        View.find( ".collapse_control" ).removeClass( "opened" );
+        
+        this.showInnerKeys( View ); 
         
         this.removeAfterBranches ( this.id );
         
@@ -127,22 +133,16 @@ Branch.prototype = {
             if ( this.keysCount )
             {
                 View = this.renderSelf (params.el, params.tmpl, params.mode, params.parent);
-                if ( params.conditionNavigation )
-                {
-                    this.loadNavGraphData ( View );
-                }
                 this.attachBehavior ( View );
             }
         }
         else
         {
             View = this.renderSelf (params.el, params.tmpl, params.mode, params.parent);
-            if ( params.conditionNavigation )
-            {
-                this.loadNavGraphData ( View );
-            }
             this.attachBehavior ( View );
         }
+
+        this.drawNavGraph( View );
 
         if ( params.conditionChilds )
         {
@@ -248,6 +248,7 @@ Branch.prototype = {
     },
     drawNavGraph : function ( View )
     {
+        console.log('draw ' + this.id );
       var facade = this;
       var navGraph = View.find(".graphContainer");
       navGraph.attr("id", "navCont" + this.id)
@@ -336,7 +337,7 @@ Branch.prototype = {
                     tmpl: "key", 
                     mode :"insertAfter",
                     parent: this.id
-            }   );            
+            } );            
             }
             else
             {
@@ -392,6 +393,7 @@ Branch.prototype = {
     },
     loadChilds : function ( View )
     {
+        console.log('start load' + this.id);
         var facade = this,
             id = 0;
         
@@ -408,7 +410,7 @@ Branch.prototype = {
                 {
                     for ( var i = newData.posts.length; i--; )
                     {
-                        if (facade.Application.posts[ newData.posts[ i ] ].id == facade.postId) { continue };
+                        if (facade.Application.posts[ newData.posts[ i ] ].id == facade.postId) {continue};
                             
                         facade.Application.posts[ newData.posts[ i ] ].render({
                             el: View, 
@@ -427,7 +429,7 @@ Branch.prototype = {
                         }
                     }
                 }
-
+                
             },
             function () {
 
