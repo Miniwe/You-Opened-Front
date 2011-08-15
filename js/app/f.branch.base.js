@@ -28,8 +28,6 @@ function Branch (Application, id, data)
         depth : (data.Marker.depth != undefined) ? data.Marker.depth : 1
     };
 
-    this.View = $(document.body);
-    
     this.parseSubBranches = function ( branches )
     { 
         var i = 0;
@@ -75,8 +73,8 @@ function Branch (Application, id, data)
             this.keys[this.keyPostIds[i]] = Application.posts[this.keyPostIds[i]];
         }
         
-        this.branches = {};
         this.parseSubBranches ( data.Branches );
+        
     }
     
     this.update(data);
@@ -87,61 +85,119 @@ function Branch (Application, id, data)
 extend(Branch, Facade);
 
 Branch.prototype = {
-    openFacade : function ( )
+    openFacade : function (View)
     {
-        this.View.find( ".collapse_control" ).addClass( "opened" );
+        View = (View)?View:$("article[data-id="+ this.id +"]");
         
-        this.hideInnerKeys( this.View ); 
+        View.find(".collapse_control").addClass("opened");
+        this.hideInnerKeys(View); 
         
-        this.removeAfterBranches( this.id );
+        if (this.Application.activeBranch) 
+        {
+            $("article[data-id="+ this.Application.activeBranch.id +"]").find(".graphContainer").removeClass("active");
+
+        }
         
-        this.loadChilds( );
+        this.Application.activeBranch = this;
+        
+        this.removeAfterBranches ( this.id );
+        this.loadChilds(View);
+        
+        
     },
-    closeFacade : function ( )
+    closeFacade : function ( View )
     {
-        this.View.find( ".collapse_control" ).removeClass( "opened" );
+        View = (View)?View:$("article[data-id="+ this.id +"]");
         
-        this.showInnerKeys( this.View ); 
+        View.find( ".collapse_control" ).removeClass( "opened" );
+        
+        this.showInnerKeys( View ); 
         
         this.removeAfterBranches ( this.id );
         
         this.removeAfterPosts ( this.id );
+        
+        
+    },
+    prepareRender : function()
+    {
+        return true;
     },
     render : function ( params )
     {
+        this.prepareRender ();
         
-        this.View = this.renderSelf (params.parentView, params.tmpl, params.insertMode, params.parentId);
+        var View = params.el;
+        if (params.conditionKeys)
+        {
+            if ( this.keysCount )
+            {
+                View = this.renderSelf (params.el, params.tmpl, params.mode, params.parent);
+                this.attachBehavior ( View );
+            }
+        }
+        else
+        {
+            View = this.renderSelf (params.el, params.tmpl, params.mode, params.parent);
+            this.attachBehavior ( View );
+        }
+
+        this.drawNavGraph( View );
+
+        if ( params.conditionChilds )
+        {
+            for (id in this.branches)
+            {
+                this.branches[id].render({
+                    el     : View, 
+                    tmpl   : 'branch', 
+                    mode   : 'insertAfter',
+                    parent : this.id, 
+                    conditionChilds : params.conditionChilds,
+                    conditionKeys : params.conditionKeys
+                });
+            };
+            
+            $("article[data-parent='" + this.id + "']").addClass("lighter");
+        }
         
-        this.attachBehavior ( );
-
-        this.drawNavGraph( );
-
-        return this.View;
+        return View;
     },
-    attachBehavior : function ( )
+    attachBehavior : function ( View )
     {
-        var Facade = this;
+        var facade = this;
+        var parentFacade = facade.Application.branches[facade.parentBranchId];
+        if (parentFacade && parentFacade.navGraph != undefined)
+        {
+            View.hover(function( ){
+                    parentFacade.navGraph.highlightBranch = facade.id;
+                }, function( ){
+                    parentFacade.navGraph.highlightBranch = 0;
+            });
+            
+        }
         
-        this.View.find("header").click( function ( ) {
-            Facade.openFacade( );
-        } );
+        View.find("header").click(function (){
+            facade.openFacade( View );
+        });
         
-        this.View.find(".collapse_control").click(function( ) {
+        View.find(".collapse_control").click(function(){
            
            var control = $(this);
            
-           control.toggleClass( "opened" );
+           control.toggleClass("opened");
            
-           if ( control.hasClass( "opened" ) ) {
-               Facade.openFacade( );
+           if (control.hasClass("opened"))
+           {
+               facade.openFacade( View );
            }
            else
            {
-               Facade.closeFacade( );
+               facade.closeFacade( View );
            }
-        } );
+        });
         
-        this.View.find(".show_reply").click( function( ) {
+        View.find(".show_reply").click(function(){
            
            var control = $(this);
            
@@ -150,14 +206,14 @@ Branch.prototype = {
            if (control.hasClass("opened"))
            {
                $.tmpl("reply", {
-                   id : Facade.postId
-               }).insertAfter( Facade.View.find(".inner") ).show();
+                   id : facade.postId
+               }).insertAfter( View.find(".inner") ).show();
                
-               Facade.Application.addReplyFormBehavior( Facade, Facade.View );
+               facade.Application.addReplyFormBehavior( facade, View );
            }
            else
            {
-               Facade.Application.removeReplyForm()
+               facade.Application.removeReplyForm()
            }
            
            return false;
@@ -165,9 +221,9 @@ Branch.prototype = {
         
         
     },
-    loadNavGraphData : function ( )
+    loadNavGraphData : function ( View )
     {
-        var Facade = this,
+        var facade = this,
             id = 0;
         
         this.Application.ajaxRequest( '/Slice.json',
@@ -182,32 +238,31 @@ Branch.prototype = {
                 
             },
             function () {
-                Facade.Application.msg( "Count`t get nav graph data for branch: " + Facade.id );
+                facade.Application.msg( "Count`t get nav graph data for branch: " + facade.id );
             },
             {
-                parentPostId : Facade.postId,
+                parentPostId : facade.postId,
                 depth : 2
             }
         );        
     },
-    drawNavGraph : function ( )
+    drawNavGraph : function ( View )
     {
-      var Facade = this;
-      var navGraph = this.View.find( ".graphContainer" );
-      
-      navGraph.attr( "id", "navCont" + this.id )
-      
-      navGraph.find( "*" ).remove( );
-      $( "<canvas></canvas>" )
-        .appendTo( navGraph )
-        .addClass( 'navGraph' )
-        .attr( "id", "navGraphCanvas" + this.id )
+        console.log('draw ' + this.id );
+      var facade = this;
+      var navGraph = View.find(".graphContainer");
+      navGraph.attr("id", "navCont" + this.id)
+      navGraph.find("*").remove();
+      $("<canvas></canvas>")
+        .appendTo(navGraph)
+        .addClass('navGraph')
+        .attr("id", "navGraphCanvas"+this.id)
         .css({
-            width: navGraph.width( ),
-            height: navGraph.height( )
+            width: navGraph.width(),
+            height: navGraph.height()
         });
      
-     this.navGraph = new NavGraph( "navGraphCanvas" + this.id );
+     this.navGraph = new NavGraph("navGraphCanvas" + this.id);
      
      this.navGraph.init();
      this.navGraph.addData({
@@ -215,17 +270,17 @@ Branch.prototype = {
         postCount : this.postCount,
         weight : this.relevantWeight,
         click  : function ( id ) {
-            Facade.View.find("header").click();
+            View.find("header").click();
         }
-     }, this.prepareNavGraphData( ));
+     }, this.prepareNavGraphData( View ));
      
      this.navGraph.startGraph();
         
     },
-    prepareNavGraphData : function ( )
+    prepareNavGraphData : function ( View )
     {
         var navData = [],
-            Facade = this,
+            facade = this,
             i;
         
         for (i in this.branches)
@@ -238,18 +293,18 @@ Branch.prototype = {
                 weight : this.branches[i].relevantWeight,
                 click  : function( id ) {
                     
-                    var curBranch = Facade.Application.branches[id];
+                    var curBranch = facade.Application.branches[id];
                     
-                    Facade.hideInnerKeys(View); 
-                    Facade.removeAfterBranches ( Facade.id );
+                    facade.hideInnerKeys(View); 
+                    facade.removeAfterBranches ( facade.id );
                     
                     
 //                    var newView = curBranch.render(View, 'branch', 'insertAfter', facade.id).addClass("lighter");
                     var newView = curBranch.render({
-                        el     : Facade.View, 
+                        el     : View, 
                         tmpl   : 'branch', 
                         mode   : 'insertAfter',
-                        parent : Facade.id, 
+                        parent : facade.id, 
                         conditionChilds : true,
                         conditionKeys : true
                     }).addClass("lighter");
@@ -260,22 +315,51 @@ Branch.prototype = {
         }
         return navData;
     },
-    hideInnerKeys : function ( )
+    hideInnerKeys : function ( View )
     {
-        this.View.find(".branch_keys").hide();
+        View.find(".branch_keys").hide();
     },
-    showInnerKeys : function ( )
+    showInnerKeys : function ( View )
     {
-        this.View.find(".branch_keys").show();
+        if (View == undefined) return false;
+        View.find(".branch_keys").show();
     },
-    expandPost : function ( post )
+    expandKeys : function ( View )
+    {
+        var branch = false;
+        for (i in this.keys)
+        {
+            branch = this.Application.branchExist(i);
+            if (!branch)
+            {
+                this.keys[i].render({
+                    el: View, 
+                    tmpl: "key", 
+                    mode :"insertAfter",
+                    parent: this.id
+            } );            
+            }
+            else
+            {
+                branch.render({
+                    el     : View, 
+                    tmpl   : 'branch', 
+                    mode   : 'insertAfter',
+                    parent : this.id
+                }).addClass("lighter");
+            }
+            branch = false;
+        };
+
+    },
+    expandPost : function ( post, View )
     {
         var branch = this.Application.branchExist(post.id);
             
         if (!branch)
         {
             post.render({
-                el: this.View, 
+                el: View, 
                 tmpl: "key", 
                 mode :"insertAfter",
                 parent: this.id
@@ -284,7 +368,7 @@ Branch.prototype = {
         else
         {
             branch.render({
-                el     : this.View, 
+                el     : View, 
                 tmpl   : 'branch', 
                 mode   : 'insertAfter',
                 parent : this.id, 
@@ -294,7 +378,7 @@ Branch.prototype = {
         }
         branch = false;        
     },
-    expandPosts : function ( )
+    expandPosts : function ( View )
     {
         var id;
             
@@ -302,105 +386,73 @@ Branch.prototype = {
         {
             if ( this.Application.posts[id].parentPostId != this.postId ) continue;
       
-            this.expandPost(this.Application.posts[id], this.View);
+            this.expandPost(this.Application.posts[id], View);
             
         };
 
     },
-    loadChilds : function ( )
+    loadChilds : function ( View )
     {
-        var Facade = this,
+        console.log('start load' + this.id);
+        var facade = this,
             id = 0;
+        
         this.Application.ajaxRequest( '/Slice.json',
             function ( response ) {
                 
-                Facade.removeAfterBranchesAndPosts ( false );
+                facade.removeAfterBranches ( facade.id );
 
+                facade.removeAfterPosts ( facade.id );    
+                
                 var newData = this.parseResponseData( response );
 
                 if ( $("#params-form [name=mode]:checked").val() == "plain" )
                 {
-                    Facade.drawPlain( newData.posts );
+                    for ( var i = newData.posts.length; i--; )
+                    {
+                        if (facade.Application.posts[ newData.posts[ i ] ].id == facade.postId) {continue};
+                            
+                        facade.Application.posts[ newData.posts[ i ] ].render({
+                            el: View, 
+                            tmpl: "key", 
+                            mode :"insertAfter",
+                            parent: facade.id
+                        });
+                    }
                 }
                 else {
-                    Facade.drawHierarhy( newData.posts );
+                    for ( var i = newData.posts.length; i--; )
+                    {
+                        if ( facade.Application.posts[ newData.posts[ i ] ].parentPostId == facade.postId )
+                        {
+                            facade.expandPost ( facade.Application.posts[ newData.posts[ i ] ], View );
+                        }
+                    }
                 }
                 
             },
             function () {
 
-                Facade.Application.msg( "Count`t get post list for branch: " + Facade.id );
+                facade.Application.msg( "Count`t get post list for branch: " + facade.id );
 
             },
-            Facade.Application.prepareParams( this.postId )
+            facade.Application.prepareParams( this.postId )
         );        
     },    
-    drawPlain: function ( posts_list )
-    {
-        for ( var i = posts_list.length; i--; )
-        {
-            if ( this.Application.posts[ posts_list[ i ] ].id == this.postId ) { continue };
-
-            this.Application.posts[ posts_list[ i ] ].render({
-                el: this.View, 
-                tmpl: "key", 
-                mode :"insertAfter",
-                parent: this.id
-            }).css({"background-color": this.Application.nextColor()});
-        }
-    },
-    drawHierarhy: function ( list )
-    {
-        console.log('load H - -');
-//                    for ( var i = newData.posts.length; i--; )
-//                    {
-//                        if ( Facade.Application.posts[ newData.posts[ i ] ].parentPostId == Facade.postId )
-//                        {
-//                            Facade.expandPost ( Facade.Application.posts[ newData.posts[ i ] ], Facade.View );
-//                        }
-//                    }
-        
-    },
-    expandBranches: function ( branches )
+    expandBranches: function ( View, branches )
     {
         for (i in branches)
         {
             // @render subbranch here
             branches[i].render({
-                el: this.View, 
+                el: View, 
                 tmpl: "branch", 
                 mode :"insertAfter",
                 parent: this.id
             }).addClass("lighter");
-           
+            
         };
 
-    },
-    removeAfterBranchesAndPosts : function ( flag )
-    {
-        
-        var id = 0;
-        for ( id in this.Application.branches )
-        {
-                
-            if ( this.Application.branches[id].parentBranchId == this.id )
-            {   
-                this.Application.branches[id].removeAfterBranchesAndPosts( flag  );
-                $("article[data-id='"+ this.Application.branches[id].id +"']").remove();
-            }
-        }
-        for ( id in this.Application.posts )
-        {
-                
-            if ( this.Application.posts[id].parentPostId == this.postId )
-            {   
-                
-                $("article[data-id='"+ this.Application.posts[id].id +"']").remove();
-            }
-            
-        }
-        if ( flag )
-        $("article[data-id='"+ this.id +"']").remove();
     },
     removeAfterBranches : function ( parentId )
     {

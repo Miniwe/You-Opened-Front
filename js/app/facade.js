@@ -23,11 +23,11 @@ function Facade ()
 
     };
     
-    this.renderSelf = function (el, tmpl, mode, parent)
+    this.renderSelf = function (el, tmpl, mode, parentId)
     {
         var View = $(document.body);
         
-        this.parentViewId = parent;
+        this.parentViewId = parentId;
         
         this.zIndex = parseInt($(el)[0].style.zIndex,10) - 10 || 10;
         

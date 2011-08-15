@@ -174,3 +174,14 @@ a.show_reply {
 .active.lighter canvas{
 /*    display: block;    */
 }
+
+section.fragment {
+    padding: 0px 10px 10px 10px;
+    margin-bottom: 10px;
+    border:1px solid #dddddd;
+    background-color: #eeeeee;
+}
+
+section.fragment > header {
+    background-color: #eeeeee;
+}

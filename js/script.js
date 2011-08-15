@@ -13,6 +13,7 @@
             templates : [
                 "reply",
                 "branch",
+                "fragment",
                 "key",
                 "post"
             ]
