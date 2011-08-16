@@ -32,11 +32,12 @@ var Application = function ( opts )
         var colors = ["#C0FF80", "#B5F886", "#ABF18D", "#A0EA94", "#96E39B", "#8CDCA2", "#81D5A9", "#77CEB0", "#6CC8B6", "#62C1BD", "#58BAC4", "#4DB3CB", "#43ACD2", "#39A5D9", "#2E9EE0", "#2498E6", "#1991ED", "#0F8AF4", "#0583FB", "#0080FF", "#0A79F6", "#1472EE", "#1E6BE6", "#2864DD", "#325DD5", "#3C56CD", "#464FC5", "#5048BC", "#5A41B4", "#653AAC", "#6F33A4", "#792C9B", "#832693", "#8D1F8B", "#971882", "#A1117A", "#AB0A72"];
         var cnt = 0;
         return function () { 
-            if (cnt == colors.length) {
-                cnt = 0;
+            if (cnt > colors.length) {
+                cnt = cnt - colors.length;
+//                cnt = 0;
             }
             var color = colors[cnt];
-            cnt++;
+            cnt += 3;
             return color;
         }
     })();
@@ -353,15 +354,14 @@ var Application = function ( opts )
                 branches    : [],
                 posts       : []
             }, 
-            i, // loop counter
-            pid // parent branch id
+            id // loop counter
             ;
         
         if (!data) return newData;
         
         if ( data.Posts != undefined )
         {
-            for ( id in data.Posts)
+            for (var id in data.Posts)
             {
                 if (this.posts[id] == undefined)
                 {
@@ -378,11 +378,12 @@ var Application = function ( opts )
         
         if ( data.Branches != undefined )
         {
-            for ( id in data.Branches)
+            for (var id in data.Branches)
             {
                 if (this.branches[id] == undefined)
                 {
                     this.branches[id] = new Branch( this, id, data.Branches[id] );
+                    this.branches[id].color = this.nextColor();
                 }
                 else
                 {
@@ -487,11 +488,11 @@ var Application = function ( opts )
 
     this.branchExist = function ( postId )
     {
-        for (i in this.Application.branches)
+        for (var id in this.branches)
         {
-            if (this.Application.branches[i].postId == postId)
+            if (this.branches[id].postId == postId)
             {
-                return this.Application.branches[i];
+                return this.branches[id];
             }
         }
         

@@ -104,6 +104,10 @@ Fragment.prototype = {
             tmpl   : 'branch', 
             parentId : this.id
         });
+        
+        this.branch.drawNavGraph( this.View.find(".navdiag") );
+
+
     }
     
 }

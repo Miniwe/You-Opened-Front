@@ -22,6 +22,8 @@ function Branch (Application, id, data)
     
     this.navGraph = null;
     
+    this.color = "#cccccc";
+    
     this.marker = {
         parentPostId: (data.Marker.parentPostId != undefined) ? data.Marker.parentPostId : this.postId,
         query: (data.Marker.query != undefined) ? data.Marker.query : "",
@@ -39,6 +41,7 @@ function Branch (Application, id, data)
             if (this.branches[id] == undefined)
             {
                 this.branches[id] = new Branch( this.Application, id, branches[id] );
+                this.branches[id].color = this.Application.nextColor();
                 this.Application.branches[id] = this.branches[id];
             }
             else
@@ -93,7 +96,7 @@ Branch.prototype = {
         
         this.hideInnerKeys( this.View ); 
         
-        this.removeAfterBranches( this.id );
+        this.removeAfterBranchesAndPosts ( );
         
         this.loadChilds( );
     },
@@ -103,9 +106,7 @@ Branch.prototype = {
         
         this.showInnerKeys( this.View ); 
         
-        this.removeAfterBranches ( this.id );
-        
-        this.removeAfterPosts ( this.id );
+        this.removeAfterBranchesAndPosts ( );
     },
     render : function ( params )
     {
@@ -113,8 +114,6 @@ Branch.prototype = {
         this.View = this.renderSelf (params.parentView, params.tmpl, params.insertMode, params.parentId);
         
         this.attachBehavior ( );
-
-        this.drawNavGraph( );
 
         return this.View;
     },
@@ -190,17 +189,17 @@ Branch.prototype = {
             }
         );        
     },
-    drawNavGraph : function ( )
+    drawNavGraph : function ( holder )
     {
       var Facade = this;
-      var navGraph = this.View.find( ".graphContainer" );
+      var navGraph = holder;
       
-      navGraph.attr( "id", "navCont" + this.id )
+//      navGraph.attr( "id", "navCont" + this.id )
       
       navGraph.find( "*" ).remove( );
       $( "<canvas></canvas>" )
         .appendTo( navGraph )
-        .addClass( 'navGraph' )
+//        .addClass( 'navGraph' )
         .attr( "id", "navGraphCanvas" + this.id )
         .css({
             width: navGraph.width( ),
@@ -214,6 +213,7 @@ Branch.prototype = {
         id     : this.id,
         postCount : this.postCount,
         weight : this.relevantWeight,
+        color: this.color,
         click  : function ( id ) {
             Facade.View.find("header").click();
         }
@@ -230,21 +230,19 @@ Branch.prototype = {
         
         for (i in this.branches)
         {
-            if (!this.branches[i].relevantWeight) continue;
-            
             navData.push({
                 id     : this.branches[i].id,
                 postCount : this.branches[i].postCount,
                 weight : this.branches[i].relevantWeight,
+                color: this.branches[i].color,
                 click  : function( id ) {
                     
                     var curBranch = Facade.Application.branches[id];
                     
-                    Facade.hideInnerKeys(View); 
-                    Facade.removeAfterBranches ( Facade.id );
+                    Facade.hideInnerKeys(Facade.View); 
                     
+                    Facade.removeAfterBranchesAndPosts ( false );
                     
-//                    var newView = curBranch.render(View, 'branch', 'insertAfter', facade.id).addClass("lighter");
                     var newView = curBranch.render({
                         el     : Facade.View, 
                         tmpl   : 'branch', 
@@ -315,15 +313,21 @@ Branch.prototype = {
             function ( response ) {
                 
                 Facade.removeAfterBranchesAndPosts ( false );
-
+                
                 var newData = this.parseResponseData( response );
 
                 if ( $("#params-form [name=mode]:checked").val() == "plain" )
-                {
-                    Facade.drawPlain( newData.posts );
+                {        
+                    Facade
+                        .sortList( newData.posts, "createTime");
+
+                    Facade.drawList( newData.posts );
                 }
                 else {
-                    Facade.drawHierarhy( newData.posts );
+                    Facade
+                        .sortList( newData.posts, "parentPostId");
+                    
+                    Facade.drawList( newData.posts );
                 }
                 
             },
@@ -335,31 +339,60 @@ Branch.prototype = {
             Facade.Application.prepareParams( this.postId )
         );        
     },    
-    drawPlain: function ( posts_list )
+    sortList: function ( posts_list, sortField )
     {
+        for ( var i = posts_list.length; i--; )
+        {
+            posts_list[i] = {
+                id :  posts_list[i],
+                sortField : this.Application.posts[ posts_list[ i ] ][sortField]
+            };
+        }
+        posts_list.sort( function(a,b) { 
+            return b.sortField - a.sortField;
+        } );
+        for ( var i = posts_list.length; i--; )
+        {
+            posts_list[i] = posts_list[i].id;
+        }
+        return posts_list;
+    },
+    drawList: function ( posts_list )
+    {
+        var b;
         for ( var i = posts_list.length; i--; )
         {
             if ( this.Application.posts[ posts_list[ i ] ].id == this.postId ) { continue };
 
-            this.Application.posts[ posts_list[ i ] ].render({
+            var viewColor = '#eeeeee';
+            var pid = this.Application.posts[ posts_list[ i ] ].parentPostId;
+            b = this.Application.branchExist(posts_list[ i ]);
+            /*
+//            if ( b != undefined && b.keysCount > 0 )  {
+//                viewColor = this.Application.nextColor( );
+//            } 
+//            else 
+            if ( $( "article[data-parent=" + pid + "]").length > 0 )  {
+                viewColor = $( "article[data-parent=" + pid + "]" ).css( "background-color" );
+//            } else if ( $("article[data-id=" + pid + "]" ).length > 0  ) {
+//                viewColor = $( "article[data-id=" + pid + "]" ).css( "background-color" );
+            }
+            else {
+                viewColor = this.Application.nextColor( );
+            }
+            */
+            var newView = this.Application.posts[ posts_list[ i ] ].render({
                 el: this.View, 
                 tmpl: "key", 
                 mode :"insertAfter",
                 parent: this.id
-            }).css({"background-color": this.Application.nextColor()});
+            });
+            
+            if (b != undefined)
+            {
+                newView.css( { "background-color": b.color } );
+            }
         }
-    },
-    drawHierarhy: function ( list )
-    {
-        console.log('load H - -');
-//                    for ( var i = newData.posts.length; i--; )
-//                    {
-//                        if ( Facade.Application.posts[ newData.posts[ i ] ].parentPostId == Facade.postId )
-//                        {
-//                            Facade.expandPost ( Facade.Application.posts[ newData.posts[ i ] ], Facade.View );
-//                        }
-//                    }
-        
     },
     expandBranches: function ( branches )
     {
