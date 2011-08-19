@@ -51,6 +51,7 @@ article > div{
 article.branch {
     background-color: #B58AA5;
     outline: 1px solid #ffffff;
+    border-left:10px solid #ffffff;
 }
 
 article.branch ul.branch_keys{
@@ -68,6 +69,7 @@ article.branch.lighter{
 article.key {
     background-color: #CECFCE;
     outline: 1px solid #dddddd;
+    border-left: 10px solid #ffffff;
 }
 
 article.post {
@@ -187,8 +189,8 @@ section.fragment > header {
 }
 
 section.fragment .navdiag {
-    width: 100px;
-    height: 100px;
+    width: 120px;
+    height: 120px;
     margin-left: 2px;
     margin-top: 10px;
     position: absolute;

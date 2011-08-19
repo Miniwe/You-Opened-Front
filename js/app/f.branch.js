@@ -22,7 +22,7 @@ function Branch (Application, id, data)
     
     this.navGraph = null;
     
-    this.color = "#cccccc";
+    this.color = this.Application.nextColor();
     
     this.marker = {
         parentPostId: (data.Marker.parentPostId != undefined) ? data.Marker.parentPostId : this.postId,
@@ -38,17 +38,15 @@ function Branch (Application, id, data)
         
         for ( id in branches )
         {
-            if (this.branches[id] == undefined)
+            if (this.Application.branches[id] == undefined)
             {
-                this.branches[id] = new Branch( this.Application, id, branches[id] );
-                this.branches[id].color = this.Application.nextColor();
-                this.Application.branches[id] = this.branches[id];
+                this.Application.branches[id] = new Branch( this.Application, id, branches[id] );
             }
             else
             {
-                this.branches[id].update( branches[id] );
+                this.Application.branches[id].update( branches[id] );
             }
-            
+            this.branches[id] = this.Application.branches[id];
         }
     };
     
@@ -227,7 +225,7 @@ Branch.prototype = {
         var navData = [],
             Facade = this,
             i;
-        
+            
         for (i in this.branches)
         {
             navData.push({
@@ -316,19 +314,24 @@ Branch.prototype = {
                 
                 var newData = this.parseResponseData( response );
 
-                if ( $("#params-form [name=mode]:checked").val() == "plain" )
+                if ( $("#params-form [name=mode]:checked").val( ) == "plain" )
                 {        
                     Facade
-                        .sortList( newData.posts, "createTime");
-
-                    Facade.drawList( newData.posts );
+                        .sortList( newData.posts, "createTime" );
                 }
                 else {
                     Facade
-                        .sortList( newData.posts, "parentPostId");
-                    
-                    Facade.drawList( newData.posts );
+                        .sortList( newData.posts, "parentPostId" );
                 }
+                
+//                if (  $("#query").val() != "" ) {
+//                    newData.posts = newData.posts.filterByValue ( function (element, index, array, sval) {
+//                        element = Facade.Application.posts[element];
+//                        return ( element.relevantWeight > 0 ) ;
+//                    }, 0 );
+//                }
+                
+                Facade.drawList( newData.posts );
                 
             },
             function () {
@@ -389,8 +392,8 @@ Branch.prototype = {
             });
             
             if (b != undefined)
-            {
-                newView.css( { "background-color": b.color } );
+            {                
+                newView.css( { "border-color": b.color } );
             }
         }
     },

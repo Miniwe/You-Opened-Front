@@ -7,8 +7,11 @@ function Fragment ( Application )
     this.id = 'fragment-' + myDate.getMilliseconds();
     
     this.branch = null;
+    this.focusedBranch = null;
     this.branchHistory = [];
     this.View = $(document.body);
+    
+    this.navGraph = null;
     
     this.cbIndex = 0;
 }
@@ -24,6 +27,10 @@ Fragment.prototype = {
         this.branch = branch;   
         
         this.redrawFragment( this.branch );
+    },
+    changeFocusedBranch : function ( branchId )
+    {
+        // указывает navGraph кто будет focused branch
     },
     /*
      * get branch by index or last branches element
@@ -98,15 +105,18 @@ Fragment.prototype = {
          */
         this.View.find(".current-branch *").remove();
         
-        this.branch.render ({
+        var newView = this.branch.render ({
             parentView     : this.View.find(".current-branch"), 
             insertMode   : 'appendTo',
             tmpl   : 'branch', 
             parentId : this.id
         });
         
-        this.branch.drawNavGraph( this.View.find(".navdiag") );
+        newView.css( { "border-color": this.branch.color } )
+        
 
+        this.branch.drawNavGraph( this.View.find(".navdiag") );
+        this.navGraph = this.branch.navGraph;
 
     }
     

@@ -1,5 +1,5 @@
-<article id="post-${id}" data-id="${id}" data-parent="${parentPostId}" class="key">
-    <div style="float: right; padding:3px; background-color: #fff;"><a href="#gotobranch" class="gotobranch" data-ref="#branch-${parentViewId}#post-${id}">Перейти на ветку</a></div>
+<article id="post-${id}" data-id="${id}" data-parent="${parentPostId}" data-branch="${branchId}" class="key">
+    <div style="float: right; padding:3px; background-color: #fff;"><a href="${branchRef}" class="gotobranch" data-ref="#branch-${branchId}#post-${id}">Перейти на ветку</a></div>
     <div class="inner">
         <header>${id}: ${text}</header>
         <ul>
@@ -9,6 +9,7 @@
         <li>parent view: ${parentViewId}</li>
         <li>parent post id: ${parentPostId}</li>
         <li>create timestamp: ${createTime}</li>
+        <li>branchId: ${branchId}</li>
         </ul>
         <a href="#show_reply" class="show_reply">
             <span title="Reply">Reply</span>

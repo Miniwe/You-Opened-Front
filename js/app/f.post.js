@@ -9,6 +9,11 @@ function Post (Application, id, data)
   
     this.id              = id;
     this.parentPostId    = data.ParentPostId;
+    
+    this.branchId         = 0;
+    this.fragment         = 0;
+    this.branchRef        = "";
+    
     this.authorId        = data.AuthorId;
   
     this.createTime      =  data.CreateTime;
@@ -34,10 +39,53 @@ Post.prototype = {
     },
     prepareRender : function()
     {
+        this.branchId = 0;
+        for (var id in this.Application.branches)
+        {
+            if ( this.id == this.Application.branches[id].postId ) {
+                this.branchId = id; 
+                break;
+            } else if ( this.parentPostId == this.Application.branches[id].postId ) {
+                this.branchId = id; 
+            }
+        }
+//        console.log( this.id, this.parentPostId, this.branchId );
+        if ( this.branchId )
+        {
+            this.branchRef = "#branch-"+id+"#post-"+this.id;
+            
+            this.fragment = null;
+            for (var i = this.Application.fragments.length; i--;)
+            {
+//                console.log(this.id, this.branchId, this.Application.fragments[i].branch);
+                if ( this.Application.fragments[i].branch.id == this.branchId )
+                {
+                    this.fragment = this.Application.fragments[i];
+                }
+                else
+                {
+                    console.log('cicle ',this.id, this.branchId, this.Application.fragments[i].branch, this.Application.fragments[i].branch.branches);
+                    for ( var j in this.Application.fragments[i].branch.branches )
+                    {
+                        console.log('check ',this.branchId, this.Application.fragments[i].branch.branches[j]);
+                        if ( this.Application.fragments[i].branch.branches[j].id == this.branchId )
+                        {
+                            this.fragment = this.Application.fragments[i];
+                            break;
+                        }
+                    }
+                }
+                if ( this.fragment )
+                {
+                    break;
+                }
+            }
+            console.log('-- result',this.id, this.branchId, this.fragment);
+        }
     },
     attachBehavior : function ( View )
     {
-        var facade = this;
+        var Facade = this;
         /*
         var parentFacade = facade.Application.branches[facade.parentBranchId];
         if (parentFacade && parentFacade.navGraph != undefined)
@@ -49,22 +97,42 @@ Post.prototype = {
             });
         }
         */
-        
+        View.mouseover(function (){
+            // послать сингал для navGraph фрагмента чтоб выделил на диаграме нужную ветку
+            console.log(Facade.branchId /*, Facade.fragment.navGraph */);
+            if ( Facade.fragment && Facade.fragment.navGraph )
+            {
+                Facade.fragment.navGraph.highlightBranch = Facade.branchId;
+            }
+            
+        });
+
+        View.mouseout(function (){
+            // послать сингал для navGraph фрагмента чтоб выделил на диаграме нужную ветку
+            if ( Facade.fragment && Facade.fragment.navGraph )
+            {
+                Facade.fragment.navGraph.highlightBranch = "";
+            }
+            
+        });
+
+
         View.find("header").click(function (){
-            facade.openFacade( View );
+            Facade.openFacade( View );
         });
         
         View.find(".gotobranch").click(function (){
             var go_params = $(this).attr("data-ref").match(/\#[a-z]+\-[a-w0-9_]+/g); 
-            var parent_id = $(this).parents('article').attr("data-parent");
+//            var parent_id = $(this).parents('article').attr("data-parent");
             var branch_id = go_params[0].split("-")[1];
             var post_id = go_params[1].split("-")[1];
+//            console.log(go_params, parent_id, branch_id, post_id);
             
-            facade.Application.branches[ parent_id ].closeFacade( );
+//            Facade.Application.branches[ parent_id ].closeFacade( );
             
-            facade.Application.branches[ branch_id ].openFacade( );
-            
-            facade.openFacade(View);
+            console.log(Facade);
+//            Facade.fragment.changeBranch(Facade.Application.branches[ branch_id ]);
+//            Facade.Application.branches[ branch_id ].openFacade( );
             
             return false;
         });
@@ -78,25 +146,25 @@ Post.prototype = {
             if (control.hasClass("opened"))
             {
                 $.tmpl("reply", {
-                    id : facade.id
+                    id : Facade.id
                 }).insertAfter( View.find(".inner") ).show();
                
                 View.find("form.replyform").submit(function(){
                     
-                    facade.Application.removeReplyForm();
+                    Facade.Application.removeReplyForm();
                     
                     View.find(".show_reply").removeClass( "opened" );
 
-                    var data = facade.Application.formArrayToData( $(this).formToArray( ) );
+                    var data = Facade.Application.formArrayToData( $(this).formToArray( ) );
                     
-                    facade.Application.ajaxRequest( "/Slice.json", 
+                    Facade.Application.ajaxRequest( "/Slice.json", 
                         function ( data ) {
                             
                             // сделать правильное добавление поста в режиме plain
                             
-                            var newData = facade.Application.parseResponseData( data );
+                            var newData = Facade.Application.parseResponseData( data );
 
-                            var parentFacade = facade.id;
+                            var parentFacade = Facade.id;
                             var parentView = View;
                             
                             if ($("[name=mode]:checked").val() == "plain" ) {
@@ -106,7 +174,7 @@ Post.prototype = {
                             
                             for (var i=0; i< newData.posts.length; i++)
                             {
-                                var post = facade.Application.posts[newData.posts[i]];
+                                var post = Facade.Application.posts[newData.posts[i]];
                                 //                                var postView = $("article[data-id='" + post.id + "']");
                                 post.render({
                                     el     : parentView, 
@@ -119,7 +187,7 @@ Post.prototype = {
                             }
 
                         }, function(){
-                            facade.Application.msg("Couldn't post comment");
+                            Facade.Application.msg("Couldn't post comment");
                         },
                         data
                         );        
@@ -130,7 +198,7 @@ Post.prototype = {
             }
             else
             {
-                facade.Application.removeReplyForm()
+                Facade.Application.removeReplyForm()
             }
            
             return false;

@@ -29,15 +29,14 @@ var Application = function ( opts )
     
    
     this.nextColor = (function ( ) {
-        var colors = ["#C0FF80", "#B5F886", "#ABF18D", "#A0EA94", "#96E39B", "#8CDCA2", "#81D5A9", "#77CEB0", "#6CC8B6", "#62C1BD", "#58BAC4", "#4DB3CB", "#43ACD2", "#39A5D9", "#2E9EE0", "#2498E6", "#1991ED", "#0F8AF4", "#0583FB", "#0080FF", "#0A79F6", "#1472EE", "#1E6BE6", "#2864DD", "#325DD5", "#3C56CD", "#464FC5", "#5048BC", "#5A41B4", "#653AAC", "#6F33A4", "#792C9B", "#832693", "#8D1F8B", "#971882", "#A1117A", "#AB0A72"];
+        var colors = ["#9c00ff", "#0000ff", "#007bff", "#00dbe6", "#00ff00", "#ff23ff", "#4400ff", "#0038ff", "#00fcff", "#00ff83", "#00ff00", "#89d700", "#e700ff", "#00d4ff", "#40ff00", "#fd7a00", "#ff1f00", "#e2fd00", "#00ffcb", "#C0FF80", "#B5F886", "#ABF18D", "#A0EA94", "#96E39B", "#8CDCA2", "#81D5A9", "#77CEB0", "#6CC8B6", "#62C1BD", "#58BAC4", "#4DB3CB", "#43ACD2", "#39A5D9", "#2E9EE0", "#2498E6", "#1991ED", "#0F8AF4", "#0583FB", "#0080FF", "#0A79F6", "#1472EE", "#1E6BE6", "#2864DD", "#325DD5", "#3C56CD", "#464FC5", "#5048BC", "#5A41B4", "#653AAC", "#6F33A4", "#792C9B", "#832693", "#8D1F8B", "#971882", "#A1117A", "#AB0A72"];
         var cnt = 0;
         return function () { 
-            if (cnt > colors.length) {
-                cnt = cnt - colors.length;
-//                cnt = 0;
+            if (cnt >= colors.length) {
+                cnt = 0;
             }
             var color = colors[cnt];
-            cnt += 3;
+            cnt ++;
             return color;
         }
     })();
@@ -234,6 +233,7 @@ var Application = function ( opts )
                 conditionChilds : false,
                 conditionKeys : false
             });
+            
         }
         
     }
@@ -246,7 +246,7 @@ var Application = function ( opts )
         
         for ( i = brAr.length; i--; )
         {
-            fragment = new Fragment( Application );
+            fragment = new Fragment( this );
             fragmentView = fragment.render({
                 parentView : $("#main-container"),
                 insertMode : 'appendTo',
@@ -270,15 +270,13 @@ var Application = function ( opts )
      */
     this.loadIndexPage = function ( )
     {
-        
         var Application = this;
-        
         this.ajaxRequest('/Slice.json'
         , function ( response ) {
             $("#params-container").show();
             
             var newData = this.parseResponseData(response);
-            
+
 //            Application.drawBranches(newData.branches, true);
             Application.drawFragments( newData.branches );
             
@@ -330,12 +328,13 @@ var Application = function ( opts )
      */
     this.router = function ( hash ) 
     {
+
         var hash = hash || document.location.hash;
         
-        var result = hash.match(/(post|user)(-?([0-9]+))*/);
+        var result = false/*hash.match(/(post|user)(-?([0-9]+)))*/;
         
         result = (!result || result[1] == undefined)?[null,"index"]:result;
-
+        
         switch ( result[1] ) 
         {
             case "index":
@@ -384,6 +383,7 @@ var Application = function ( opts )
                 {
                     this.branches[id] = new Branch( this, id, data.Branches[id] );
                     this.branches[id].color = this.nextColor();
+
                 }
                 else
                 {

@@ -15,8 +15,8 @@ function NavGraph ( holder ) {
     this.postCountSummCoef = 0;
 
     this.radius = 10;
-    
-    this.colors = ["#C0FF80", "#B5F886", "#ABF18D", "#A0EA94", "#96E39B", "#8CDCA2", "#81D5A9", "#77CEB0", "#6CC8B6", "#62C1BD", "#58BAC4", "#4DB3CB", "#43ACD2", "#39A5D9", "#2E9EE0", "#2498E6", "#1991ED", "#0F8AF4", "#0583FB", "#0080FF", "#0A79F6", "#1472EE", "#1E6BE6", "#2864DD", "#325DD5", "#3C56CD", "#464FC5", "#5048BC", "#5A41B4", "#653AAC", "#6F33A4", "#792C9B", "#832693", "#8D1F8B", "#971882", "#A1117A", "#AB0A72"];      
+    this.subRadius = 10;
+    this.centerRadius = 10;
    
 }
 
@@ -33,6 +33,10 @@ NavGraph.prototype = {
         
         this.width   = canvas.width;
         this.height  = canvas.height;
+        
+        this.radius = this.width / 10;
+        this.subRadius = this.radius * 3.5;
+        this.centerRadius = this.radius;
         
         holder.mousemove( function( event ) {
             var offset = $(this).offset( );
@@ -54,7 +58,7 @@ NavGraph.prototype = {
     addData : function ( parentBranch, data ) {
         this.parentBranch = parentBranch;
         this.branchesData = data;
-        console.log(this.parentBranch, this.branchesData);
+//        console.log(this.parentBranch, this.branchesData);
         
         this.branchesWeightSumm = 0;
         this.postCountSumm = 0;
@@ -82,7 +86,7 @@ NavGraph.prototype = {
         var deltaLit = 0.1;
         
         this.ctx.beginPath( );
-        this.ctx.arc(this.width / 2, this.height / 2, 9, 0, 2 * Math.PI, false);
+        this.ctx.arc(this.width / 2, this.height / 2, this.centerRadius, 0, 2 * Math.PI, false);
         this.ctx.closePath( );
         this.ctx.fillStyle = this.parentBranch.color;
         this.ctx.fill();
@@ -111,8 +115,8 @@ NavGraph.prototype = {
 //            curRadius = this.radius;
             
             this.ctx.beginPath();
-            this.ctx.arc(this.width / 2, this.height / 2, 35+curRadius, prevAngle , prevAngle + curAngle - deltaLit , false);
-            this.ctx.arc(this.width / 2, this.height / 2, (35+curRadius) * 2 /5, prevAngle + curAngle - deltaLit , prevAngle , true);
+            this.ctx.arc(this.width / 2, this.height / 2, this.subRadius + curRadius, prevAngle , prevAngle + curAngle - deltaLit , false);
+            this.ctx.arc(this.width / 2, this.height / 2, this.centerRadius + 4 , prevAngle + curAngle - deltaLit , prevAngle , true);
             this.ctx.closePath();
             
             if ( this.branchesData[i].weight > 0) {
