@@ -252,7 +252,8 @@ var Application = function ( opts )
                 insertMode : 'appendTo',
                 tmpl : 'fragment'
             });
-            fragment.changeBranch( this.branches[brAr[i]] );
+            fragment.addMainBranch( this.branches[brAr[i]] );
+            
             this.fragments.push( fragment );
         }
         

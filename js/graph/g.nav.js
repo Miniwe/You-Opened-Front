@@ -85,6 +85,8 @@ NavGraph.prototype = {
         var prevAngle = 0;
         var deltaLit = 0.1;
         
+        var cursorState = false;
+        
         this.ctx.beginPath( );
         this.ctx.arc(this.width / 2, this.height / 2, this.centerRadius, 0, 2 * Math.PI, false);
         this.ctx.closePath( );
@@ -92,21 +94,27 @@ NavGraph.prototype = {
         this.ctx.fill();
         
         if ( this.ctx.isPointInPath( this.cPos.x, this.cPos.y ) ) {
-            this.ctx.strokeStyle = "fff";
-            this.ctx.lineWidth = 2;this.ctx.stroke( );
-            this.hoverBranch = this.parentBranch;
+                this.ctx.strokeStyle = this.ctx.fillStyle;
+                this.ctx.lineWidth = 3;this.ctx.stroke();
+                
+                this.ctx.strokeStyle = "#fff";
+                this.ctx.lineWidth = 2;this.ctx.stroke();
+                
+                this.hoverBranch = this.parentBranch;
+                
+                cursorState = true;
         }
         
         if ( this.activeBranch && this.activeBranch.id == this.parentBranch.id ) {
-            this.ctx.strokeStyle = "#000";
-            this.ctx.lineWidth = 2; this.ctx.stroke();
+            this.ctx.strokeStyle = "#f00";
+            this.ctx.lineWidth = 2; this.ctx.stroke( );
         }
         
         if ( this.highlightBranch == this.parentBranch.id ) {
             this.ctx.strokeStyle = "#f00";
             this.ctx.lineWidth = 2; this.ctx.stroke( );
         }
-        
+            
         for (var i=this.branchesData.length; i--; )
         {
             curAngle = this.branchesData[i].postCount * deltaC;
@@ -135,12 +143,14 @@ NavGraph.prototype = {
                 this.ctx.strokeStyle = "#fff";
                 this.ctx.lineWidth = 2;this.ctx.stroke();
                 this.hoverBranch = this.branchesData[i];
+                
+                cursorState = true;
             }
             
             if (this.activeBranch && this.activeBranch.id == this.branchesData[i].id)
             {
-                this.ctx.strokeStyle = "#000";
-                this.ctx.lineWidth = 3; this.ctx.stroke();
+                this.ctx.strokeStyle = "#f00";
+                this.ctx.lineWidth = 2; this.ctx.stroke();
             }
             if (this.highlightBranch == this.branchesData[i].id)
             {
@@ -150,6 +160,12 @@ NavGraph.prototype = {
             prevAngle += curAngle;
             
         }
+        
+        if (cursorState)
+            $("#"+this.holder).css({cursor: "pointer"});
+        else
+            $("#"+this.holder).css({cursor: "default"});
+        
         if (this.activeBranch)
         {
             this.drawTriControl( );
@@ -158,6 +174,7 @@ NavGraph.prototype = {
     },
     drawTriControl : function ( )
     {
+        return false;
         var width = 30,
             height = 20,
             padding = 10;

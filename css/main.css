@@ -51,7 +51,8 @@ article > div{
 article.branch {
     background-color: #B58AA5;
     outline: 1px solid #ffffff;
-    border-left:10px solid #ffffff;
+    border-right:10px solid #ffffff;
+    border-left: 10px solid #ffffff;
 }
 
 article.branch ul.branch_keys{
@@ -69,6 +70,7 @@ article.branch.lighter{
 article.key {
     background-color: #CECFCE;
     outline: 1px solid #dddddd;
+    border-right: 10px solid #ffffff;
     border-left: 10px solid #ffffff;
 }
 

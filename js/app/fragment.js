@@ -8,7 +8,9 @@ function Fragment ( Application )
     
     this.branch = null;
     this.focusedBranch = null;
+    
     this.branchHistory = [];
+    
     this.View = $(document.body);
     
     this.navGraph = null;
@@ -20,13 +22,45 @@ Fragment.prototype = {
     /*
      * add branch 
      */
+    addMainBranch : function ( branch )
+    {
+        // @todo add history
+        
+        this.removeFocusedBranch( branch );
+        
+        this.branch = branch;   
+        
+        this.redrawFragment( this.branch, true );
+        
+    },
+    addFocusedBranch : function ( branch )
+    {
+        // @todo add history
+        this.focusedBranch = branch;   
+
+        this.redrawFragment( this.focusedBranch, false );
+        
+        this.navGraph.activeBranch = this.focusedBranch;
+        
+        this.focusedBranch .View.find("header").click();
+
+    },
+    removeFocusedBranch : function ( )
+    {
+        // @todo add history
+        this.focusedBranch = null;   
+        if ( this.navGraph )
+        {
+            this.navGraph.activeBranch = this.focusedBranch;
+        }
+    },
     changeBranch : function ( branch )
     {
         this.branchHistory.push( this.branch );
         this.cbIndex = this.branchHistory.length - 1;
         this.branch = branch;   
         
-        this.redrawFragment( this.branch );
+        this.redrawFragment( this.branch, true );
     },
     changeFocusedBranch : function ( branchId )
     {
@@ -94,7 +128,7 @@ Fragment.prototype = {
         return this.View;
         
     },
-    redrawFragment : function ( branch )
+    redrawFragment : function ( branch, redrawGraph )
     {
         /*
          * remove all framgments inside
@@ -105,18 +139,19 @@ Fragment.prototype = {
          */
         this.View.find(".current-branch *").remove();
         
-        var newView = this.branch.render ({
+        var newView = branch.render ({
             parentView     : this.View.find(".current-branch"), 
             insertMode   : 'appendTo',
             tmpl   : 'branch', 
             parentId : this.id
         });
         
-        newView.css( { "border-color": this.branch.color } )
+        newView.css( { "border-color": branch.color } )
         
-
-        this.branch.drawNavGraph( this.View.find(".navdiag") );
-        this.navGraph = this.branch.navGraph;
+        if ( redrawGraph ) {
+            this.branch.drawNavGraph( this.View.find(".navdiag") );
+            this.navGraph = this.branch.navGraph;
+        }
 
     }
     

@@ -16,6 +16,8 @@ function Branch (Application, id, data)
     
     this.parentBranchId = data.ParentBranchId;
   
+    this.fragment = null;
+    
     this.branches = {};
     this.keys     = {};
     this.posts    = {};
@@ -50,7 +52,7 @@ function Branch (Application, id, data)
         }
     };
     
-    this.update = function (data) {
+    this.update = function ( data ) {
         var i = 0;
         this.postCount       = data.PostCount;
         this.updateTime      = data.UpdateTime;
@@ -98,16 +100,40 @@ Branch.prototype = {
         
         this.loadChilds( );
     },
-    closeFacade : function ( )
-    {
+    closeFacade : function ( ) {
         this.View.find( ".collapse_control" ).removeClass( "opened" );
         
         this.showInnerKeys( this.View ); 
         
         this.removeAfterBranchesAndPosts ( );
     },
-    render : function ( params )
-    {
+    prepareRender : function() {
+//        var fragment = this.getFragment( this.id ); 
+    },
+    getFragment : function( branchId )  {
+        var fragment = null;
+        
+        for (var i = this.Application.fragments.length; i--;) {
+            
+            if ( this.Application.fragments[i].branch.id == branchId ) {
+                fragment = this.Application.fragments[i];
+            } 
+            else {
+                for ( var j in this.Application.fragments[i].branch.branches ) {
+                    if ( this.Application.fragments[i].branch.branches[j].id == branchId ) {
+                        fragment = this.Application.fragments[i];
+                        break;
+                    }
+                }
+            }
+            if ( this.fragment ) {
+                break;
+            }
+        }
+        return fragment;
+    },
+    render : function ( params ) {
+        this.prepareRender();
         
         this.View = this.renderSelf (params.parentView, params.tmpl, params.insertMode, params.parentId);
         
@@ -213,7 +239,9 @@ Branch.prototype = {
         weight : this.relevantWeight,
         color: this.color,
         click  : function ( id ) {
-            Facade.View.find("header").click();
+            console.log('main barnch click');
+            var fragment = Facade.getFragment( id ); 
+            fragment.addFocusedBranch( Facade.Application.branches[id] );
         }
      }, this.prepareNavGraphData( ));
      
@@ -234,23 +262,27 @@ Branch.prototype = {
                 weight : this.branches[i].relevantWeight,
                 color: this.branches[i].color,
                 click  : function( id ) {
+                    console.log(' child branch click ');
+                    var fragment = Facade.getFragment( id ); 
+                    fragment.addFocusedBranch( Facade.Application.branches[id] );
                     
-                    var curBranch = Facade.Application.branches[id];
-                    
-                    Facade.hideInnerKeys(Facade.View); 
-                    
-                    Facade.removeAfterBranchesAndPosts ( false );
-                    
-                    var newView = curBranch.render({
-                        el     : Facade.View, 
-                        tmpl   : 'branch', 
-                        mode   : 'insertAfter',
-                        parent : Facade.id, 
-                        conditionChilds : true,
-                        conditionKeys : true
-                    }).addClass("lighter");
-                    
-                    newView.find("header").click();
+//                    Facade.fragment.addFocusedBranch( Facade );
+//                    var curBranch = Facade.Application.branches[id];
+//                    
+//                    Facade.hideInnerKeys(Facade.View); 
+//                    
+//                    Facade.removeAfterBranchesAndPosts ( false );
+//                    
+//                    var newView = curBranch.render({
+//                        el     : Facade.View, 
+//                        tmpl   : 'branch', 
+//                        mode   : 'insertAfter',
+//                        parent : Facade.id, 
+//                        conditionChilds : true,
+//                        conditionKeys : true
+//                    }).addClass("lighter");
+//                    
+//                    newView.find("header").click();
                 }
             });
         }

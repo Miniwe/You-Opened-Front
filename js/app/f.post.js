@@ -49,7 +49,6 @@ Post.prototype = {
                 this.branchId = id; 
             }
         }
-//        console.log( this.id, this.parentPostId, this.branchId );
         if ( this.branchId )
         {
             this.branchRef = "#branch-"+id+"#post-"+this.id;
@@ -57,17 +56,14 @@ Post.prototype = {
             this.fragment = null;
             for (var i = this.Application.fragments.length; i--;)
             {
-//                console.log(this.id, this.branchId, this.Application.fragments[i].branch);
                 if ( this.Application.fragments[i].branch.id == this.branchId )
                 {
                     this.fragment = this.Application.fragments[i];
                 }
                 else
                 {
-                    console.log('cicle ',this.id, this.branchId, this.Application.fragments[i].branch, this.Application.fragments[i].branch.branches);
                     for ( var j in this.Application.fragments[i].branch.branches )
                     {
-                        console.log('check ',this.branchId, this.Application.fragments[i].branch.branches[j]);
                         if ( this.Application.fragments[i].branch.branches[j].id == this.branchId )
                         {
                             this.fragment = this.Application.fragments[i];
@@ -80,7 +76,6 @@ Post.prototype = {
                     break;
                 }
             }
-            console.log('-- result',this.id, this.branchId, this.fragment);
         }
     },
     attachBehavior : function ( View )
@@ -99,7 +94,6 @@ Post.prototype = {
         */
         View.mouseover(function (){
             // послать сингал для navGraph фрагмента чтоб выделил на диаграме нужную ветку
-            console.log(Facade.branchId /*, Facade.fragment.navGraph */);
             if ( Facade.fragment && Facade.fragment.navGraph )
             {
                 Facade.fragment.navGraph.highlightBranch = Facade.branchId;
@@ -126,13 +120,8 @@ Post.prototype = {
 //            var parent_id = $(this).parents('article').attr("data-parent");
             var branch_id = go_params[0].split("-")[1];
             var post_id = go_params[1].split("-")[1];
-//            console.log(go_params, parent_id, branch_id, post_id);
             
-//            Facade.Application.branches[ parent_id ].closeFacade( );
-            
-            console.log(Facade);
-//            Facade.fragment.changeBranch(Facade.Application.branches[ branch_id ]);
-//            Facade.Application.branches[ branch_id ].openFacade( );
+            Facade.fragment.addFocusedBranch( Facade.Application.branches[ branch_id ] );
             
             return false;
         });
