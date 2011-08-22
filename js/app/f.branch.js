@@ -215,8 +215,8 @@ Branch.prototype = {
     },
     drawNavGraph : function ( holder )
     {
-      var Facade = this;
-      var navGraph = holder;
+      var Facade = this,
+          navGraph = holder;
       
 //      navGraph.attr( "id", "navCont" + this.id )
       
@@ -239,9 +239,12 @@ Branch.prototype = {
         weight : this.relevantWeight,
         color: this.color,
         click  : function ( id ) {
-            console.log('main barnch click');
             var fragment = Facade.getFragment( id ); 
             fragment.addFocusedBranch( Facade.Application.branches[id] );
+        },
+        makeMainClick  : function ( id ) {
+            var fragment = Facade.getFragment( id ); 
+            fragment.addMainBranch( Facade.Application.branches[id] );
         }
      }, this.prepareNavGraphData( ));
      
@@ -262,27 +265,12 @@ Branch.prototype = {
                 weight : this.branches[i].relevantWeight,
                 color: this.branches[i].color,
                 click  : function( id ) {
-                    console.log(' child branch click ');
                     var fragment = Facade.getFragment( id ); 
                     fragment.addFocusedBranch( Facade.Application.branches[id] );
-                    
-//                    Facade.fragment.addFocusedBranch( Facade );
-//                    var curBranch = Facade.Application.branches[id];
-//                    
-//                    Facade.hideInnerKeys(Facade.View); 
-//                    
-//                    Facade.removeAfterBranchesAndPosts ( false );
-//                    
-//                    var newView = curBranch.render({
-//                        el     : Facade.View, 
-//                        tmpl   : 'branch', 
-//                        mode   : 'insertAfter',
-//                        parent : Facade.id, 
-//                        conditionChilds : true,
-//                        conditionKeys : true
-//                    }).addClass("lighter");
-//                    
-//                    newView.find("header").click();
+                },
+                makeMainClick  : function ( id ) {
+                    var fragment = Facade.getFragment( id ); 
+                    fragment.addMainBranch( Facade.Application.branches[id] );
                 }
             });
         }
@@ -291,10 +279,18 @@ Branch.prototype = {
     hideInnerKeys : function ( )
     {
         this.View.find(".branch_keys").hide();
+        this.View.find(".keys-nav").hide();
+        if (this.keyPostIds.length == 0){ 
+            this.View.find(".branch_keys").html("NO KEYS FOR THIS PARAMS").show();
+        }
+    
     },
     showInnerKeys : function ( )
     {
         this.View.find(".branch_keys").show();
+        if (this.keyPostIds.length > 0){ 
+            this.View.find(".keys-nav").show();
+        }
     },
     expandPost : function ( post )
     {

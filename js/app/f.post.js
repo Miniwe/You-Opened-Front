@@ -126,7 +126,7 @@ Post.prototype = {
             return false;
         });
         
-        View.find(".show_reply").click(function(){
+        View.find(".show_reply").click( function ( ) {
            
             var control = $(this);
            
@@ -181,8 +181,7 @@ Post.prototype = {
                         data
                         );        
                     return false;
-                });        
-
+                } );        
                 
             }
             else
@@ -191,13 +190,12 @@ Post.prototype = {
             }
            
             return false;
-        });
+        } );
         
         
     },
     render : function ( params )
     {
-  
         this.prepareRender();
 
         var View = this.renderSelf(params.el, params.tmpl, params.mode, params.parent)

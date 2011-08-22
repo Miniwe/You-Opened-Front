@@ -17,6 +17,8 @@ function NavGraph ( holder ) {
     this.radius = 10;
     this.subRadius = 10;
     this.centerRadius = 10;
+    
+    this.hoverTri = false;
    
 }
 
@@ -48,6 +50,11 @@ NavGraph.prototype = {
         } );
         
         holder.click( function ( event ) {
+            
+            if ( navGraph.hoverTri ) {
+                navGraph.activeBranch.makeMainClick( navGraph.activeBranch.id );
+                return true;
+            }
             if ( navGraph.hoverBranch != undefined ) {
                 navGraph.hoverBranch.click( navGraph.hoverBranch.id );
                 navGraph.activeBranch = navGraph.hoverBranch;
@@ -174,7 +181,7 @@ NavGraph.prototype = {
     },
     drawTriControl : function ( )
     {
-        return false;
+//        return false;
         var width = 30,
             height = 20,
             padding = 10;
@@ -184,6 +191,8 @@ NavGraph.prototype = {
         this.ctx.lineTo((this.width - width)/2 + width/2 + width/2, this.height - padding - height);	
         this.ctx.lineTo((this.width - width)/2 + width/2, this.height - padding);	
         this.ctx.closePath();      
+        
+        this.hoverTri = this.ctx.isPointInPath(this.cPos.x, this.cPos.y);
         
         this.ctx.fillStyle   = "444ff4"; this.ctx.fill();
         this.ctx.strokeStyle = "#8ff888";
