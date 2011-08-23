@@ -138,6 +138,7 @@ Fragment.prototype = {
          * draw indide Elements for given branch
          */
         this.View.find("article").remove();
+        this.View.find(".replacement").remove();
         
         var newView = branch.render ({
             parentView     : this.View, 
@@ -152,12 +153,22 @@ Fragment.prototype = {
             this.branch.drawNavGraph( this.View.find(".navdiag") );
             this.navGraph = this.branch.navGraph;
 
-            this.redrawTags ( this.branch );
-            
-            this.redrawAuthors ( this.branch );
-            
         }
+        /*
+         * если во фрагменте есть открытая ветка то показывать элементы - иначе скрывать
+         */
 
+
+    },
+    showSide : function ( branch )
+    {
+        this.redrawTags ( branch );
+        this.redrawAuthors ( branch );
+    },
+    hideSide : function ( )
+    {
+        this.View.find(".tags").hide();
+        this.View.find(".authors").hide();
     },
     redrawTags : function ( branch )
     {
@@ -169,6 +180,7 @@ Fragment.prototype = {
             if ( counter++ > 15 ) break;
             $("<a href='#tag-" + tagId + "'>" + branch.tags[tagId].tag.asText + " - " + branch.tags[tagId].entryRating + "</a> ").appendTo( tagArea );
         }
+        this.View.find(".tags").show();
         
     },
     redrawAuthors : function ( branch )
@@ -181,7 +193,7 @@ Fragment.prototype = {
             if ( counter++ > 15 ) break;
             $("<a href='#authors-" + authorId + "'>" + branch.authors[authorId].author.name + " - " + branch.authors[authorId].entryRating + "</a> ").appendTo( authorsArea );
         }
-        
+        this.View.find(".authors").show();
     }
     
 }

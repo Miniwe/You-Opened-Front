@@ -130,6 +130,9 @@ Branch.prototype = {
         this.showInnerKeys( this.View ); 
         
         this.removeAfterBranchesAndPosts ( );
+        
+        var fragment = this.getFragment ( this.id );
+        fragment.hideSide ( ) ;
     },
     prepareRender : function() {
 //        var fragment = this.getFragment( this.id ); 
@@ -385,6 +388,9 @@ Branch.prototype = {
                 
                 Facade.drawList( newData.posts );
                 
+                var fragment = Facade.getFragment ( Facade.id );
+                fragment.showSide ( Facade ) ;
+                
             },
             function () {
 
@@ -422,20 +428,7 @@ Branch.prototype = {
             var viewColor = '#eeeeee';
             var pid = this.Application.posts[ posts_list[ i ] ].parentPostId;
             b = this.Application.branchExist(posts_list[ i ]);
-            /*
-//            if ( b != undefined && b.keysCount > 0 )  {
-//                viewColor = this.Application.nextColor( );
-//            } 
-//            else 
-            if ( $( "article[data-parent=" + pid + "]").length > 0 )  {
-                viewColor = $( "article[data-parent=" + pid + "]" ).css( "background-color" );
-//            } else if ( $("article[data-id=" + pid + "]" ).length > 0  ) {
-//                viewColor = $( "article[data-id=" + pid + "]" ).css( "background-color" );
-            }
-            else {
-                viewColor = this.Application.nextColor( );
-            }
-            */
+            
             var newView = this.Application.posts[ posts_list[ i ] ].render({
                 el: this.View, 
                 tmpl: "key", 

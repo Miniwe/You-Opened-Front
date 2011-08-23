@@ -226,6 +226,7 @@ section.fragment .navdiag {
 
 section.fragment .tags, section.fragment .authors{
     width:280px;
+    display: none;
 }
 
 section.fragment .tags a, section.fragment .authors a{
