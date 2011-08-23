@@ -162,6 +162,7 @@
           
 })(jQuery);
 */
+/*
 (function($) {
     
     function alignArticles( sT )
@@ -234,3 +235,5 @@
     });
                     
 })(jQuery);
+
+*/

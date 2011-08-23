@@ -3,11 +3,18 @@
         <div style="float: right; width:80px; height:110px;"><div class="graphContainer"></div></div>
         <header>${id}<br />${post.id}: ${post.text}</header>
         <ul>
+        <li>authorId: ${post.authorId}</li>
+        <li>author: ${post.author.name}</li>
         <li>id: ${id}</li>
         <li>update date: ${updateTimeF}</li>
         <li>relevant weight: ${relevantWeight}</li>
         <li>zIndex: ${zIndex}</li>
         <li>parent: ${parentViewId}</li>
+        <li>tags: 
+        {{each tags}}
+            <span>${tag.id}: ${tag.asText} - ${entryRating} &#0160;</span>
+        {{/each}}
+        </li>
         </ul>
         <ul class="branch_keys">
         {{each keys}}

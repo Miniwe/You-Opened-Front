@@ -22,6 +22,9 @@ function Branch (Application, id, data)
     this.keys     = {};
     this.posts    = {};
     
+    this.tags    = {};
+    this.authors    = {};
+    
     this.navGraph = null;
     
     this.color = this.Application.nextColor();
@@ -75,7 +78,28 @@ function Branch (Application, id, data)
         
         for ( i = this.keyPostIds.length; i--; )
         {
-            this.keys[this.keyPostIds[i]] = Application.posts[this.keyPostIds[i]];
+            this.keys[this.keyPostIds[i]] = this.Application.posts[this.keyPostIds[i]];
+        }
+        for ( var tagId in data.Tags )
+        {
+            if (this.tags[tagId] == undefined)
+            {
+                this.tags[tagId] = {
+                    tag: this.Application.tags[tagId]
+                };
+            }
+            this.tags[tagId].entryRating = data.Tags[tagId].EntryRating;
+        }
+        
+        for ( var authorId in data.Authors )
+        {
+            if (this.authors[authorId] == undefined)
+            {
+                this.authors[authorId] = {
+                    author: this.Application.users[authorId]
+                };
+            }
+            this.authors[authorId].entryRating = data.Authors[authorId].EntryRating;
         }
         
         this.branches = {};
@@ -352,12 +376,12 @@ Branch.prototype = {
                         .sortList( newData.posts, "parentPostId" );
                 }
                 
-//                if (  $("#query").val() != "" ) {
-//                    newData.posts = newData.posts.filterByValue ( function (element, index, array, sval) {
-//                        element = Facade.Application.posts[element];
-//                        return ( element.relevantWeight > 0 ) ;
-//                    }, 0 );
-//                }
+                if (  $("#query").val() != "" ) {
+                    newData.posts = newData.posts.filterByValue ( function (element, index, array, sval) {
+                        element = Facade.Application.posts[element];
+                        return ( element.relevantWeight > 0 ) ;
+                    }, 0 );
+                }
                 
                 Facade.drawList( newData.posts );
                 
@@ -421,7 +445,7 @@ Branch.prototype = {
             
             if (b != undefined)
             {                
-                newView.css( { "border-color": b.color } );
+                newView.css( { "outline-color": b.color } );
             }
         }
     },

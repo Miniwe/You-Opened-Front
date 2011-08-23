@@ -15,6 +15,7 @@ function Post (Application, id, data)
     this.branchRef        = "";
     
     this.authorId        = data.AuthorId;
+    this.author          = (this.Application.users[this.authorId] != undefined)?this.Application.users[this.authorId]:null;
   
     this.createTime      =  data.CreateTime;
     this.createTimeF     = formatDate(this.createTime);
@@ -23,13 +24,23 @@ function Post (Application, id, data)
     
     this.posts           = {};
     
-    (this.update = function ( data )
-    {
+    this.tags           = {};
+    
+    (this.update = function ( data ) {
         this.relevantWeight = data.RelevantWeight;
         
-    }).call(this, data);
+        for ( var tagId in data.Tags ) {
+            if (this.tags[tagId] == undefined) {
+                this.tags[tagId] = {
+                    tag: this.Application.tags[tagId]
+                };
+            }
+            this.tags[tagId].entryRating = data.Tags[tagId].EntryRating;
+        }
+                
+    } ).call( this, data );
 }
-extend(Post, Facade);
+extend( Post, Facade );
 
 Post.prototype = {
     openFacade : function ( View )

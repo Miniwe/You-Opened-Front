@@ -351,6 +351,8 @@ var Application = function ( opts )
     {
         
         var newData = {
+                users    : [],
+                tags    : [],
                 branches    : [],
                 posts       : []
             }, 
@@ -358,6 +360,40 @@ var Application = function ( opts )
             ;
         
         if (!data) return newData;
+        
+        if ( data.Users != undefined )
+        {
+            for (var id in data.Users)
+            {
+                if (this.users[id] == undefined)
+                {
+                    this.users[id] = new User( this, id, data.Users[id] );
+                }
+                else
+                {
+                    this.users[id].update( data.Users[id] );
+                }
+
+                newData.users.push(id);
+            }
+        }
+        
+        if ( data.Tags != undefined )
+        {
+            for (var id in data.Tags)
+            {
+                if (this.tags[id] == undefined)
+                {
+                    this.tags[id] = new Tag( this, id, data.Tags[id] );
+                }
+                else
+                {
+                    this.tags[id].update( data.Tags[id] );
+                }
+
+                newData.tags.push(id);
+            }
+        }
         
         if ( data.Posts != undefined )
         {
@@ -453,8 +489,9 @@ var Application = function ( opts )
        $(".reply").hide().remove();
     };
     
-    this.updateView  = function () 
+    this.updateView  = function ( sT ) 
     {
+        /*
         if (this.activeBranch)
         {
             var tmpView = $("article[data-id="+ this.activeBranch.id +"]");
@@ -484,7 +521,73 @@ var Application = function ( opts )
             }
                 
                 
+        } */
+        var fragment = null,
+            top      = 0,
+            bottom   = 0,
+            frTop    = 0,
+            branch   = null,
+            aright = null;
+            
+        for ( var i = this.fragments.length; i--; )
+        {
+            /*
+             * ++ получить top и низ фрагмента
+             * если top < 0 то делаем ветку активнеой, вставляем replacement
+             * сдвиг ветки делаем на scrollTop
+             * если высота ветки > низ фрагмента то делать сдвиг активной на низ фрагмента - высота активной
+             */
+            fragment = this.fragments[i];
+            
+            top = fragment.View.offset().top;
+            bottom = fragment.View.offset().top + fragment.View.outerHeight( true );
+            
+            branch = fragment.View.find('.branch').first();
+            aright = fragment.View.find('aside.right');
+            
+            frTop = 0;
+            
+            if (top < sT)
+            {
+                branch.addClass('float');
+            }
+            else
+            {
+                branch.removeClass('float');
+            }
+            
+            if (bottom < branch.outerHeight(true) + sT)
+            {
+                branch.css({"top": (bottom - branch.outerHeight(true) - sT)+"px"});
+            }
+            else
+            {
+                branch.css({"top": "0px"});
+            }
+            
+            var aright_top = 0;
+            if (branch.hasClass('float'))
+            {
+                if (branch.next(".replacement").length < 1)
+                {
+                    branch
+                    .after('<div class="replacement" \n\
+                        style="height:' + branch.outerHeight(true) + 'px">\n\
+                   </div>');
+                }
+                if (bottom >= branch.outerHeight(true) + sT)
+                {
+                    aright_top = sT + 0;
+                }
+            }
+            else    
+            {
+                branch.next(".replacement").remove();
+            } 
+            aright.css({"margin-top": aright_top + "px"});
+            
         }
+        
     };
 
     this.branchExist = function ( postId )
@@ -499,6 +602,7 @@ var Application = function ( opts )
         
         return false;
     };
+
 
     return this;
     

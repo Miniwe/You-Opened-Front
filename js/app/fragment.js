@@ -137,22 +137,51 @@ Fragment.prototype = {
          * 3 ...
          * draw indide Elements for given branch
          */
-        this.View.find(".current-branch *").remove();
+        this.View.find("article").remove();
         
         var newView = branch.render ({
-            parentView     : this.View.find(".current-branch"), 
+            parentView     : this.View, 
             insertMode   : 'appendTo',
             tmpl   : 'branch', 
             parentId : this.id
         });
         
-        newView.css( { "border-color": branch.color } )
+        newView.css( { "outline-color": branch.color } )
         
         if ( redrawGraph ) {
             this.branch.drawNavGraph( this.View.find(".navdiag") );
             this.navGraph = this.branch.navGraph;
+
+            this.redrawTags ( this.branch );
+            
+            this.redrawAuthors ( this.branch );
+            
         }
 
+    },
+    redrawTags : function ( branch )
+    {
+        var tagArea = this.View.find(".tags .inner");
+        tagArea.find("*").remove();
+        
+        var counter = 0;
+        for (var tagId in branch.tags) {
+            if ( counter++ > 15 ) break;
+            $("<a href='#tag-" + tagId + "'>" + branch.tags[tagId].tag.asText + " - " + branch.tags[tagId].entryRating + "</a> ").appendTo( tagArea );
+        }
+        
+    },
+    redrawAuthors : function ( branch )
+    {
+        var authorsArea = this.View.find(".authors .inner");
+        authorsArea.find("*").remove();
+        
+        var counter = 0;
+        for (var authorId in branch.authors) {
+            if ( counter++ > 15 ) break;
+            $("<a href='#authors-" + authorId + "'>" + branch.authors[authorId].author.name + " - " + branch.authors[authorId].entryRating + "</a> ").appendTo( authorsArea );
+        }
+        
     }
     
 }

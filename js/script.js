@@ -27,7 +27,8 @@
     });
     
     $(window).bind("scroll", function() {
-        app.updateView();
+        app.updateView( $(document.body).scrollTop() );
+        
     });      
   
     $(window).bind("load", function() { 

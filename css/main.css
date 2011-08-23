@@ -34,6 +34,7 @@ body {
 #main-container {
     width: 60%;
     margin: 0 auto;
+    padding-bottom:100%;
 }
 
 article {
@@ -50,8 +51,8 @@ article > div{
 article.branch {
     background-color: #B58AA5;
     outline: 1px solid #ffffff;
-    border-right:10px solid #ffffff;
-    border-left: 10px solid #ffffff;
+/*    border-right:10px solid #ffffff;*/
+/*    border-left: 10px solid #ffffff;*/
 }
 
 article.branch ul.branch_keys{
@@ -69,8 +70,8 @@ article.branch.lighter{
 article.key {
     background-color: #CECFCE;
     outline: 1px solid #dddddd;
-    border-right: 10px solid #ffffff;
-    border-left: 10px solid #ffffff;
+/*    border-right: 10px solid #ffffff;*/
+/*    border-left: 10px solid #ffffff;*/
 }
 
 article.post {
@@ -87,7 +88,7 @@ article.active {
     /*          outline: 1px solid green;*/
     position: fixed;
     top: 0px;
-    width: inherit;
+    width: 60%;
     z-index: 1000;
     /*          -webkit-box-shadow: inset 0px 0px 0px 1px #000;*/
 
@@ -179,23 +180,24 @@ a.show_reply {
 }
 
 section.fragment {
+    width: 100%;
+    margin: 0 auto;    
     margin-bottom: 10px;
 /*    border:2px solid #cccccc;*/
     -webkit-box-shadow: inset 0px 0px 3px #777777, 3px 3px 5px #cccccc;
 }
 
-
 section.fragment > header {
     background-color: #eeeeee;
 }
 
-section.fragment .navdiag {
-    width: 120px;
-    height: 120px;
-    margin-left: 2px;
-    margin-top: 10px;
+section.fragment aside.right {
     position: absolute;
-    
+}
+
+section.fragment aside.right > div {
+    margin-top: 10px;
+    margin-left: 2px;
     background-color: #cccccc;
     -webkit-border-top-right-radius: 10px;
     -webkit-border-bottom-right-radius: 10px;
@@ -203,8 +205,9 @@ section.fragment .navdiag {
     -moz-border-radius-bottomright: 10px;
     border-top-right-radius: 10px;
     border-bottom-right-radius: 10px;    
+    
 }
-section.fragment .navdiag canvas {
+section.fragment .navdiag canvas, section.fragment aside .inner{
     background-color: #ffffff;
     -webkit-border-top-right-radius: 10px;
     -webkit-border-bottom-right-radius: 10px;
@@ -214,5 +217,23 @@ section.fragment .navdiag canvas {
     border-bottom-right-radius: 10px;    
 /*    border:1px outset #eeeeee;*/
     -webkit-box-shadow: inset 0px 0px 3px #777777, 3px 3px 5px #cccccc;
-    
+}
+
+section.fragment .navdiag {
+    width: 120px;
+    height: 120px;
+}
+
+section.fragment .tags, section.fragment .authors{
+    width:280px;
+}
+
+section.fragment .tags a, section.fragment .authors a{
+    display: inline-block;
+    padding: 3px;
+    margin: 2px;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+    -webkit-box-shadow: inset 0px 0px 3px #777777, 3px 3px 5px #cccccc;
 }
