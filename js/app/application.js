@@ -430,7 +430,7 @@ var Application = function ( opts )
                 newData.branches.push(id);
             }
         }
-        
+//        console.log( 'Application data', this, this.posts, this.branches, this.tags, this.tags );
         return newData;
     };
     

@@ -368,25 +368,26 @@ Branch.prototype = {
                 Facade.removeAfterBranchesAndPosts ( false );
                 
                 var newData = this.parseResponseData( response );
-
-                if ( $("#params-form [name=mode]:checked").val( ) == "plain" )
-                {        
-                    Facade
-                        .sortList( newData.posts, "createTime" );
-                }
-                else {
-                    Facade
-                        .sortList( newData.posts, "parentPostId" );
-                }
                 
-                if (  $("#query").val() != "" ) {
+                if (  $("#query").val() != "" && $("#params-form [name=filter]:checked").val( ) == "On" ) {
                     newData.posts = newData.posts.filterByValue ( function (element, index, array, sval) {
                         element = Facade.Application.posts[element];
                         return ( element.relevantWeight > 0 ) ;
                     }, 0 );
                 }
+
+                if ( $("#params-form [name=mode]:checked").val( ) == "plain" )
+                {        
+                    Facade
+                        .sortList( newData.posts, "createTime" );
+                        Facade.drawList( newData.posts );
+                }
+                else {
+                    Facade
+                        .sortList( newData.posts, "parentPostId" );
+                   Facade.drawListHierarhy( newData.posts, "#ffffff", Facade.View );
+                }
                 
-                Facade.drawList( newData.posts );
                 
                 var fragment = Facade.getFragment ( Facade.id );
                 fragment.showSide ( Facade ) ;
@@ -418,12 +419,49 @@ Branch.prototype = {
         }
         return posts_list;
     },
+    drawListHierarhy: function ( posts_list, color, View)
+    {
+        var b;
+        for ( var i = posts_list.length; i--; )
+        {
+            if ( this.Application.posts[ posts_list[ i ] ].parentPostId != this.postId ) {continue};
+            b = this.Application.branchExist(posts_list[ i ]);
+            
+            if ( b )
+            {
+                var newView = this.Application.posts[ posts_list[ i ] ].render({
+                    el: View, 
+                    tmpl: "key", 
+                    mode :"insertAfter",
+                    parent: this.id
+                }).css({"outline-color": b.color });
+                
+                b.drawListHierarhy( posts_list, b.color, newView );
+            }
+            else
+            {
+                var newView = this.Application.posts[ posts_list[ i ] ].render({
+                    el: View, 
+                    tmpl: "key", 
+                    mode :"insertAfter",
+                    parent: this.id
+                }).css( {"outline-color": color } );
+            }
+            /*
+             * перебирать все посты ветки
+             * если пост является корнем другой ветки то его рисовать с другим цветом
+             * запускать с этим цветом перебор 
+             */
+            
+        }
+        
+    },
     drawList: function ( posts_list )
     {
         var b;
         for ( var i = posts_list.length; i--; )
         {
-            if ( this.Application.posts[ posts_list[ i ] ].id == this.postId ) { continue };
+            if ( this.Application.posts[ posts_list[ i ] ].id == this.postId ) {continue};
 
             var viewColor = '#eeeeee';
             var pid = this.Application.posts[ posts_list[ i ] ].parentPostId;
@@ -436,9 +474,9 @@ Branch.prototype = {
                 parent: this.id
             });
             
-            if (b != undefined)
+            if ( b )
             {                
-                newView.css( { "outline-color": b.color } );
+                newView.css( {"outline-color": b.color} );
             }
         }
     },
