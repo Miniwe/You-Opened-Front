@@ -24,6 +24,18 @@
         app.run();
     
         // * * * jQuery function process place HERE * * *     
+        $("#params-form").submit(function() {
+            app.resetApplication();
+            app.loadIndexPage(); 
+            return false;
+        });      
+        
+        $(".taglist span.tag").live('click', function() {
+            $("#query").val($(this).find('tag').html());
+            $("#params-form").submit();
+            return false;
+        });      
+        
     });
     
     $(window).bind("scroll", function() {

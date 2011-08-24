@@ -238,3 +238,7 @@ section.fragment .tags a, section.fragment .authors a{
     border-radius: 4px;
     -webkit-box-shadow: inset 0px 0px 3px #777777, 3px 3px 5px #cccccc;
 }
+
+.taglist span.tag {
+    cursor: pointer;
+}

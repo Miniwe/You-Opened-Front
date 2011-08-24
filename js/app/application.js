@@ -20,12 +20,12 @@ var Application = function ( opts )
     this.tags        = {};  
     this.users       = {};
     this.words       = {};
+    this.activeBranch = 0;
     
     this.ajaxRequests = [];
     this.ajaxCount = 0;
     this.ajaxTimer = 0;
     
-    this.activeBranch = 0;
     
    
     this.nextColor = (function ( ) {
@@ -260,6 +260,27 @@ var Application = function ( opts )
     }
     
     /*
+     * ОБнуление всего и потом очистка страницы
+     */
+    this.resetApplication = function ()
+    {
+
+        this.posts       = {};
+        this.tags        = {};  
+        this.users       = {};
+        this.words       = {};
+        this.activeBranch = 0;
+        this.branches = {};
+        
+        for (var i = this.fragments.length; i--; )
+        {
+            this.fragments[i].remove();
+        }
+        
+        $("#main-container").find("section").remove();
+        this.clearPage();
+    }
+    /*
      * Очистка страницы
      */
     this.clearPage = function ()
@@ -411,7 +432,6 @@ var Application = function ( opts )
                 newData.posts.push(id);
             }
         }
-        
         if ( data.Branches != undefined )
         {
             for (var id in data.Branches)

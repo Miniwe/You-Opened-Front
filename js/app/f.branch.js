@@ -107,8 +107,8 @@ function Branch (Application, id, data)
     }
     
     this.update(data);
-  
-//  return this;
+    
+//    return this;
 }
 
 extend(Branch, Facade);
@@ -391,7 +391,7 @@ Branch.prototype = {
                 
                 var fragment = Facade.getFragment ( Facade.id );
                 fragment.showSide ( Facade ) ;
-                
+
             },
             function () {
 

@@ -147,7 +147,7 @@ Fragment.prototype = {
             parentId : this.id
         });
         
-        newView.css( { "outline-color": branch.color } )
+        newView.css( {"outline-color": branch.color} )
         
         if ( redrawGraph ) {
             this.branch.drawNavGraph( this.View.find(".navdiag") );
@@ -178,7 +178,7 @@ Fragment.prototype = {
         var counter = 0;
         for (var tagId in branch.tags) {
             if ( counter++ > 15 ) break;
-            $("<a href='#tag-" + tagId + "'>" + branch.tags[tagId].tag.asText + " - " + branch.tags[tagId].entryRating + "</a> ").appendTo( tagArea );
+            $("<a href='#tag-" + tagId + "'><span class='tag'><tag>" + branch.tags[tagId].tag.asText + "</tag> - " + branch.tags[tagId].entryRating + "</span></a> ").appendTo( tagArea );
         }
         this.View.find(".tags").show();
         
@@ -194,6 +194,12 @@ Fragment.prototype = {
             $("<a href='#authors-" + authorId + "'>" + branch.authors[authorId].author.name + " - " + branch.authors[authorId].entryRating + "</a> ").appendTo( authorsArea );
         }
         this.View.find(".authors").show();
+    },
+    remove : function ()
+    {
+        this.branch = null;
+        this.focusedBranch = null;
+        this.navGraph = null;
     }
     
 }

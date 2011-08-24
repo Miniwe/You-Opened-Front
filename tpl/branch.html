@@ -10,9 +10,9 @@
         <li>relevant weight: ${relevantWeight}</li>
         <li>zIndex: ${zIndex}</li>
         <li>parent: ${parentViewId}</li>
-        <li style="overflow: hidden; height: 2em; margin-bottom: 10px;">tags: 
+        <li style="overflow: hidden; height: 2em; margin-bottom: 10px;" class="taglist">tags: 
         {{each tags}}
-            <span>${tag.id}: ${tag.asText} - ${entryRating} &#0160;</span>
+            <span class="tag">${tag.id}: <tag>${tag.asText}</tag> - ${entryRating} &#0160;</span>
         {{/each}}
         </li>
         </ul>
