@@ -24,6 +24,32 @@
         app.run();
     
         // * * * jQuery function process place HERE * * *     
+        $("#auth-form").submit(function() {
+            app.ajaxRequest("/Auth.json", 
+                function(data){
+                    
+                    if (data.SessionKey)
+                    {
+                        $.cookie("SessionKey", data.SessionKey, {
+                            expires: 7,
+                            path: '/',
+                            domain: '.youopened.com'
+                        });
+                    }
+                    
+                }, function(){
+                    app.msg("Couldn't auth user");
+                },
+                {
+                    procedure : "SignIn",
+                    userName : "VincTr91",
+                    password : "abc1"
+                }
+                
+            );        
+            
+            return false;
+        });      
         $("#params-form").submit(function() {
             app.resetApplication();
             app.loadIndexPage(); 
