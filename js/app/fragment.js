@@ -37,7 +37,7 @@ Fragment.prototype = {
              * действия для главной ветки
              */
             Facade.removeFocusedBranch( );
-            Facade.branch = branch;   
+            Facade.branch = branch;
             Facade.redrawFragment( Facade.branch, true );
         };
 
@@ -46,14 +46,6 @@ Fragment.prototype = {
     },
     addFocusedBranch : function ( branch )
     {
-        // @todo add history
-//        this.focusedBranch = branch;   
-//        
-//        this.redrawFragment( this.focusedBranch, false );
-//        
-//        this.navGraph.activeBranch = this.focusedBranch;
-//        
-//        this.focusedBranch .View.find("header").click();
         
         var item = branch;
         var Facade = this;
@@ -68,6 +60,10 @@ Fragment.prototype = {
             
             Facade.branch = Facade.Application.branches[Facade.focusedBranch.parentBranchId];   
             
+            if (Facade.branch == undefined)
+            {
+                Facade.branch = Facade.focusedBranch;
+            }
             Facade.redrawFragment( Facade.focusedBranch, true);
             
             Facade.navGraph.activeBranch = Facade.focusedBranch;

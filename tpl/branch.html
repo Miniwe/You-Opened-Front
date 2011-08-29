@@ -18,11 +18,16 @@
         </ul>
         <ul class="branch_keys">
         {{each keys}}
-            <li>${id}: ${text}</li>
+            <li data-id="${id}"><a href="#post-${id}" data-id="${id}" class="openkey">${id}: ${text}</a></li>
         {{/each}}
         </ul>
         <div style="float: right;" class="keys-nav">
-            <a href="#prevkey" style="color: #fff;">prev key</a> | current key | <a href="#nexkey" style="color: #fff;">next key</a>
+            <a href="#prevkey" class="prevkey" style="color: #fff;">prev key</a> | 
+            {{each keys}}
+                <a href="#key-${id}" class="keychange" data-id="${id}" style="font-weight: bold; font-size: 10px;">${id}</a>
+            {{/each}}
+            
+            | <a href="#nexkey" class="nextkey" style="color: #fff;">next key</a>
         </div>
         <a href="#show_reply" class="show_reply">
             <span title="Reply">Reply</span>

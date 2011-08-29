@@ -114,7 +114,7 @@ function Branch (Application, id, data)
 extend(Branch, Facade);
 
 Branch.prototype = {
-    openFacade : function ( )
+    openFacade : function ( callback )
     {
         this.View.find( ".collapse_control" ).addClass( "opened" );
         
@@ -122,7 +122,9 @@ Branch.prototype = {
         
         this.removeAfterBranchesAndPosts ( );
         
-        this.loadChilds( );
+        this.loadChilds( callback );
+        
+        
     },
     closeFacade : function ( ) {
         this.View.find( ".collapse_control" ).removeClass( "opened" );
@@ -210,6 +212,47 @@ Branch.prototype = {
                Facade.Application.removeReplyForm()
            }
            
+           return false;
+        });
+        
+        this.View.find(".keychange").click( function( ) {
+           $(".keychange").removeClass("active")
+           $(this).addClass("active")
+           $(this).parents(".branch").find("ul.branch_keys li").hide();
+           $(this).parents(".branch").find("ul.branch_keys li[data-id=" + $(this).attr("data-id") + "]").show();
+           return false;
+        });
+        
+        this.View.find(".prevkey").click( function( ) {
+            var active = $(this).parents(".branch").find("ul.branch_keys li:visible").prev("li");
+            if (active.length < 1)
+            {
+                active  = $(this).parents(".branch").find("ul.branch_keys li:last");
+            }
+            $(".keychange[data-id=" + active.attr("data-id") + "]").click();
+           return false;
+        });
+        
+        this.View.find(".nextkey").click( function( ) {
+            var active = $(this).parents(".branch").find("ul.branch_keys li:visible").next("li");
+            if (active.length < 1)
+            {
+                active  = $(this).parents(".branch").find("ul.branch_keys li:first");
+            }
+            $(".keychange[data-id=" + active.attr("data-id") + "]").click();
+           return false;
+        });
+        
+        this.View.find(".openkey").click( function( ) {
+            var postId = $(this).attr("data-id");
+            Facade.openFacade( function (){
+                console.log('will be opened', postId, Facade.Application.posts[postId]);
+                var View = $("article.key[data-id=" + postId + "]");
+                if (View)
+                {
+                    $(document.body).scrollTop( View.offset().top + Facade.View.outerHeight(true) );
+                }
+            });
            return false;
         });
         
@@ -358,7 +401,7 @@ Branch.prototype = {
         };
 
     },
-    loadChilds : function ( )
+    loadChilds : function ( callback )
     {
         var Facade = this,
             id = 0;
@@ -388,6 +431,11 @@ Branch.prototype = {
                    Facade.drawListHierarhy( newData.posts, "#ffffff", Facade.View );
                 }
                 
+                if (callback != undefined)
+                {
+                    console.log('bbbb');
+                    callback();
+                }
                 
                 var fragment = Facade.getFragment ( Facade.id );
                 fragment.showSide ( Facade ) ;
@@ -434,7 +482,7 @@ Branch.prototype = {
                     tmpl: "key", 
                     mode :"insertAfter",
                     parent: this.id
-                }).css({"outline-color": b.color });
+                }).css({"outline-color": b.color});
                 
                 b.drawListHierarhy( posts_list, b.color, newView );
             }
@@ -445,7 +493,7 @@ Branch.prototype = {
                     tmpl: "key", 
                     mode :"insertAfter",
                     parent: this.id
-                }).css( {"outline-color": color } );
+                }).css( {"outline-color": color} );
             }
             /*
              * перебирать все посты ветки

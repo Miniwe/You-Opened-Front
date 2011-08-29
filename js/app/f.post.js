@@ -65,6 +65,7 @@ Post.prototype = {
             this.branchRef = "#branch-"+id+"#post-"+this.id;
             
             this.fragment = null;
+        
             for (var i = this.Application.fragments.length; i--;)
             {
                 if ( this.Application.fragments[i].branch.id == this.branchId )

@@ -55,14 +55,6 @@ article.branch {
 /*    border-left: 10px solid #ffffff;*/
 }
 
-article.branch ul.branch_keys{
-    border:1px inset #B58AA5;
-}
-
-article.branch ul.branch_keys li {
-    padding: 0.4em;
-}
-
 article.branch.lighter{
 /*    background-color: #d7acc7;*/
 }
@@ -92,6 +84,16 @@ article.active {
     z-index: 1000;
     /*          -webkit-box-shadow: inset 0px 0px 0px 1px #000;*/
 
+}
+
+article.branch ul.branch_keys{
+    border:1px inset #B58AA5;
+    height: 4em;
+    overflow: hidden;
+}
+
+article.branch ul.branch_keys li {
+    padding: 0.4em;
 }
 
 .branch_keys li
@@ -241,4 +243,8 @@ section.fragment .tags a, section.fragment .authors a{
 
 .taglist span.tag {
     cursor: pointer;
+}
+
+.keychange.active {
+    color: red;
 }
