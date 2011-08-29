@@ -1,4 +1,3 @@
-
 function Fragment ( Application )
 {
     this.Application = Application;
@@ -9,7 +8,7 @@ function Fragment ( Application )
     this.branch = null;
     this.focusedBranch = null;
     
-    this.branchHistory = [];
+    this.branchHistory = new History( );
     
     this.View = $(document.body);
     
@@ -24,25 +23,60 @@ Fragment.prototype = {
      */
     addMainBranch : function ( branch )
     {
-        // @todo add history
-        
-        this.removeFocusedBranch( branch );
-        
-        this.branch = branch;   
-        
-        this.redrawFragment( this.branch, true );
-        
+//        
+//        this.removeFocusedBranch( branch );
+//        this.branch = branch;   
+//        this.redrawFragment( this.branch, true );
+//       
+
+        var item = branch;
+        var Facade = this;
+
+        item.action = function () {
+            /*
+             * действия для главной ветки
+             */
+            Facade.removeFocusedBranch( );
+            Facade.branch = branch;   
+            Facade.redrawFragment( Facade.branch, true );
+        };
+
+        Facade.branchHistory.addItem( item );
+        Facade.branchHistory.process( true );
     },
     addFocusedBranch : function ( branch )
     {
         // @todo add history
-        this.focusedBranch = branch;   
+//        this.focusedBranch = branch;   
+//        
+//        this.redrawFragment( this.focusedBranch, false );
+//        
+//        this.navGraph.activeBranch = this.focusedBranch;
+//        
+//        this.focusedBranch .View.find("header").click();
+        
+        var item = branch;
+        var Facade = this;
 
-        this.redrawFragment( this.focusedBranch, false );
-        
-        this.navGraph.activeBranch = this.focusedBranch;
-        
-        this.focusedBranch .View.find("header").click();
+        item.action = function () {
+            /*
+             * действия для чилдовой ветки
+             */
+            Facade.removeFocusedBranch( );
+            
+            Facade.focusedBranch = branch;   
+            
+            Facade.branch = Facade.Application.branches[Facade.focusedBranch.parentBranchId];   
+            
+            Facade.redrawFragment( Facade.focusedBranch, true);
+            
+            Facade.navGraph.activeBranch = Facade.focusedBranch;
+            Facade.focusedBranch .View.find("header").click();
+            
+        };
+
+        Facade.branchHistory.addItem( item );
+        Facade.branchHistory.process( true );
 
     },
     removeFocusedBranch : function ( )
@@ -54,38 +88,23 @@ Fragment.prototype = {
             this.navGraph.activeBranch = this.focusedBranch;
         }
     },
-    changeBranch : function ( branch )
+    
+    attachBehavior : function ( )
     {
-        this.branchHistory.push( this.branch );
-        this.cbIndex = this.branchHistory.length - 1;
-        this.branch = branch;   
+        var Facade = this;
         
-        this.redrawFragment( this.branch, true );
-    },
-    changeFocusedBranch : function ( branchId )
-    {
-        // указывает navGraph кто будет focused branch
-    },
-    /*
-     * get branch by index or last branches element
-     */
-    getBranch : function ( index )
-    {
-        if ( index )
-        {
-            if (this.branchHistory[index] != undefined)
-            {
-                return this.branchHistory[index];
-            }
-            else
-            {
-                return false;
-            }
-        }
-        else
-        {
-            return this.branchHistory[ this.branchHistory.length - 1 ];
-        }
+        this.View.find(".go-back").click( function( ) {
+            Facade.branchHistory.process( Facade.branchHistory.prev( ) );
+            console.log('back - ', Facade.branchHistory.getCurentIndex() );
+            return false;
+        });
+        
+        this.View.find(".go-forward").click( function( ) {
+            Facade.branchHistory.process( Facade.branchHistory.next( ) );
+            console.log('forward - ', Facade.branchHistory.getCurentIndex() );
+            return false;
+        });
+        
     },
     /*
      * @param params Object {
@@ -124,6 +143,9 @@ Fragment.prototype = {
             default:
                 this.Application.msg("Incorrect render mode for " + params.tmpl);
         }
+        
+        
+        this.attachBehavior ( );
         
         return this.View;
         
