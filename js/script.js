@@ -25,7 +25,9 @@
     
         // * * * jQuery function process place HERE * * *     
         $("#auth-form").submit(function() {
+            var data = app.formArrayToData($(this).formToArray());
             app.ajaxRequest("/Auth.json", 
+            
                 function(data){
                     
                     if (data.SessionKey)
@@ -35,21 +37,41 @@
                             path: '/',
                             domain: '.youopened.com'
                         });
+                        app.sessionkey = data.SessionKey;
+                        app.msg(data.Result.UserInfo);
+                    }
+                    else
+                    {
+                        app.msg("Error in authorization" +  "\n" + data.Result.UserInfo);
                     }
                     
                 }, function(){
                     app.msg("Couldn't auth user");
                 },
-                {
-                    procedure : "SignIn",
-                    userName : "VincTr91",
-                    password : "abc1"
-                }
-                
+                data
             );        
             
             return false;
         });      
+        
+        $("#reg-form").submit(function() {
+            var data = app.formArrayToData($(this).formToArray());
+            app.ajaxRequest("/Auth.json", 
+            
+                function(data){
+                    
+                    app.msg(data.Result.UserInfo);
+                    
+                }, function(){
+                    app.msg("Couldn't register user");
+                },
+                data
+            );        
+            
+            return false;
+        });      
+        
+        
         $("#params-form").submit(function() {
             app.resetApplication();
             app.loadIndexPage(); 

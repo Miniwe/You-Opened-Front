@@ -26,6 +26,9 @@ function Post (Application, id, data)
     
     this.tags           = {};
     
+    this.directUsers    = {};
+    this.directUsersIds = [];
+    
     (this.update = function ( data ) {
         this.relevantWeight = data.RelevantWeight;
         
@@ -37,6 +40,17 @@ function Post (Application, id, data)
             }
             this.tags[tagId].entryRating = data.Tags[tagId].EntryRating;
         }
+        
+        if (data.DirectUserIds != null) {
+            this.directUsersIds = data.DirectUserIds;
+            
+            for ( var i=this.directUsersIds.length; i--; ) {
+                if ( this.Application.users[ this.directUsersIds[ i ] ] != undefined ) {
+                    this.directUsers[ this.directUsersIds[ i ] ] = this.Application.users[ this.directUsersIds[ i ] ];
+                };
+            }
+        }
+        
                 
     } ).call( this, data );
 }

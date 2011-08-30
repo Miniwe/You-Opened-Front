@@ -112,7 +112,7 @@ var Application = function ( opts )
     this.ajaxRequest = function (url, success, error, data)
     {
         var data = data || {};
-        data.sessionkey = this.sessionkey;
+        data.sessionKey = this.sessionkey;
         var Application = this;
         
         var ajaxOpts = {
@@ -470,17 +470,50 @@ var Application = function ( opts )
         return out;
     };    
     
-    this.addReplyFormBehavior = function ( facade, View )
+    this.addReplyFormBehavior = function ( Facade, View )
     {   
         var Application = this;
 
+
+        View.find(".directusernames").autocomplete(this.globalPath + 
+            this.frameworkPath + '/Suggest.json', {
+                width: View.find(".directusernames").width(),
+                dataType : "jsonp",
+                multiple: true,
+                matchContains: true,
+                selectFirst: true,
+                minChars: 1,
+                autoFill: true,
+                extraParams:  {
+                    facadeType : "user"
+                },
+                parse : function ( data )
+                {
+                    var parsed = [];
+                    for ( i in data) {
+                        parsed[parsed.length] = {
+                            data: data[i],
+                            id: i,
+                            value: data[i]+"("+i+")",
+                            result: data[i]+"("+i+")"
+                        };
+                    }
+                    return parsed;
+                    
+                },
+                formatItem: function ( row ) {
+                    return row;
+                }
+        });
+        
         View.find("form.replyform").submit(function(){
 
             Application.removeReplyForm();
             View.find(".show_reply").removeClass("opened");
             
             var data = Application.formArrayToData($(this).formToArray());
-            
+            data.directUserIds = getIds(data.directusernames);
+
             Application.ajaxRequest("/Slice.json", 
                 function(data){
                     var newData = Application.parseResponseData(data);

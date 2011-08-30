@@ -10,6 +10,11 @@
         <li>relevant weight: ${relevantWeight}</li>
         <li>zIndex: ${zIndex}</li>
         <li>parent: ${parentViewId}</li>
+        <li class="directuserslist">direct users: 
+        {{each post.directUsers}}
+            <span class="directuser">${name},&#0160;</span>
+        {{/each}}
+        </li>
         <li style="overflow: hidden; height: 2em; margin-bottom: 10px;" class="taglist">tags: 
         {{each tags}}
             <span class="tag">${tag.id}: <tag>${tag.asText}</tag> - ${entryRating} &#0160;</span>

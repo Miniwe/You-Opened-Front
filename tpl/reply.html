@@ -2,7 +2,12 @@
     <div class="reply">
         <form action="/framework/Slice.json" method="get" name="replyform" id="replyform-${id}" class="replyform">
             <input type="text" name="procedure" value="PostMessage" />
-            <input type="text" name="parentPostId" value="${id}" />
+            <input type="hidden" name="parentPostId" value="${id}" />
+            <textarea name="directusernames" autocomplete="off" 
+                      class="directusernames" style="height: 1.2em; width: 540px; display: block;"></textarea>
+            <input type="hidden" id="replytoid"  name="${type}" value="${id}" />
+
+            
             <br />
             <textarea name="text" style="width:100%;"></textarea>
             <input type="submit" name="Submit" />

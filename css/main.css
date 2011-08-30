@@ -167,7 +167,7 @@ a.show_reply {
     -webkit-box-shadow: inset 0px 3px 3px #eee, 3px 3px 6px #ddd;
 }
 
-#params-form {
+#params-form, #auth-form, #reg-form{
     border:1px solid #e6e6e6;
     background-color: #eeeeee;
     padding: 10px;

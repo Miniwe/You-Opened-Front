@@ -91,13 +91,11 @@ Fragment.prototype = {
         
         this.View.find(".go-back").click( function( ) {
             Facade.branchHistory.process( Facade.branchHistory.prev( ) );
-            console.log('back - ', Facade.branchHistory.getCurentIndex() );
             return false;
         });
         
         this.View.find(".go-forward").click( function( ) {
             Facade.branchHistory.process( Facade.branchHistory.next( ) );
-            console.log('forward - ', Facade.branchHistory.getCurentIndex() );
             return false;
         });
         

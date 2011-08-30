@@ -69,7 +69,7 @@ String.prototype.capitalize = function() {
 function getIds (str)
 {
     
-    var result = str.match(/(\(\d+\))+/g);
+    var result = str.match(/(\(s0_\d+\))+/g);
     if (result)
     {
         for (var i=0; i< result.length; i++)

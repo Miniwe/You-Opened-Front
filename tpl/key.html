@@ -12,6 +12,11 @@
         <li>parent post id: ${parentPostId}</li>
         <li>create timestamp: ${createTime}</li>
         <li>branchId: ${branchId}</li>
+        <li class="directuserslist">direct users: 
+        {{each directUsers}}
+            <span class="directuser">${name},&#0160;</span>
+        {{/each}}
+        </li>
         <li class="taglist">tags: 
         {{each tags}}
             <span class="tag">${tag.id}: <tag>${tag.asText}</tag> - ${entryRating} &#0160;</span>

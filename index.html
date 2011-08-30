@@ -29,6 +29,8 @@
   <link rel="stylesheet" href="css/style.css?v=2" />
   <link rel="stylesheet" href="css/main.css?v=3" />
   <link rel="stylesheet" href="css/arrow.css?v=1" />
+  
+  <link rel="stylesheet" href="css/jquery.autocomplete.css?v=1" />
 
   <!-- Uncomment if you are specifically targeting less enabled mobile browsers
   <link rel="stylesheet" media="handheld" href="css/handheld.css?v=2">  -->
@@ -72,10 +74,44 @@
             <input type="submit" value="New request" />
         </form>
         <hr />
-        <form id="auth-form" action="/" method="get">
+        <form id="auth-form" action="/Auth.json" method="get">
             <h3>Auth</h3>
+            <input type="hidden" id="auth-procedure" name="procedure" value="SignIn" />
+            
+            <label><span>Login:</span>
+                <input type="text" id="auth-login" name="userName" value="" />
+            </label>
+            <br />
+            <label><span>Password:</span>
+                <input type="text" id="auth-password" name="password" value="" />
+            </label>
+            <br />
+            
             <input type="submit" value="Auth user" />
         </form>
+        <hr />
+        <form id="reg-form" action="/Auth.json" method="get">
+            <h3>Registration</h3>
+            <input type="hidden" id="reg-procedure" name="procedure" value="SignUp" />
+            
+            <label><span>Login:</span>
+                <input type="text" id="reg-login" name="userName" value="" />
+            </label>
+            <br />
+            <label><span>Password:</span>
+                <input type="text" id="reg-password" name="password" value="" />
+            </label>
+            <br />
+            
+            <label><span>Email:</span>
+                <input type="text" id="reg-email" name="email" value="" />
+            </label>
+            <br />
+            
+            <input type="submit" value="New user" />
+        </form>
+        <hr />
+
     </div>
     
     <div id="main-container"  style="z-index: 1000">
@@ -98,7 +134,7 @@
 //            "js/libs/jquery.identicon5.packed.js",
             "js/libs/jquery.form.js",
 //            "js/libs/jquery.highlight-3.js",
-//            "js/libs/jquery.autocomplete.js",
+            "js/libs/jquery.autocomplete.js",
 //            "js/libs/jquery.tinysort.min.js",
 //            "js/libs/jquery.tagcanvas.js",
             "js/libs/jquery.scrollto-min.js",

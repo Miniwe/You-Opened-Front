@@ -431,9 +431,8 @@ Branch.prototype = {
                    Facade.drawListHierarhy( newData.posts, "#ffffff", Facade.View );
                 }
                 
-                if (callback != undefined)
+                if (typeof(callback) == 'function')
                 {
-                    console.log('bbbb');
                     callback();
                 }
                 
