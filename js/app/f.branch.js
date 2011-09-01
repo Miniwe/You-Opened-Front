@@ -246,7 +246,7 @@ Branch.prototype = {
         this.View.find(".openkey").click( function( ) {
             var postId = $(this).attr("data-id");
             Facade.openFacade( function (){
-                console.log('will be opened', postId, Facade.Application.posts[postId]);
+//                console.log('will be opened', postId, Facade.Application.posts[postId]);
                 var View = $("article.key[data-id=" + postId + "]");
                 if (View)
                 {

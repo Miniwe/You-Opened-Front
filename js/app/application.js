@@ -203,7 +203,10 @@ var Application = function ( opts )
         
         $.when ( this.cacheTemplates() )
             
+            
             .then(function ( ){
+                $("#auth-login").val($.cookie("tmpLogin"));
+                $("#auth-password").val($.cookie("tmpPass"));
                 /* start Application here */
                 Application.router();
             });
@@ -474,7 +477,6 @@ var Application = function ( opts )
     {   
         var Application = this;
 
-
         View.find(".directusernames").autocomplete(this.globalPath + 
             this.frameworkPath + '/Suggest.json', {
                 width: View.find(".directusernames").width(),
@@ -516,15 +518,26 @@ var Application = function ( opts )
 
             Application.ajaxRequest("/Slice.json", 
                 function(data){
+                    
+                    if ( data.Result == undefined )
+                    {
+                        Application.msg( 'data error' );
+                        return false;
+                    }
+                    if ( data.Result.IsSuccess != 'True' )
+                    {
+                        Application.msg( data.Result.UserInfo );
+                        return false;
+                    }
                     var newData = Application.parseResponseData(data);
                     
-                    facade.openFacade(View);
+                    Facade.openFacade(View);
                     
                     for (var i=0; i< newData.posts.length; i++)
                     {
                         var post = Application.posts[newData.posts[i]];
                         var postView = $("article[data-id='" + post.id + "']");
-                        post.openFacade(postView);
+//                        post.openFacade(postView);
                     }
                     
                 }, function(){

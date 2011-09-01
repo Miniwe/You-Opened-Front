@@ -29,6 +29,8 @@ function Post (Application, id, data)
     this.directUsers    = {};
     this.directUsersIds = [];
     
+    this.View = $(document.body);
+    
     (this.update = function ( data ) {
         this.relevantWeight = data.RelevantWeight;
         
@@ -57,10 +59,10 @@ function Post (Application, id, data)
 extend( Post, Facade );
 
 Post.prototype = {
-    openFacade : function ( View )
+    openFacade : function ( )
     {
         window.location = "#post-"+this.id;
-        this.loadChilds( View );        
+        this.loadChilds( this.View );        
     },
     prepareRender : function()
     {
@@ -104,7 +106,7 @@ Post.prototype = {
             }
         }
     },
-    attachBehavior : function ( View )
+    attachBehavior : function ( )
     {
         var Facade = this;
         /*
@@ -118,7 +120,7 @@ Post.prototype = {
             });
         }
         */
-        View.mouseover(function (){
+        this.View.mouseover(function (){
             // послать сингал для navGraph фрагмента чтоб выделил на диаграме нужную ветку
             if ( Facade.fragment && Facade.fragment.navGraph )
             {
@@ -127,7 +129,7 @@ Post.prototype = {
             
         });
 
-        View.mouseout(function (){
+        this.View.mouseout( function ( ) {
             // послать сингал для navGraph фрагмента чтоб выделил на диаграме нужную ветку
             if ( Facade.fragment && Facade.fragment.navGraph )
             {
@@ -137,13 +139,13 @@ Post.prototype = {
         });
 
 
-        View.find("header").click(function (){
-            Facade.openFacade( View );
-        });
+        this.View.find("header").click( function (){
+            Facade.openFacade( );
+        } );
         
-        View.find(".gotobranch").click(function (){
-            var go_params = $(this).attr("data-ref").match(/\#[a-z]+\-[a-w0-9_]+/g); 
+        this.View.find(".gotobranch").click(function (){
 //            var parent_id = $(this).parents('article').attr("data-parent");
+            var go_params = $(this).attr("data-ref").match(/\#[a-z]+\-[a-w0-9_]+/g); 
             var branch_id = go_params[0].split("-")[1];
             var post_id = go_params[1].split("-")[1];
             
@@ -152,6 +154,29 @@ Post.prototype = {
             return false;
         });
         
+        this.View.find(".show_reply").click( function( ) {
+           
+           var control = $(this);
+           
+           control.toggleClass("opened");
+           
+           if (control.hasClass("opened"))
+           {
+               $.tmpl("reply", {
+                   id : Facade.id
+               }).insertAfter( Facade.View.find(".inner") ).show();
+               
+               Facade.Application.addReplyFormBehavior( Facade, Facade.View );
+           }
+           else
+           {
+               Facade.Application.removeReplyForm()
+           }
+           
+           return false;
+        });
+        
+        /*
         View.find(".show_reply").click( function ( ) {
            
             var control = $(this);
@@ -217,20 +242,20 @@ Post.prototype = {
            
             return false;
         } );
-        
+        */
         
     },
     render : function ( params )
     {
         this.prepareRender();
 
-        var View = this.renderSelf(params.el, params.tmpl, params.mode, params.parent)
+        this.View = this.renderSelf(params.el, params.tmpl, params.mode, params.parent)
         
         var facade = this;
         
-        this.attachBehavior(View);
+        this.attachBehavior( );
         
-        return View;
+        return this.View;
     },
     loadChilds : function ( View )
     {

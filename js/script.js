@@ -26,6 +26,8 @@
         // * * * jQuery function process place HERE * * *     
         $("#auth-form").submit(function() {
             var data = app.formArrayToData($(this).formToArray());
+            $.cookie("tmpLogin", data.userName);
+            $.cookie("tmpPass", data.password);
             app.ajaxRequest("/Auth.json", 
             
                 function(data){
