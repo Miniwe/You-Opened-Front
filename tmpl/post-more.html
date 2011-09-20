@@ -1,0 +1,31 @@
+
+<!-- <ul class="tags">
+    {{each tags}}
+        {{if entryRating > 1}}
+        <li title="${tag.id} - ${entryRating}">${tag.asText}</li>
+        {{/if}}
+    {{/each}}
+</ul> -->
+<div class="keys-cont">
+    <div class="conrtol-left">
+        <div class="icon24set icon-left"></div>
+    </div>
+    <div class="conrtol-right">
+        <div class="icon24set icon-right"></div>
+    </div>
+    <div class="content branch_keys">
+        {{each keys}}
+            <li data-id="${id}">${id}: ${text}</li>
+        {{/each}}
+
+    </div>
+    <div class="conrtol-botttom">
+
+        <ul class="tags">
+            {{each keys}}
+                <li style="width: ${relevantWeight}px;"></li>
+            {{/each}}
+        </ul>
+
+    </div>
+</div>
