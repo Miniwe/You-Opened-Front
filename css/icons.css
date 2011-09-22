@@ -7,10 +7,13 @@
 */
 
 
-.icon24set {
+.icon24set, .icon16set {
 /*    background: transparent url(../img/icons24.png) no-repeat;*/
 /*    background: transparent url(../img/icons24_blue.png) no-repeat;*/
     background: transparent url(../img/icons24_black.png) no-repeat;
+    -webkit-transition: opacity .2s ease-in-out .2s;
+}
+.icon24set {
     width: 24px;
     height: 24px;
     background-position: -300px -300px;
@@ -18,9 +21,6 @@
 }
 
 .icon16set {
-/*    background: transparent url(../img/icons24.png) no-repeat;*/
-/*    background: transparent url(../img/icons24_blue.png) no-repeat;*/
-    background: transparent url(../img/icons24_black.png) no-repeat;
     display: inline-block;
     width: 17px;
     height: 17px;
@@ -44,14 +44,12 @@
     display: inline-block;
     float: left;
     opacity: 0;
-    -webkit-transition: opacity .2s ease-in-out .2s;
 }
 
 .left-icon {
     display: inline-block;
     float: left;
     opacity: 0;
-    -webkit-transition: opacity .2s ease-in-out .2s;
 }
 
 .open-params {
@@ -103,11 +101,47 @@
     opacity: .5;
 }
 
+
 .filter {
     background-position: -216px -0px;
     opacity: .5;
 }
 
+.close {
+    background-position: -96px -24px;
+    opacity: 1;
+}
+
+.close_small {
+    background-position: -168px -48px;
+    opacity: .5;
+}
+
+.close_small:hover {
+    opacity: 1;
+}
+
+.gobranch{
+    background-position: -0px -72px;
+    opacity: .5;
+}
+
+.gobranch:hover {
+    opacity: 1;
+}
+
+.collapse {
+    background-position: -192px -48px;
+    opacity: .3;
+}
+
+.expand {
+    background-position: -216px -48px;
+    opacity: .3;
+}
+.collapse:hover, .expand:hover {
+    opacity: 1;
+}
 .move {
     background-position: -72px -0px;
 }
@@ -124,10 +158,15 @@
 
 .icon-left {
     background-position: -0px -24px;
+    opacity: .3;
 }
 
 .icon-right {
     background-position: -24px -24px;
+    opacity: .3;
+}
+.icon-left:hover, .icon-right:hover {
+    opacity: 1;
 }
 
 .action {
@@ -182,3 +221,6 @@ nav .tab:hover .right-icon:hover, nav .tab:hover .left-icon:hover {
     opacity: .75;
 }
 
+.post:hover .move:hover{
+    opacity: 1;
+}

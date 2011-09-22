@@ -12,7 +12,7 @@ body.main {
 }
 
 #container {
-    width: 60%;
+    width: 960px;
     min-height: 760px;
     margin: 0 auto;
     background: transparent url(../img/bg_content.png) no-repeat fixed center top;
@@ -36,9 +36,24 @@ body.main {
     border-right: 1px solid #d7d7d7;
 }
 
+#main-header {
+    margin-top:1px;
+}
+
+.toolbar-top {
+    height: 25px;
+    background:  url(../img/bg_content.png) repeat-x center top,  url(../img/bg_main.png) repeat-x center top;
+}
+
+.sticky #main-header {
+    position:fixed;
+    top:0;
+    z-index: 100500;
+    width: inherit;
+}
+
 nav.toolbar {
     height: 36px;
-    margin-top: 24px;
     
     background: #c0c0c0 url(../img/bg_toolbar.png) repeat-x top left;
     
@@ -55,6 +70,10 @@ nav.toolbar {
 nav.toolbar.highlight {
 /*    background-image: url(../img/highlight.png), url(../img/bg_toolbar.png);*/
 }
+
+
+
+
 nav .tab{
     display: inline-block;
     height: 24px;
@@ -74,9 +93,9 @@ nav.toolbar .tab.selected{
 }
 
 nav.toolbar .tab.active:hover{
-    -moz-box-shadow: inset 0px 0px 12px #888888;/*
-*/    -webkit-box-shadow: inset 0px 0px 12px #888888; /*
-*/    box-shadow: inset 0px 0px 12px #888888;
+    -moz-box-shadow: inset 0px 0px 12px #888888;
+    -webkit-box-shadow: inset 0px 0px 12px #888888; 
+    box-shadow: inset 0px 0px 12px #888888;
 }
 
 .round-border {
@@ -188,10 +207,11 @@ nav.toolbar .tab.active:hover{
 }
 
 .fragment .main {
-    padding-right: 264px;    
     padding-top: 24px;
+    padding-right: 264px;    
 }
-
+.post-content, .post-more {
+}
 .side nav {
     height: 36px;
     background: #c0c0c0 url(../img/bg_toolbar.png) repeat-x top left;
@@ -207,7 +227,7 @@ nav.toolbar .tab.active:hover{
     -webkit-border-bottom-right-radius: 6px;
     -moz-border-radius-bottomright: 6px;
     border-bottom-right-radius: 6px;    
-    
+    padding-bottom: 12px;
 }
 
 .side .content .hr{
@@ -217,20 +237,18 @@ nav.toolbar .tab.active:hover{
     border-bottom: 1px solid #ededeb;
 }
 
-.post .rating-cont{
+.post-content .rating-cont{
     margin-top: 12px;
     margin-left: 24px;
 }
-.post:hover .move-cont{
+.post-content:hover .move-cont{
     float: left;
     width: 24px;
 }
-.post:hover .move{
+.post-content:hover .move{
     opacity: .5;
 }
-.post:hover .move:hover{
-    opacity: 1;
-}
+
 
 button {
     background: #c0c0c0 url(../img/bg_toolbar.png) repeat-x bottom left;
@@ -255,21 +273,16 @@ button.icon.icon-del{
     background: url(../img/icon24_del.png) no-repeat left center, url(../img/bg_toolbar.png);
 }
 
-.post .left-side {
+button.icon.icon-send{
+    background: url(../img/innnerref.png) no-repeat left center, url(../img/bg_toolbar.png);
+}
+
+.post-content .left-side {
     float: left;
     width: 120px;
 }
 
-.post .date {
-    float: right;
-    font-size: 13px;
-    color: #999999;
-    text-shadow: #ffffff 1px 1px 0px ;
-    white-space: nowrap;
-}
-
-
-.post .date {
+.post-content .date {
     float: right;
     font-size: 16px;
     font-family: Open Sans Condensed;
@@ -279,7 +292,7 @@ button.icon.icon-del{
 }
 
 
-.post .post-info {
+.post-content .post-info {
     color: #999999;
     text-shadow: #ffffff 1px 1px 0px ;
     white-space: nowrap;
@@ -287,7 +300,7 @@ button.icon.icon-del{
     font-family: Open Sans Condensed;
 }
 
-.post .post-info .author-name{
+.post-content .post-info .author-name{
     font-weight: bold;
 }
 
@@ -295,11 +308,12 @@ button.icon.icon-del{
     margin: 0 12px;
 }
 
-.post .text {
+.post-content .text {
     margin-top: 12px;
     color: #333;
     line-height: 180%;
     font-size: 16px;
+    padding-left:120px;
 }
 
 ul.tags {
@@ -320,16 +334,27 @@ ul.tags li{
     text-shadow: #ffffff 1px 1px 0px ;
     cursor: pointer;
     text-decoration: underline;
+    list-style-type: none;
+}
+ul.tags li.active{
+    -moz-box-shadow: inset 0px 0px 6px #000000;
+    box-shadow: inset 0px 0px 6px #000000;
+    -webkit-box-shadow: inset 0px 0px 6px #000000; 
+    display: list-item;
+    list-style-type: none;
 }
 
-.post .reply-cont {
+.post-content .reply-cont {
     padding-left: 120px;
 }
 
-.post .keys-cont {
+.post-content .keys-cont {
     padding-left: 120px;
 }
 
+.post-more {
+    padding-left: 120px;
+}
 
 .reply-closed {
     
@@ -352,16 +377,16 @@ ul.tags li{
     color: #333;
 }
 
-.reply-modes{
+.reply .modes{
     float: right;
     padding-right: 12px;
 }
 
-.reply-modes  .icon16set{
+.reply .modes  .icon16set{
     margin-right: 12px;
 }
 
-.reply-closed:hover {
+.reply-closed:hover, .reply-closed:focus{
     opacity: 1;
 }
 
@@ -378,7 +403,6 @@ ul.tags li{
 }
 
 .keys-cont .content{
-    margin-top: 12px;
     color: #444;
     line-height: 160%;
     font-size: 13px;
@@ -444,11 +468,17 @@ ul.tags li{
 
 .branch_keys li
 { 
+    padding-left: 48px;
+    padding-right: 48px;
+    overflow: hidden;
+    height: 60px;
     display: none;
+    list-style-type: none;
 }
 .branch_keys li:first-child
 { 
     display: list-item;
+    list-style-type: none;
 }
 
 .navdiag canvas{
@@ -458,4 +488,81 @@ ul.tags li{
     margin: 0 auto;
     width: 120px;
     height: 120px;
+}
+
+.state {
+    float: right;
+    margin-left: 12px;    
+}
+.state .expand {
+    display: inline-block;
+}
+.state .collapse {
+    display: none;
+}
+.state.expanded .expand {
+    display: none;
+}
+.state.expanded .collapse {
+    display: inline-block;
+}
+
+.post-content {
+    margin-bottom: 48px;
+}
+
+.avatarHref canvas{
+    background-color: #fff;
+    width:72px;
+    height: 72px;
+}
+
+.tags_list, .authors_list {
+    margin: 6px 12px ;
+    text-align: center;
+}
+
+.tags_list {
+    overflow: hidden;
+    max-height: 72px;
+}
+.tags_list a, .authors_list a{
+    margin: 0 10px;
+/*    display: inline;*/
+    text-decoration: none;
+    color: #666666;
+}
+.tags_list a:hover, .authors_list a:hover{
+    text-shadow: #000000 2px 2px 8px ;
+}
+
+
+.authors_list {
+    overflow: hidden;
+    max-height: 150px;
+}
+
+.authors_list .avatar {
+    -webkit-box-shadow: 3px 3px 6px #b2b2b2;
+     width: 48px;
+     height: 48px;
+     overflow: hidden;
+    background: #c0c0c0 url(../img/no_ava.png) no-repeat top center;
+    display: inline-block;
+}
+.authors_list .avatar img{
+    border-left: 0;
+    border-top: 0;
+    border-right:1px solid #fff;
+    border-bottom:1px solid #fff;
+    
+    -moz-box-shadow: inset 3px 3px 6px #000;
+    -webkit-box-shadow: inset 3px 3px 6px #000; 
+    box-shadow: inset 3px 3px 6px #000;
+}
+.authors_list .avatarHref canvas{
+    background-color: #fff;
+    width:48px;
+    height: 48px;
+    float: left;
 }

@@ -27,18 +27,16 @@ MarkerView.prototype = {
     },
     addTab : function ()
     {
-        var Marker = this.Marker;
+        var Marker = this.Marker,
+            tabWidth = 0;
 
-        var divider = $('<div class="divider"><div class="inner"></div></div>')
-            .css({ "display": "inline-block" })
-            .insertAfter("#search-tab");
-        var tab = $(  '<div class="tab active round-border"><div class="icon24set left-icon move"></div><div class="tab-title">'
-            + this. Marker.name
-            + '</div><div class="icon24set right-icon action"></div><div class="icon24set right-icon open-params"></div></div>');
-        tab
-            .css({ "width": "0" })
-            .insertAfter(divider)
-            .animate({ "width": "154px" });
+        var tab = $.tmpl( 'top-tab', {
+            name: this. Marker.name
+        })
+            .css({ "opacity": "0" })
+            .insertAfter("#search-tab")
+            .animate({ "opacity": "1" });
+        
             
         // tab events    
         tab.find(".icon24set.action").click(function(){
@@ -75,22 +73,23 @@ MarkerView.prototype = {
                 tmpl : 'fragment'
             });
             
-            var postView = this.Marker.fragments[id].branch.post.render({
-                parentView : fragmentView.find(".post"),
-                insertMode : 'prependTo',
-                tmpl : 'post',
-                parent : id
-            });
-            
-            var branchView = this.Marker.fragments[id].branch.render({
+            var branchView = this.Marker.fragments[id].branch.View.render({
                 parentView : fragmentView.find(".post"),
                 insertMode : 'appendTo',
                 tmpl : 'post-more',
                 parent : id
             });
             
-            this.Marker.fragments[id].View.attachBehavior ( );
-                    
+            var postView = this.Marker.fragments[id].branch.post.View.render({
+                parentView : fragmentView.find(".post"),
+                insertMode : 'prependTo',
+                tmpl : 'post',
+                parent : id
+            });
+            
+            this.Marker.fragments[id].View.attachBehavior ();
+// open post должен для поста порождать открытие подпостов
+// для фрагмента должен порождать открытие фрагмента
         }        
     },
     selectTab : function ()

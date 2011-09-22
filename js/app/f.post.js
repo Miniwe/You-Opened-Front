@@ -4,7 +4,7 @@
 function Post (Application, id, data)
 {
     Post.superclass.constructor.call( this );
-    
+
     this.Application     = Application;
   
     this.id              = id;
@@ -28,8 +28,10 @@ function Post (Application, id, data)
     
     this.directUsers    = {};
     this.directUsersIds = [];
+ 
+    this.postCount    = 0;
     
-    this.View = $(document.body);
+    this.View = new PostView ( this );
     
     (this.update = function ( data ) {
         this.relevantWeight = data.RelevantWeight;
@@ -56,14 +58,10 @@ function Post (Application, id, data)
                 
     } ).call( this, data );
 }
+
 extend( Post, Facade );
 
 Post.prototype = {
-    openFacade : function ( )
-    {
-        window.location = "#post-"+this.id;
-        this.loadChilds( this.View );        
-    },
     prepareRender : function()
     {
         this.branchId = 0;
@@ -71,6 +69,7 @@ Post.prototype = {
         {
             if ( this.id == this.Application.branches[id].postId ) {
                 this.branchId = id; 
+                this.postCount = this.Application.branches[id].postCount;
                 break;
             } else if ( this.parentPostId == this.Application.branches[id].postId ) {
                 this.branchId = id; 
@@ -108,212 +107,46 @@ Post.prototype = {
             }
         }
     },
-    attachBehavior : function ( )
+    openPostChilds : function ( parenView )
+    {
+        var Post = this;
+        this.loadChilds( {}, function( ) { Post.View.showPostChils ( parenView ) } );
+    },
+    addPoststoPost : function ( posts )
+    {
+        for (var i=posts.length; i--; )
+        {
+            var curPostId = posts[i];
+            if ( this.id == this.Application.posts[ curPostId ].parentPostId )
+            {
+                this.posts[curPostId] = this.Application.posts[ curPostId ];
+            }
+        }
+    },
+    loadChilds : function ( params, callback )
     {
         var Facade = this;
-        /*
-        var parentFacade = facade.Application.branches[facade.parentBranchId];
-        if (parentFacade && parentFacade.navGraph != undefined)
-        {
-            View.hover(function( ){
-                    parentFacade.navGraph.highlightBranch = facade.id;
-                }, function( ){
-                    parentFacade.navGraph.highlightBranch = 0;
-            });
-        }
-        */
-        this.View.find(".icon16set").mouseover( function ( ) {
-            var parentCont = $(this).parents(".reply-closed");
-            console.log($(this),  parentCont, parentCont.find(".reply-content"), $(this).attr("title"));
-            parentCont.find(".reply-content")
-                .html( $(this).attr("title") );
-        } );
-               
-       
-        this.View.mouseover(function (){
-            // послать сингал для navGraph фрагмента чтоб выделил на диаграме нужную ветку
-            if ( Facade.fragment && Facade.fragment.navGraph )
-            {
-                Facade.fragment.navGraph.highlightBranch = Facade.branchId;
-            }
-            
-        });
-
-        this.View.mouseout( function ( ) {
-            // послать сингал для navGraph фрагмента чтоб выделил на диаграме нужную ветку
-            if ( Facade.fragment && Facade.fragment.navGraph )
-            {
-                Facade.fragment.navGraph.highlightBranch = "";
-            }
-            
-        });
-
-
-        this.View.find("header").click( function (){
-            Facade.openFacade( );
-        } );
         
-        this.View.find(".gotobranch").click(function (){
-//            var parent_id = $(this).parents('article').attr("data-parent");
-            var go_params = $(this).attr("data-ref").match(/\#[a-z]+\-[a-w0-9_]+/g); 
-            var branch_id = go_params[0].split("-")[1];
-            var post_id = go_params[1].split("-")[1];
-            
-            Facade.fragment.addFocusedBranch( Facade.Application.branches[ branch_id ] );
-            
-            return false;
-        });
-        
-        this.View.find(".show_reply").click( function( ) {
-           
-           var control = $(this);
-           
-           control.toggleClass("opened");
-           
-           if (control.hasClass("opened"))
-           {
-               $.tmpl("reply", {
-                   id : Facade.id
-               }).insertAfter( Facade.View.find(".inner") ).show();
-               
-               Facade.Application.addReplyFormBehavior( Facade, Facade.View );
-           }
-           else
-           {
-               Facade.Application.removeReplyForm()
-           }
-           
-           return false;
-        });
-        
-        /*
-        View.find(".show_reply").click( function ( ) {
-           
-            var control = $(this);
-           
-            control.toggleClass("opened");
-           
-            if (control.hasClass("opened"))
-            {
-                $.tmpl("reply", {
-                    id : Facade.id
-                }).insertAfter( View.find(".inner") ).show();
-               
-                View.find("form.replyform").submit(function(){
-                    
-                    Facade.Application.removeReplyForm();
-                    
-                    View.find(".show_reply").removeClass( "opened" );
-
-                    var data = Facade.Application.formArrayToData( $(this).formToArray( ) );
-                    
-                    Facade.Application.ajaxRequest( "/Slice.json", 
-                        function ( data ) {
-                            
-                            // сделать правильное добавление поста в режиме plain
-                            
-                            var newData = Facade.Application.parseResponseData( data );
-
-                            var parentFacade = Facade.id;
-                            var parentView = View;
-                            
-                            if ($("[name=mode]:checked").val() == "plain" ) {
-                                parentFacade = View.attr("data-parent");
-                                parentView = $("article[data-id=" + parentFacade + "]");
-                            }
-                            
-                            for (var i=0; i< newData.posts.length; i++)
-                            {
-                                var post = Facade.Application.posts[newData.posts[i]];
-                                //                                var postView = $("article[data-id='" + post.id + "']");
-                                post.render({
-                                    el     : parentView, 
-                                    tmpl   : 'post', 
-                                    mode   : 'insertAfter',
-                                    parent : parentFacade
-                                });
-                                
-//                                window.location.href="#post-"+post.id;
-                            }
-
-                        }, function(){
-                            Facade.Application.msg("Couldn't post comment");
-                        },
-                        data
-                        );        
-                    return false;
-                } );        
-                
-            }
-            else
-            {
-                Facade.Application.removeReplyForm()
-            }
-           
-            return false;
-        } );
-        */
-        
-    },
-    render : function ( params )
-    {
-        this.prepareRender();
-
-        this.View = this.renderSelf(params.parentView, params.tmpl, params.insertMode, params.parent)
-        
-        var facade = this;
-        
-        this.attachBehavior( );
-        
-        return this.View;
-    },
-    loadChilds : function ( View )
-    {
-        var facade = this;
-        this.Application.ajaxRequest('/Slice.json',
+        this.Application.ajaxRequest( '/Slice.json',
             function ( response ) {
-                
-                facade.removeAfterPosts ( facade.id );
-                
-                var newData = this.parseResponseData(response);
-
-                for (var i= newData.posts.length; i--; )
+                var newData = this.parseResponseData( response );
+                Facade.addPoststoPost (newData.posts);
+                if (typeof(callback) == 'function')
                 {
-                    if (facade.Application.posts[newData.posts[i]].parentPostId == facade.id)
-                    {
-                        facade.posts[newData.posts[i]] = facade.Application.posts[newData.posts[i]];
-                    }
+                    callback();
                 }
-                // Render
-                facade.expandPosts( View );
+
             },
             function () {
 
-                facade.Application.msg("Count`t get post list for post: " + facade.id);
+                Facade.Application.msg( "Count`t get post list for branch: " + Facade.id );
 
             },
-            {
-                parentPostId  : this.id
-            }
+            $.extend(params, {
+                'parentPostId' : this.id
+            })
         );        
-    },
-    expandPosts : function ( View )
-    {
-        
-        for (i in this.Application.posts)
-        {
-            // @render key here
-            if (this.Application.posts[i].parentPostId == this.id)
-            {
-                this.Application.posts[i].render({
-                    el: View,
-                    tmpl: "post",
-                    mode: "insertAfter",
-                    parent: this.id
-                });
-            }
-        };
-
     }
+  
 };
 

@@ -1,4 +1,4 @@
-
+<div class="post-more" id="branch-data-${id}" data-id="${id}">
 <!-- <ul class="tags">
     {{each tags}}
         {{if entryRating > 1}}
@@ -13,19 +13,26 @@
     <div class="conrtol-right">
         <div class="icon24set icon-right"></div>
     </div>
-    <div class="content branch_keys">
+    <ul class="branch_keys">
+    {{each keys}}
+        <li data-id="${id}"> ${id}: ${text} </li>
+    {{/each}}
+    </ul>
+    <!-- 
+    <ul class="content branch_keys">
         {{each keys}}
             <li data-id="${id}">${id}: ${text}</li>
         {{/each}}
-
-    </div>
+    </ul>
+    -->
     <div class="conrtol-botttom">
 
         <ul class="tags">
             {{each keys}}
-                <li style="width: ${relevantWeight}px;"></li>
+                <li  data-id="${id}" class="keychange" style="width: ${viewWidth}px;" title="${relevantWeight}"></li>
             {{/each}}
         </ul>
 
     </div>
+</div>
 </div>

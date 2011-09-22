@@ -43,7 +43,6 @@ Marker.prototype = {
         return fragment;
     },
     addFragments : function ( newData ) {
-        this.Application.msg('marker add Fragments', 'console');
         
         var fragment,
             issetFragmentId = 0,
@@ -57,10 +56,9 @@ Marker.prototype = {
             }
             else
             {
-                fragment = new Fragment( );
+                fragment = new Fragment( this.Application );
                 this.fragments.push( fragment );
             }
-            
             fragment.addMainBranch( this.Application.branches[ branchId ] );
         }
         

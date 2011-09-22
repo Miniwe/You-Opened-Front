@@ -106,6 +106,10 @@ Fragment.prototype = {
         this.branch = null;
         this.focusedBranch = null;
         this.navGraph = null;
+    },
+    removeNavGraph : function ()
+    {
+        this.focusedBranch = null;
+        this.navGraph = null;
     }
-    
 }

@@ -30,7 +30,8 @@ var Application = function ( opts )
      *  Двигаемся по списку цветов для веток,
      *  По достижении конца переходим вначало списка
      */
-    this.nextColor = (function ( ) {
+    this.nextColor = ( function ( )
+    {
         var colors = ["#9c00ff", "#0000ff", "#007bff", "#00dbe6", "#00ff00", "#ff23ff", "#4400ff", "#0038ff",
                       "#00fcff", "#00ff83", "#00ff00", "#89d700", "#e700ff", "#00d4ff", "#40ff00", "#fd7a00",
                       "#ff1f00", "#e2fd00", "#00ffcb", "#C0FF80", "#B5F886", "#ABF18D", "#A0EA94", "#96E39B",
@@ -55,7 +56,8 @@ var Application = function ( opts )
      * Возвращает управление в основную программму когда подгрузка завершена
      * сделано через dereferer 
      */
-    this.cacheTemplates = function ( ) {
+    this.cacheTemplates = function ( )
+    {
         var Application = this,
             dfd = $.Deferred(),
             d = new Date();
@@ -97,12 +99,28 @@ var Application = function ( opts )
         return dfd.promise();
     };
     
+    this.closeAllFragments = function ( )
+    {
+       var markerIndex = 0,
+           fragmentIndex = 0,
+           curMarkerFragments = null;
+        for (markerIndex = this.markers.length; markerIndex--; )
+        {
+            var curMarkerFragments = this.markers[markerIndex].fragments;
+            for ( fragmentIndex = curMarkerFragments.length; fragmentIndex--; )
+            {
+                curMarkerFragments[fragmentIndex].View.closeContent();
+            }
+        }
+    };
+    
     /*
      * Оставнока всех ajax запросов
      * @todo 1) надо доделать
      * @todo 2) возможно надо сделать возможность останавливать определенный класс запросов 
      */
-    this.ajaxStop = function ( ) {// @todo until dont working
+    this.ajaxStop = function ( ) 
+    {// @todo until dont working
         for (var i=0,l=this.ajaxRequests.length;i<l;i++)
         {
 //            if (typeof this.ajaxRequests[i].abort == "function" )
@@ -117,7 +135,8 @@ var Application = function ( opts )
      *  Глобальная проверка результатов запроса
      *  @param data object
      */
-    this.checkResponse = function ( data ) {
+    this.checkResponse = function ( data )
+    {
         return true;
     }
     
@@ -195,7 +214,7 @@ var Application = function ( opts )
      */
     this.msg = function (message, mode) {
         if ( 'console' == mode ) {
-            console.log(message);
+                console.log(message);
         }
         else {
             alert(message);
@@ -219,6 +238,19 @@ var Application = function ( opts )
             });
     };
     
+    this.branchExist = function ( postId )
+    {
+        for (var id in this.branches)
+        {
+            if (this.branches[id].postId == postId)
+            {
+                return this.branches[id];
+            }
+        }
+        
+        return false;
+    };
+
     /*
      * Загрузка страницы по умолчанию 
      */

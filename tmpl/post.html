@@ -1,29 +1,47 @@
+<div class="post-content" id="post-${id}" data-id="${id}" data-parent="${parentPostId}">
+<!--
+<div class="text">
+    ${id}: ${text}
+</div>
+<div class="state" {{if !postCount}}style="display: none;"{{/if}}>
+<div class="icon24set left-icon expand" title="expand branch (${postCount})"></div>
+<div class="icon24set left-icon collapse" title="collapse branch"></div>
+<div class="icon24set left-icon gobranch" title="goto branch (${postCount})"></div>
+</div>
+-->
+
 <div class="left-side">
     <div class="move-cont">
         <div class="icon24set left-icon move"></div>
     </div>
     <div class="avatar-container round-border">
         <div class="avatar round-border" style="margin-top: 0;">
-            <img src="img/ava1.png" alt="user name" title="user name" class="round-border" />
+            {{if author.avataruri != null }}
+                <img src="${author.avataruri}" alt="${author.name}" title="${author.name}" class="round-border" />
+            {{else}}
+                <a href="#avatar-author-${id}" class="avatarHref" title="${author.name}">
+                </a>
+            {{/if}}
         </div>
         <div class="rating-cont">
-            <div class="icon16set rating"></div>
+            <div class="icon16set close_small"></div>
             <div class="icon16set rating"></div>
             <div class="icon16set rating"></div>
             <div class="icon16set rating"></div>
 
-            <br />
-
-            <button class="icon icon-del round-border">
-                remove
-            </button>
         </div>
 
     </div>
 
 </div>
+<div class="state" {{if !postCount}}style="display: none;"{{/if}}>
+<div class="icon24set left-icon expand" title="expand branch (${postCount})"></div>
+<div class="icon24set left-icon collapse" title="collapse branch"></div>
+<div class="icon24set left-icon gobranch" title="goto branch (${postCount})"></div>
+</div>
 <div class="date">
     ${createTimeF}
+    
 </div>
 <div class="post-info">
     <span class="author-name">${author.name}</span>
@@ -38,16 +56,6 @@
     ${id}: ${text}
 </div>
 <div class="reply-cont">
-    <div class="reply-closed round-border">
-        <div class="reply-modes">
-            <div class="icon16set ntfn16-reply" title="Reply"></div>
-            <div class="icon16set ntfn16-dm" title="Direct message"></div>
-            <div class="icon16set ntfn16-invite" title="Invite"></div>
-            <div class="icon16set ntfn16-external" title="External Link"></div>
-            <div class="icon16set ntfn16-color" title="Branch color"></div>
-
-        </div>
-        <div class="reply-content">Reply</div>
-    </div>
-
+</div>
+<!--<div style="clear: both;"></div>-->
 </div>

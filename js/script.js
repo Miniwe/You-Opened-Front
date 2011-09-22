@@ -8,7 +8,12 @@
     
     // * * * same as $(document).ready(); * * *
     $(function() {
-   
+        $.waypoints.settings.scrollThrottle = 30;
+        $('#main-header').waypoint(function(event, direction) {
+            $(this).parent().toggleClass('sticky', direction === "down");
+            event.stopPropagation();
+	});
+        /*
         $(".icon24set.action").live( 'click', function ( ) {
             if ( $(this).hasClass('newposts') ) {
                 return false;
@@ -24,7 +29,7 @@
             
             return false;
         } );
-        
+        */
 //          
     });
     

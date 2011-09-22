@@ -35,7 +35,7 @@ function Branch (Application, id, data)
         depth : (data.Marker.depth != undefined) ? data.Marker.depth : 1
     };
 
-    this.View = $(document.body);
+    this.View = new BranchView ( this );
     
     this.parseSubBranches = function ( branches )
     { 
@@ -116,28 +116,45 @@ extend(Branch, Facade);
 Branch.prototype = {
     openFacade : function ( callback )
     {
-        this.View.find( ".collapse_control" ).addClass( "opened" );
-        
-        this.hideInnerKeys( this.View ); 
-        
-        this.removeAfterBranchesAndPosts ( );
-        
-        this.loadChilds( callback );
-        
+//        this.View.find( ".collapse_control" ).addClass( "opened" );
+//        
+//        this.hideInnerKeys( this.View ); 
+//        
+//        this.removeAfterBranchesAndPosts ( );
+//        
+//        this.loadChilds( callback );
         
     },
     closeFacade : function ( ) {
-        this.View.find( ".collapse_control" ).removeClass( "opened" );
-        
-        this.showInnerKeys( this.View ); 
-        
-        this.removeAfterBranchesAndPosts ( );
-        
-        var fragment = this.getFragment ( this.id );
-        fragment.hideSide ( ) ;
+//        this.View.find( ".collapse_control" ).removeClass( "opened" );
+//        
+//        this.showInnerKeys( this.View ); 
+//        
+//        this.removeAfterBranchesAndPosts ( );
+//        
+//        var fragment = this.getFragment ( this.id );
+//        fragment.hideSide ( ) ;
     },
     prepareRender : function() {
-//        var fragment = this.getFragment( this.id ); 
+//        получить ширину key fileds
+        var keysWidth = $('.branch_keys').outerWidth() ;
+        keysWidth -= 180; // паддинги ul 
+//        отнять от ширины количество * 12 (aka padding) + 4 aka margin 
+        keysWidth -=  this.keysCount * 16; // паддинги ul 
+        var keysRatingSumm = 0;
+//        получить сумму ключей
+        for (var id in this.keys)
+        {
+            keysRatingSumm += this.keys[id].relevantWeight;
+        }
+//        получить коэфицент уменьшения
+        var coef = keysWidth / keysRatingSumm ;
+//        для каждого поста установить шириру = значение * коэфицент
+        for (var id in this.keys)
+        {
+             this.keys[id].viewWidth = this.keys[id].relevantWeight * coef;
+        }
+        
     },
     getFragment : function( branchId )  {
         var fragment = null;
@@ -160,103 +177,6 @@ Branch.prototype = {
             }
         }
         return fragment;
-    },
-    render : function ( params ) {
-        this.prepareRender();
-        
-        this.View = this.renderSelf (params.parentView, params.tmpl, params.insertMode, params.parentId);
-        
-        this.attachBehavior ( );
-
-        return this.View;
-    },
-    attachBehavior : function ( )
-    {
-        var Facade = this;
-        
-        this.View.find("header").click( function ( ) {
-            Facade.openFacade( );
-        } );
-        
-        this.View.find(".collapse_control").click(function( ) {
-           
-           var control = $(this);
-           
-           control.toggleClass( "opened" );
-           
-           if ( control.hasClass( "opened" ) ) {
-               Facade.openFacade( );
-           }
-           else
-           {
-               Facade.closeFacade( );
-           }
-        } );
-        
-        this.View.find(".show_reply").click( function( ) {
-           
-           var control = $(this);
-           
-           control.toggleClass("opened");
-           
-           if (control.hasClass("opened"))
-           {
-               $.tmpl("reply", {
-                   id : Facade.postId
-               }).insertAfter( Facade.View.find(".inner") ).show();
-               
-               Facade.Application.addReplyFormBehavior( Facade, Facade.View );
-           }
-           else
-           {
-               Facade.Application.removeReplyForm()
-           }
-           
-           return false;
-        });
-        
-        this.View.find(".keychange").click( function( ) {
-           $(".keychange").removeClass("active")
-           $(this).addClass("active")
-           $(this).parents(".branch").find("ul.branch_keys li").hide();
-           $(this).parents(".branch").find("ul.branch_keys li[data-id=" + $(this).attr("data-id") + "]").show();
-           return false;
-        });
-        
-        this.View.find(".prevkey").click( function( ) {
-            var active = $(this).parents(".branch").find("ul.branch_keys li:visible").prev("li");
-            if (active.length < 1)
-            {
-                active  = $(this).parents(".branch").find("ul.branch_keys li:last");
-            }
-            $(".keychange[data-id=" + active.attr("data-id") + "]").click();
-           return false;
-        });
-        
-        this.View.find(".nextkey").click( function( ) {
-            var active = $(this).parents(".branch").find("ul.branch_keys li:visible").next("li");
-            if (active.length < 1)
-            {
-                active  = $(this).parents(".branch").find("ul.branch_keys li:first");
-            }
-            $(".keychange[data-id=" + active.attr("data-id") + "]").click();
-           return false;
-        });
-        
-        this.View.find(".openkey").click( function( ) {
-            var postId = $(this).attr("data-id");
-            Facade.openFacade( function (){
-//                console.log('will be opened', postId, Facade.Application.posts[postId]);
-                var View = $("article.key[data-id=" + postId + "]");
-                if (View)
-                {
-                    $(document.body).scrollTop( View.offset().top + Facade.View.outerHeight(true) );
-                }
-            });
-           return false;
-        });
-        
-        
     },
     loadNavGraphData : function ( )
     {
@@ -401,43 +321,29 @@ Branch.prototype = {
         };
 
     },
-    loadChilds : function ( callback )
+    addPoststoBranch : function ( posts )
     {
-        var Facade = this,
-            id = 0;
+        for (var i=posts.length; i--; )
+        {
+            var curPostId = posts[i];
+            if ( this.post.id == this.Application.posts[ curPostId ].parentPostId )
+            {
+                this.posts[curPostId] = this.Application.posts[ curPostId ];
+            }
+        }
+    },
+    loadChilds : function ( params, callback )
+    {
+        var Facade = this;
+        
         this.Application.ajaxRequest( '/Slice.json',
             function ( response ) {
-                
-                Facade.removeAfterBranchesAndPosts ( false );
-                
                 var newData = this.parseResponseData( response );
-                
-                if (  $("#query").val() != "" && $("#params-form [name=filter]:checked").val( ) == "On" ) {
-                    newData.posts = newData.posts.filterByValue ( function (element, index, array, sval) {
-                        element = Facade.Application.posts[element];
-                        return ( element.relevantWeight > 0 ) ;
-                    }, 0 );
-                }
-
-                if ( $("#params-form [name=mode]:checked").val( ) == "plain" )
-                {        
-                    Facade
-                        .sortList( newData.posts, "createTime" );
-                        Facade.drawList( newData.posts );
-                }
-                else {
-                    Facade
-                        .sortList( newData.posts, "parentPostId" );
-                   Facade.drawListHierarhy( newData.posts, "#ffffff", Facade.View );
-                }
-                
+                Facade.addPoststoBranch (newData.posts);
                 if (typeof(callback) == 'function')
                 {
                     callback();
                 }
-                
-                var fragment = Facade.getFragment ( Facade.id );
-                fragment.showSide ( Facade ) ;
 
             },
             function () {
@@ -445,7 +351,9 @@ Branch.prototype = {
                 Facade.Application.msg( "Count`t get post list for branch: " + Facade.id );
 
             },
-            Facade.Application.prepareParams( this.postId )
+            $.extend(params, {
+                'parentPostId' : this.post.id
+            })
         );        
     },    
     sortList: function ( posts_list, sortField )
@@ -468,40 +376,49 @@ Branch.prototype = {
     },
     drawListHierarhy: function ( posts_list, color, View)
     {
-        var b;
-        for ( var i = posts_list.length; i--; )
+        var b, id;
+        
+        for ( id in posts_list )
         {
-            if ( this.Application.posts[ posts_list[ i ] ].parentPostId != this.postId ) {continue};
-            b = this.Application.branchExist(posts_list[ i ]);
+//            b = this.Application.branchExist( id );
+            b = false;
             
             if ( b )
             {
-                var newView = this.Application.posts[ posts_list[ i ] ].render({
-                    el: View, 
-                    tmpl: "key", 
-                    mode :"insertAfter",
+                var newView = this.Application.posts[ id ].View.render({
+                    parentView: View, 
+                    tmpl: "post", 
+                    insertMode :"insertAfter",
                     parent: this.id
-                }).css({"outline-color": b.color});
+                });
                 
                 b.drawListHierarhy( posts_list, b.color, newView );
             }
             else
             {
-                var newView = this.Application.posts[ posts_list[ i ] ].render({
-                    el: View, 
-                    tmpl: "key", 
-                    mode :"insertAfter",
+                var newView = this.Application.posts[ id ].View.render({
+                    parentView: View, 
+                    tmpl: "post", 
+                    insertMode :"insertAfter",
                     parent: this.id
-                }).css( {"outline-color": color} );
+                });
             }
             /*
              * перебирать все посты ветки
              * если пост является корнем другой ветки то его рисовать с другим цветом
              * запускать с этим цветом перебор 
              */
-            
+            View.appendChild( newView[0] );
         }
         
+    },
+    getOpenedBranch : function ( posts_list )
+    {
+        var content = document.createDocumentFragment();
+        
+        this.drawListHierarhy ( this.posts, "#ffffff", content );
+        
+        return content;
     },
     drawList: function ( posts_list )
     {

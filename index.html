@@ -1,213 +1,236 @@
 <!doctype html>
 <!-- paulirish.com/2008/conditional-stylesheets-vs-css-hacks-answer-neither/ -->
-<!--[if lt IE 7 ]> <html class="no-js ie6" lang="en"> <![endif]-->
-<!--[if IE 7 ]>    <html class="no-js ie7" lang="en"> <![endif]-->
-<!--[if IE 8 ]>    <html class="no-js ie8" lang="en"> <![endif]-->
-<!--[if (gte IE 9)|!(IE)]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
+<!--[if lt IE 7]> <html class="no-js ie6 oldie" lang="en"> <![endif]-->
+<!--[if IE 7]>    <html class="no-js ie7 oldie" lang="en"> <![endif]-->
+<!--[if IE 8]>    <html class="no-js ie8 oldie" lang="en"> <![endif]-->
+<!-- Consider adding an manifest.appcache: h5bp.com/d/Offline -->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
 <head>
-  <meta charset="utf-8" />
+  <meta charset="utf-8">
 
-  <!-- Always force latest IE rendering engine (even in intranet) & Chrome Frame
-       Remove this if you use the .htaccess -->
-  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  <!-- Use the .htaccess and remove these lines to avoid edge case issues.
+       More info: h5bp.com/b/378 -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 
-  <title>YouOpened 0.6.3 homework</title>
+  <title>Yol Service</title>
   <meta name="description" content="" />
   <meta name="author" content="" />
 
   <!-- Mobile viewport optimized: j.mp/bplateviewport -->
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width,initial-scale=1">
 
-  <!-- Place favicon.ico & apple-touch-icon.png in the root of your domain and delete these references -->
-  <link rel="shortcut icon" href="favicon.ico" />
-  <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+  <!-- Place favicon.ico and apple-touch-icon.png in the root directory: mathiasbynens.be/notes/touch-icons -->
 
   <!-- External Fonts -->
-  <link href='http://fonts.googleapis.com/css?family=Ubuntu:light,lightitalic,regular,italic,500,500italic,bold,bolditalic&subset=cyrillic,latin' rel='stylesheet' type='text/css' />
+  <link href='http://fonts.googleapis.com/css?family=Open+Sans+Condensed:300,300italic&subset=latin,cyrillic-ext' rel='stylesheet' type='text/css' />
+  <link href='http://fonts.googleapis.com/css?family=Ubuntu:300,400,500,700,300italic,400italic,500italic,700italic&subset=latin,cyrillic-ext' rel='stylesheet' type='text/css' />
+ 
+  <!-- CSS: implied media=all -->
+  <!-- CSS concatenated and minified via ant build script-->
+  <link rel="stylesheet" href="css/style.css?v=2">
+  <link rel="stylesheet" href="css/main.css?v=3">
+  <link rel="stylesheet" href="css/icons.css?v=2">
+  <!-- end CSS-->
 
-  <!-- CSS: implied media="all" -->
-  <link rel="stylesheet" href="css/style.css?v=2" />
-  <link rel="stylesheet" href="css/main.css?v=3" />
-  <link rel="stylesheet" href="css/arrow.css?v=1" />
+  <!-- More ideas for your <head> here: h5bp.com/d/head-Tips -->
+  <script src="js/libs/head.min.js"></script>
   
-  <link rel="stylesheet" href="css/jquery.autocomplete.css?v=1" />
-
-  <!-- Uncomment if you are specifically targeting less enabled mobile browsers
-  <link rel="stylesheet" media="handheld" href="css/handheld.css?v=2">  -->
-
-  <!-- All JavaScript at the bottom, except for Modernizr which enables HTML5 elements & feature detects -->
+  <!-- All JavaScript at the bottom, except for Modernizr / Respond.
+       Modernizr enables HTML5 elements & feature detects; Respond is a polyfill for min/max-width CSS3 Media Queries
+       For optimal performance, use a custom Modernizr build: www.modernizr.com/download/ -->
   <script src="js/libs/modernizr.custom.js"></script>
-
 </head>
 
-<body>
+<body class="main">
 
-    <div id="params-container" style="display: none;">
-        <form id="params-form" action="/" method="get">
-            <h3>Params</h3>
-            
-            <span>Mode:</span>
-            <label>Plain<input type="radio" id="mode-1" name="mode" value="plain"/></label>
-            <label>Hierarhy<input type="radio" id="mode-0" name="mode"  value="hierarchy" checked="checked" /></label>
-            <br />
-            <label><span>Depth:</span>
-                <!--
-                <select id="depth" name="depth">
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                </select>
-                -->
-                <input id="depth" name="depth" value="2" />
-            </label>
-            <br />
-            
-            <span>Filter:</span>
-            <label>On<input type="radio" id="filter-1" name="filter" value="On" checked="checked"/></label>
-            <label>Off<input type="radio" id="filter-0" name="filter" value="Off" /></label>
-            <br />
-            
-            <label><span>Query:</span>
-            <input type="text" id="query" name="query" value="girls" /></label>
-            <br />
-            
-            <input type="submit" value="New request" />
-        </form>
-        <hr />
-        <form id="auth-form" action="/Auth.json" method="get">
-            <h3>Auth</h3>
-            <input type="hidden" id="auth-procedure" name="procedure" value="SignIn" />
-            
-            <label><span>Login:</span>
-                <input type="text" id="auth-login" name="userName" value="" />
-            </label>
-            <br />
-            <label><span>Password:</span>
-                <input type="text" id="auth-password" name="password" value="" />
-            </label>
-            <br />
-            
-            <input type="submit" value="Auth user" />
-        </form>
-        <hr />
-        <form id="reg-form" action="/Auth.json" method="get">
-            <h3>Registration</h3>
-            <input type="hidden" id="reg-procedure" name="procedure" value="SignUp" />
-            
-            <label><span>Login:</span>
-                <input type="text" id="reg-login" name="userName" value="" />
-            </label>
-            <br />
-            <label><span>Password:</span>
-                <input type="text" id="reg-password" name="password" value="" />
-            </label>
-            <br />
-            
-            <label><span>Email:</span>
-                <input type="text" id="reg-email" name="email" value="" />
-            </label>
-            <br />
-            
-            <input type="submit" value="New user" />
-        </form>
-        <hr />
+  <div id="container">
+    <div id="main-header">  
+        <div class="toolbar-top"></div>
+        <nav class="round-border toolbar highlight">
+            <div id="search-tab" class="tab round-border ">
+                <div class="icon24set left-icon"></div>
+                <form action="Slice.json" method="post" id="search-form" class="" style="">
+                    <input type="text" value="search" id="search-field" class="round-border" />
+                    <input type="image" src="s.png" class="icon24set search" alt="find" title="find" />
+                </form>
+                <div class="icon24set right-icon open-params"></div>
+    <!--            <div class="opts-cont"></div>-->
+            </div>
+            <!--
+            <div class="divider">
+                <div class="inner">
+                </div>
+            </div><div class="tab active round-border selected">
+                <div class="icon24set left-icon move"></div>
+                <div class="tab-title">
+                    Second Tab
+                </div>
+                <div class="icon24set right-icon action newposts">
+                    <span class="count">23</span>
+                </div>
+                <div class="icon24set right-icon open-params"></div>
+                <div class="opts-cont"></div>
+            </div><div class="divider">
+                <div class="inner">
+                </div>
+            </div><div class="tab active round-border">
+                <div class="icon24set left-icon move"></div>
+                <div class="tab-title">
+                    Third Tab
+                </div>
+                <div class="icon24set right-icon action"></div>
+                <div class="icon24set right-icon open-params"></div>
+            </div><div class="divider">
+                <div class="inner">
+                </div>
+            </div><div class="tab icon-container round-border">
+                <div class="icon24set left-icon all-opened-tabs"></div>
+            </div><div class="divider">
+                <div class="inner">
+                </div>
+            </div>
+            -->
+            <div class="tab right-tab icon-container round-border">
+                <div class="icon24set right-icon opts"></div>
+            </div>
+            <div class="tab right-tab avatar-container">
+                <div class="avatar round-border">
+                    <img src="img/ava1.png" alt="user name" title="user name" class="round-border" />
+                </div>
+            </div>
+            <div class="tab right-tab icon-container round-border">
+                <div class="icon24set right-icon new-post"></div>
+            </div>
+            <div class="divider" style="float: right; margin-right: 12px;">
+                <div class="inner">
+                </div>
+            </div>        
+            <div class="tab right-tab icon-container round-border">
+                <div class="icon24set right-icon ntfn-dm"></div>
+            </div>
+            <div class="tab right-tab icon-container round-border">
+                <div class="icon24set right-icon ntfn-invite"></div>
+            </div>
+            <div class="tab right-tab icon-container round-border">
+                <div class="icon24set right-icon ntfn-external"></div>
+            </div>
+            <div class="tab right-tab icon-container round-border">
+                <div class="icon24set right-icon ntfn-reply"></div>
+            </div>
+            <div class="divider" style="float: right; margin-right: 12px;">
+                <div class="inner">
+                </div>
+            </div>        
+            <div class="tab right-tab icon-container round-border">
+                <div class="icon24set left-icon saved-tabs"></div>
+            </div>
+        </nav>
+        <div id="toolbar-shadow">
+        </div>
+    </div>
+        
+    <div id="main" role="main">
+ 
+    </div>
+      <!-- ================================================================= -->
+ 
+      <!-- ================================================================= -->
+    <footer>
 
-    </div>
-    
-    <div id="main-container"  style="z-index: 1000">
-    </div>
-          
+    </footer>
+  </div> <!--! end of #container -->
+
+
   <!-- JavaScript at the bottom for fast page loading -->
+
+  <!-- Grab Google CDN's jQuery, with a protocol relative URL; fall back to local if offline -->
+  <!--
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
+  <script>window.jQuery || document.write('<script src="js/libs/jquery-1.6.4.min.js"><\/script>')</script>
+  -->
 
   <!-- scripts concatenated and minified via ant build script-->
   
-  <script type="text/javascript">
-
-    (function () {
-
-        var scripts = [
-            "js/libs/jquery-1.6.2.min.js",
-
-            "js/libs/jquery.tmpl.min.js",
-            "js/libs/jquery.cookie.js",
-            "js/libs/jquery.md5.js",
-//            "js/libs/jquery.identicon5.packed.js",
-            "js/libs/jquery.form.js",
-//            "js/libs/jquery.highlight-3.js",
-            "js/libs/jquery.autocomplete.js",
-//            "js/libs/jquery.tinysort.min.js",
-//            "js/libs/jquery.tagcanvas.js",
-            "js/libs/jquery.scrollto-min.js",
-            
-            "js/mylibs/history.js",
+  
+ <script>
+    head
+        .js(
+            "js/libs/jquery-1.6.4.min.js", 
+            "js/libs/jquery.form.js", 
+            "js/libs/jquery.tmpl.min.js", 
+            "js/libs/jquery.cookie.js", 
+            "js/libs/jquery.identicon5.packed.js", 
+            "js/libs/jquery.md5.js", 
+            "js/libs/waypoints.min.js", 
+            "js/libs/autoresize.jquery.min.js", 
+            function ( ) {
+    //            console.log('part 1');
+            }
+        )
+        .js(
+            "js/app/application.js",
+            "js/app/application.view.js",
+            "js/app/marker.js",
+            "js/app/marker.view.js",
+            "js/app/fragment.js",
+            "js/app/fragment.view.js",
+            "js/app/facade.js",
             "js/plugins.js",
-//            "js/align.floats.base.js",
-
+            "js/script.js",
+            "js/mylibs/history.js",
+            function ( ) {
+    //            console.log('part 2');
+            }
+        )
+        .js(
             "js/graph/grapharea.js",
             "js/graph/g.nav.js",
-            
-            "js/app/fragment.js",
-            "js/app/facade.js",
-
-            "js/app/application.js",
-//
-//            "js/app/f.word.js",
-            "js/app/f.tag.js",
+            function ( ) {
+    //            console.log('part 2');
+            }
+        )
+        .js(
             "js/app/f.user.js",
+            "js/app/f.tag.js",
             "js/app/f.post.js",
+            "js/app/f.post.view.js",
             "js/app/f.branch.js",
-
-            "js/script.js"
-        ];
-
-        function updateScriptsLoaderStatus(msg)
-        {
-            // update scriptS loader status here
-            console.log('' + msg); // <- simple message
-        }
-
-        (function loadNext( ind  )
-        {
-//            updateScriptsLoaderStatus('Loading JS: ' + (ind+1) + '/' + scripts.length + ' - ' + scripts[ind]);
-            var d = new Date();
-            var filename = scripts[ind];
-            var fileref = document.createElement('script')
-            fileref.onload = function () {
-                if (scripts[ind+1] != undefined)
-                {
-                    loadNext( ++ind  );
-                }    
-                else
-                {
-//                    update    ScriptsLoaderStatus('JS loading complete');
-                    
-                }
-            };
-            fileref.setAttribute( "type","text/javascript" );
-            fileref.setAttribute( "src", filename + "?d="+d.getTime() );
-            document.getElementsByTagName("head")[0].appendChild( fileref );
-        } (0) );
-        
-    }());
-    
-    
+            "js/app/f.branch.view.js",
+            function ( ) {
+    //            console.log('part 4');
+                Application ( {
+                    path : "http://youopened.com",
+                    sessionkey : $.cookie("yo_sessionkey")?$.cookie("yo_sessionkey"):"",
+                    templates : [
+                        "fragment",
+                        "reply",
+                        "top-tab",
+                        "post",
+                        "post-more"
+                    ]
+                } ).run();
+            }
+        );
   </script>
   <!-- end scripts-->
 
+  <!-- Change UA-XXXXX-X to be your site's ID -->
+  <script>
+    <!--
+    window._gaq = [['_setAccount','UAXXXXXXXX1'],['_trackPageview'],['_trackPageLoadTime']];
+    Modernizr.load({
+      load: ('https:' == location.protocol ? '//ssl' : '//www') + '.google-analytics.com/ga.js'
+    });
+    -->
+  </script>
 
+
+  <!-- Prompt IE 6 users to install Chrome Frame. Remove this if you want to support IE 6.
+       chromium.org/developers/how-tos/chrome-frame-getting-started -->
   <!--[if lt IE 7 ]>
-    <script src="js/libs/dd_belatedpng.js"></script>
-    <script>DD_belatedPNG.fix("img, .png_bg"); // Fix any <img> or .png_bg bg-images. Also, please read goo.gl/mZiyb </script>
+    <script src="//ajax.googleapis.com/ajax/libs/chrome-frame/1.0.3/CFInstall.min.js"></script>
+    <script>window.attachEvent('onload',function(){CFInstall.check({mode:'overlay'})})</script>
   <![endif]-->
-
-
-  <!-- mathiasbynens.be/notes/async-analytics-snippet Change UA-XXXXX-X to be your site's ID -->
-  <!-- script>
-    var _gaq=[["_setAccount","UA-XXXXX-X"],["_trackPageview"]];
-    (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];g.async=1;
-    g.src=("https:"==location.protocol?"//ssl":"//www")+".google-analytics.com/ga.js";
-    s.parentNode.insertBefore(g,s)}(document,"script"));
-  </script -->
-
+  
 </body>
-</html> 
+</html>

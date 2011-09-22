@@ -13,48 +13,101 @@ var FragmentView = function ( Fragment )
 FragmentView.prototype = {
     attachBehavior : function ( )
     {
-        var FragmentView = this;
+        this.Fragment.branch.View.attachBehavior ( this );
+        this.Fragment.branch.post.View.attachBehavior ( this );
+    },
+    hideFragmentElements : function ( )
+    {
+        this.View.find('.post-more').hide();
+    },
+    showFragmentElements : function ( )
+    {
+        this.View.find('.post-more').show();
+    },
+    closeContent : function ( )
+    {
+        this.Fragment.branch.post.View.closeContent( );
         
-        this.View.find(".post").find('.text')
-            .css({'cursor': 'pointer'})
-            .click( function ( ) {
-                FragmentView.openRightSide();
-            } );
-        /*
-        var Facade = this.Facade;
+        this.showFragmentElements();
+        this.closeRightSide();
+    },
+    closeOtherFragments : function ( )
+    {
+        this.Fragment.Application.closeAllFragments();
+    },
+    openContent : function ( )
+    {
+        this.closeOtherFragments();
         
-        this.View.find(".go-back").click( function( ) {
-            Facade.branchHistory.process( Facade.branchHistory.prev( ) );
-            return false;
+        this.Fragment.branch.post.View.openContent( this.Fragment.branch.post.View );
+        
+//        this.View.find(".state").addClass('expanded');
+//        this.Fragment.openMainBranch();
+        
+        this.hideFragmentElements();
+        this.openRightSide();
+    },
+    drawContent : function ( parentView, content )
+    {
+        $( content )
+//            .css({"opacity":"0"})
+            .insertAfter( parentView );
+//            .animate({"opacity":"1"}, 400, function (){} );
+    },
+    closeRightSide : function ( )
+    {
+        var Fragment = this.Fragment;
+        
+        this.View.find(".side").css({
+            "opacity" : "0",
+            "display": 'none'
         });
+        Fragment.removeNavGraph();
+        Fragment.View.View.find(".side .content *").remove();
         
-        this.View.find(".go-forward").click( function( ) {
-            Facade.branchHistory.process( Facade.branchHistory.next( ) );
-            return false;
-        });
-        
-        this.View.find(".reply-modes .icon16set").live( 'mouseover', function ( ) {
-            var parentCont = $(this).parents(".reply-form");
-            parentCont.find(".reply-content")
-                .html( $(this).attr("title") );
-        } );
-        */
+//        this.View.find(".side")
+//            .animate({
+//                "opacity":"0"
+//            }, 'slow', function () {
+//                
+//                $(this).css({
+//                    "opacity":"0",
+//                    "display": 'none'
+//                });
+//                Fragment.removeNavGraph();
+//                Fragment.View.View.find(".side .content *").remove();
+//            });
     },
     openRightSide : function ( )
     {
         this.drawNavigram();
         this.drawTagCloud();
         this.drawAuthorCloud();
-        this.View.find(".side").show();
+        this.View.find(".side")
+            .css({
+                "opacity":"0",
+                "display": 'block'
+            })
+            .animate({
+                "opacity":"1"
+            }, 'slow');
     },
     drawNavigram : function ( ) {
+        $('<div class="navdiag"></div>').appendTo(this.View.find(".side .content"));
         this.Fragment.branch.drawNavGraph( this.View.find(".navdiag") );
     },
     drawTagCloud : function( ) {
-        
+        $('<div class="hr"></div>').appendTo(this.View.find(".side .content"));
+        var tagsArea = $("<div class='tags_list'></div>").appendTo(this.View.find(".side .content"));
+        var generatedTags = this.generateTagList();
+        $(generatedTags).appendTo( tagsArea );
     },
     drawAuthorCloud : function ( ) {
-        
+        $('<div class="hr"></div>').appendTo(this.View.find(".side .content"));
+        var authorsArea = $("<div class='authors_list'></div>").appendTo(this.View.find(".side .content"));
+        var generatedUsers = this.generateUsersList();
+        $(generatedUsers).appendTo( authorsArea );
+        this.renderAvatars(authorsArea, 48);
     },
     render : function ( params )
     {
@@ -81,81 +134,71 @@ FragmentView.prototype = {
                 break;
             
             default:
-                this.Facade.Application.msg("Incorrect render mode for " + params.tmpl);
+                this.Fragment.Application.msg("Incorrect render mode for " + params.tmpl);
         }
         
         return this.View;
     },
-    redrawFragment : function ( branch, redrawGraph )
+    generateTagList : function ( )
     {
-        /*
-         * remove all framgments inside
-         * 1 remove main branch
-         * 2
-         * 3 ...
-         * draw indide Elements for given branch
-         */
-        this.View.find("article").remove();
-        this.View.find(".replacement").remove();
+        var content = document.createDocumentFragment(),
+            tags = this.Fragment.branch.tags,
+            tmpView = [];
         
-        var newView = branch.render ({
-            parentView     : this.View, 
-            insertMode   : 'appendTo',
-            tmpl   : 'branch', 
-            parentId : this.Fragment.id
-        });
-        
-        newView.css( {"outline-color": branch.color} );
-        
-        if ( redrawGraph ) {
-            this.branch.drawNavGraph( this.View.find(".navdiag") );
-            this.Fragment.navGraph = this.Fragment.branch.navGraph;
-            this.View.find(".navdiag").show();
+        for (var tagId in tags) {
+            tmpView = $("<a href='#tag-" + tagId + "' title='" +  + tags[tagId].entryRating+ "'> " 
+                + tags[tagId].tag.asText 
+                + " </a>");
+            content.appendChild( tmpView[0] );
+            
         }
-        /*
-         * если во фрагменте есть открытая ветка то показывать элементы - иначе скрывать
-         */
+        
+        return content;
+        
+    },
+    generateUsersList : function ( )
+    {
+        var content = document.createDocumentFragment(),
+            authors = this.Fragment.branch.authors,
+            tmpView = [],
+            avaContent = '';
+        
+        for (var id in authors) {
+            
+//            tmpView = $(" <a href='#authors-" + authorId + "'> " + authors[id].author.name 
+//                + " </a>");
+            avaContent = '<a href="#avatar-author-'+ id + '" \n\
+                data-id="' + id + '" \n\
+                class="avatarHref" title="'+ authors[id].author.name + '"></a>';
+            
+            if ((authors[id].avataruri != null))
+            {
+                avaContent = '<img src="'+ authors[id].author.avataruri + '" \n\
+                    alt="'+ authors[id].author.name+ '" title="'+ authors[id].author.name+ '" \n\
+                    data-id="' + id + '" \n\
+                    class="round-border" />';
+            }
+            tmpView = $('<div class="avatar">'+ avaContent + '</div>');
+            
+            content.appendChild( tmpView[0] );
+        }
+        
+        return content;
+    },
+    renderAvatars : function ( parentView, size )
+    {
+        var size = size || 72,
+            users = this.Fragment.Application.users;
+        $.each( parentView.find( '.avatarHref' ), function ( i, el ) {
+            var id = $(el).attr("data-id");
+            var author = users[id];
+            $( el ).html( $.md5( author.name ) );
+            $( el ).identicon5( {
+                size: size
+            });
+        });    
+        
+    },
 
-    },
-    showSide : function ( branch )
-    {
-        this.redrawTags ( branch );
-        this.redrawAuthors ( branch );
-    },
-    hideSide : function ( )
-    {
-        this.View.find(".tags").hide();
-        this.View.find(".authors").hide();
-    },
-    redrawTags : function ( branch )
-    {
-        var tagArea = this.View.find(".tags .inner");
-        
-        tagArea.find("*").remove();
-        
-        var counter = 0;
-        
-        for (var tagId in branch.tags) {
-            if ( counter++ > 15 ) break;
-            $("<a href='#tag-" + tagId + "'><span class='tag'><tag>" 
-                + branch.tags[tagId].tag.asText + "</tag> - " + branch.tags[tagId].entryRating 
-                + "</span></a> ").appendTo( tagArea );
-        }
-        this.View.find(".tags").show();
-        
-    },
-    redrawAuthors : function ( branch )
-    {
-        var authorsArea = this.View.find(".authors .inner");
-        authorsArea.find("*").remove();
-        
-        var counter = 0;
-        for (var authorId in branch.authors) {
-            if ( counter++ > 15 ) break;
-            $("<a href='#authors-" + authorId + "'>" + branch.authors[authorId].author.name 
-                + " - " + branch.authors[authorId].entryRating + "</a> ").appendTo( authorsArea );
-        }
-        this.View.find(".authors").show();
-    }
 }
 
