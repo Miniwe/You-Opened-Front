@@ -210,6 +210,25 @@ var Application = function ( opts )
     };
     
     /*
+     */
+    this.logoutUser = function ( ) {
+//        @todo доделать разлогинивание - не работает корректо сейчас
+//      чистка всего
+//      изменение Экрана
+
+        this.siteUser = null;
+        
+        this.sessionkey = '';
+        
+        $.cookie("SessionKey", "", {
+            expires: 7,
+            path: '/',
+            domain: '.youopened.com'
+        });
+    }
+    
+    
+    /*
      * Вывод сообщения
      */
     this.msg = function (message, mode)
@@ -230,6 +249,8 @@ var Application = function ( opts )
     {
         if ( response.Result.IsSuccess == "True") {
             
+            var newData = this.parseResponseData( response );
+            
             if ( response.SessionKey != null ) {
                 
                 // save key to cookies and app
@@ -240,12 +261,16 @@ var Application = function ( opts )
                 });
                 this.sessionkey = response.SessionKey;
                 
+                if ( !newData.users.length )
+                {
+                    this.msg( "Auth result: Error with user data" );
+                    return false;
+                }
+                
+                console.log('id',newData.users[0]);
+                console.log('self',this.users, this.users[newData.users[0]] );
                 // save user data to siteUser
-                this.siteUser = new User( this, response.UserId, {
-                    Id : response.UserId,
-                    Name : "",
-                    AvatarUri : ""
-                });
+                this.siteUser = this.users[newData.users[0]] ;
                 
                 // clear userarea
                 // show userInfo form

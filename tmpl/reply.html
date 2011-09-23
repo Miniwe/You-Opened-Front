@@ -9,8 +9,10 @@
     <div class="content">
         <div class="title">Reply</div>
         <div class="inner" style="display: none;">
-            <form method="" action="">
-            <textarea class="reply-textarea" style="background-color: transparent; font-family: Ubuntu; line-height: 18px; outline: none; margin: 12px 0; width:500px; height: 18px; -webkit-box-shadow: inset 0px 0px 2px #88888; border: none; "></textarea>
+            <form class="postform" method="" action="/Slice.json">
+            <input type="hidden" name="procedure" value="PostMessage" />
+            <input type="hidden" title="parent post Id" name="parentPostId" value="${id}" />
+            <textarea name="text" class="reply-textarea" style="background-color: transparent; font-family: Ubuntu; line-height: 18px; outline: none; margin: 12px 0; width:500px; height: 18px; -webkit-box-shadow: inset 0px 0px 2px #88888; border: none; "></textarea>
             <div class="additional-fields">
                 <div class="hr"></div>
                 

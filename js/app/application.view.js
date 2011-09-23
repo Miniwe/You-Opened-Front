@@ -27,14 +27,25 @@ ApplicationView.prototype = {
     },
     fillAuthorizedData : function ( )
     {
-       var user = this.Application.siteUser;
+       var user = this.Application.siteUser,
+           View = this;
+       
        $.tmpl("userarea-auth", user).appendTo("#user-area");
+       
+        $("#logout").click(function ( ) {
+            // remove cookie
+            View.Application.logoutUser ();
+            
+            View.fillUserArea( false );
+            // show non
+        });
+       
        
        if ( !user )
        {
            return false;
        }
-       if ( user.avataruri == "" )
+       if ( user.avataruri == null )
        {
            $("#user-area .avatar").html('<a href="#avatar-author-' + user.id 
                + '" class="avatarHref" title="' + user.name + '" style="margin-top: -72px;"></a>' );
@@ -73,7 +84,7 @@ ApplicationView.prototype = {
             }
             
         });
-       
+        
         $("#auth-form").submit(function(){
             var data = Application.formArrayToData($(this).formToArray());
             $(this).resetForm();

@@ -31,6 +31,8 @@ function Post (Application, id, data)
  
     this.postCount    = 0;
     
+    this.opened = false;
+    
     this.View = new PostView ( this );
     
     (this.update = function ( data ) {
@@ -107,10 +109,10 @@ Post.prototype = {
             }
         }
     },
-    openPostChilds : function ( parenView )
+    openPostChilds : function ( dfd )
     {
         var Post = this;
-        this.loadChilds( {}, function( ) { Post.View.showPostChils ( parenView ) } );
+        this.loadChilds( {}, function( ) { Post.View.showPostChils (); dfd.resolve({}); } );
     },
     addPoststoPost : function ( posts )
     {
@@ -122,6 +124,54 @@ Post.prototype = {
                 this.posts[curPostId] = this.Application.posts[ curPostId ];
             }
         }
+    },
+    processPostSubmit : function ( response )
+    {
+        var curPostId = '',
+            newPost = null,
+            Post = this;
+            
+        if ( response.Result.IsSuccess == "True") {
+            
+            var newData = this.Application.parseResponseData( response );
+            
+            if ( response.Result.PostMessageId != null ) {
+                
+                curPostId = response.Result.PostMessageId;
+                
+                // add post to post array
+                this.posts[curPostId] = this.Application.posts[ curPostId ];
+                 
+                // drawChildsList and focus to newPost
+                if ( this.opened ) {
+                    // only add post after
+                    this.View.drawPost( this.Application.posts[ curPostId ] );
+                    
+                    // focus post
+                    this.View.focusPost( curPostId );
+                }
+                else {
+                    
+                    $.when ( this.View.openContent() )
+
+                        .then(function ( ) {
+                            // after opened focus post
+                            Post.View.focusPost( curPostId );
+                        });
+                }
+                
+                
+            }
+            else {
+                // show message
+                this.Application.msg( "Post result: " + response.Result.UserInfo );
+            }
+
+        }
+        else {
+            this.Application.msg( "Post Erorr: " + response.Result.UserInfo );
+        }
+        
     },
     loadChilds : function ( params, callback )
     {

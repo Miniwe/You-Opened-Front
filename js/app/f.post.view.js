@@ -13,6 +13,8 @@ var PostView = function ( Post )
 PostView.prototype = {
     attachBehavior : function ( ParentView )
     {
+        ParentView = ( ParentView ) ? ParentView : this.View;
+        
         var PostView = this;
         
         this.View.find('.text')
@@ -178,58 +180,69 @@ PostView.prototype = {
         this.View.find(".state").removeClass('expanded');
         
         this.removePostChilds ( this.Post, false );
+        
+        this.Post.opened = false;
     },
-    openContent : function ( parentView )
+    openContent : function ()
     {
+        var dfd = $.Deferred();
+        
         this.View.find(".state").addClass('expanded');
         
-        this.Post.openPostChilds( parentView );
+        this.Post.openPostChilds( dfd );
+        
+        this.Post.opened = true;
+        
+        return dfd.promise();
     },
-    showPostChils : function ( parentView )
+    showPostChils : function ( )
     {
         var content = this.drawChildsList( );
-        this.drawContent( parentView, content );
+        this.drawContent( content );
     },
     
-    drawListHierarhy: function ( posts_list, color, View)
+    focusPost: function ( postId ) 
+    {
+//        var offset = $("#post-" + postId).offset(); 
+//        offset.top -= $("#main-header").outerHeight(true);
+//        $(document.body).scrollTop(offset.top)
+    },
+    drawPost : function ( post )
+    {
+         var newView = post.View.render({
+            parentView: this.View, 
+            tmpl: "post", 
+            insertMode :"insertAfter",
+            parent: this.Post.id
+        });
+        
+        post.View.attachBehavior( );
+        
+        return newView;
+    },
+    drawListHierarhy: function ( posts_list, color, View, updateChilds )
     {
         var b, id;
-        var app_posts = this.Post.Application.posts;
+        var app_posts = this.Post.Application.posts,
+            newView = null;
         for ( id in posts_list )
         {
 //            b = this.Application.branchExist( id );
             b = false;
             
-            if ( b )
-            {
-                var newView = app_posts[ id ].View.render({
-                    parentView: View, 
-                    tmpl: "post", 
-                    insertMode :"insertAfter",
-                    parent: this.id
-                });
-                
-                b.drawListHierarhy( posts_list, b.color, newView );
-            }
-            else
-            {
-                var newView = app_posts[ id ].View.render({
-                    parentView: View, 
-                    tmpl: "post", 
-                    insertMode :"insertAfter",
-                    parent: this.id
-                });
-            }
+            newView = this.drawPost( app_posts[ id ] );
             
-            var parentOffset = $(View).css("margin-left") || 0;
-            newView.css({"margin-left": (parentOffset + 24) +"px"});
-            app_posts[ id ].View.attachBehavior( app_posts[ id ].View );
+//            if ( b = this.Application.branchExist( id ) )
+//            {
+//                b.drawListHierarhy( posts_list, b.color, newView );
+//            }
             
             /*
              * перебирать все посты ветки
              * если пост является корнем другой ветки то его рисовать с другим цветом
              * запускать с этим цветом перебор 
              */
+            
             View.appendChild( newView[0] );
         }
         
@@ -243,7 +256,7 @@ PostView.prototype = {
         return content;
         
     },
-    drawContent : function ( parentView, content )
+    drawContent : function ( content )
     {
         $( content )
 //            .css({"opacity":"0"})
@@ -280,6 +293,7 @@ PostView.prototype = {
             
             default:
                 this.Post.Application.msg("Incorrect render mode for " + params.tmpl);
+                return false;
         }
         
         this.addReplyForm();
@@ -290,7 +304,8 @@ PostView.prototype = {
     },
     addReplyForm : function ( )
     {
-        var content = document.createDocumentFragment(),
+        var Post = this.Post,
+            content = document.createDocumentFragment(),
             form = $.tmpl('reply', {
                 id : this.Post.id
             });
@@ -317,6 +332,7 @@ PostView.prototype = {
         });
         
         postArea.find('.cancel-reply').click( function ( ) {
+            postArea.find('.postform').resetForm();
             postArea.find('.inner').slideUp();
             return false;
         });
@@ -336,7 +352,24 @@ PostView.prototype = {
                 // More extra space:
                 extraSpace : 18
             });
-        
+            
+        postArea.find(".postform").submit( function ( ) {
+            var data = Post.Application.formArrayToData($(this).formToArray());
+            
+            postArea.find('.cancel-reply').click();
+            
+            Post.Application.ajaxRequest(postArea.find(".postform").attr("action"), 
+                function( response ){
+                    
+                    Post.processPostSubmit( response );
+
+                }, function(){
+                     Post.Application.msg("Couldn't post message. Server error");
+                },
+                data
+            );                
+            return false;
+        });
     },
     renderAvatar : function ( View, user, size )
     {

@@ -101,12 +101,13 @@
             "js/libs/jquery.identicon5.packed.js", 
             "js/libs/jquery.md5.js", 
             "js/libs/waypoints.min.js", 
-            "js/libs/autoresize.jquery.min.js", 
+            "js/libs/autoresize.jquery.min.js",
             function ( ) {
     //            console.log('part 1');
             }
         )
         .js(
+            "js/plugins.js",
             "js/app/application.js",
             "js/app/application.view.js",
             "js/app/marker.js",
@@ -114,8 +115,12 @@
             "js/app/fragment.js",
             "js/app/fragment.view.js",
             "js/app/facade.js",
-            "js/plugins.js",
-            "js/script.js",
+            "js/app/f.user.js",
+            "js/app/f.tag.js",
+            "js/app/f.post.js",
+            "js/app/f.post.view.js",
+            "js/app/f.branch.js",
+            "js/app/f.branch.view.js",
             "js/mylibs/history.js",
             function ( ) {
     //            console.log('part 2');
@@ -129,12 +134,7 @@
             }
         )
         .js(
-            "js/app/f.user.js",
-            "js/app/f.tag.js",
-            "js/app/f.post.js",
-            "js/app/f.post.view.js",
-            "js/app/f.branch.js",
-            "js/app/f.branch.view.js",
+            "js/script.js",
             function ( ) {
     //            console.log('part 4');
                 Application ( {
