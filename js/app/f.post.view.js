@@ -284,7 +284,7 @@ PostView.prototype = {
         
         this.addReplyForm();
         
-        this.renderAvatar();
+        this.renderAvatar( this.View, this.Post.author );
         
         return this.View;
     },
@@ -338,12 +338,11 @@ PostView.prototype = {
             });
         
     },
-    renderAvatar : function ( size )
+    renderAvatar : function ( View, user, size )
     {
         var size = size || 72;
-        var author = this.Post.author;
-        $.each( this.View.find( '.avatarHref' ), function ( i, el ) {
-            $( el ).html( $.md5( author.name ) );
+        $.each( View.find( '.avatarHref' ), function ( i, el ) {
+            $( el ).html( $.md5( user.name ) );
             $( el ).identicon5( {
                 size: size 
             });

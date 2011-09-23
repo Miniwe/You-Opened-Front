@@ -23,7 +23,6 @@ BranchView.prototype = {
            return false;
         });
         
-        console.log('attach event', this.Branch.id);
         this.View.find(".icon24set.icon-left").click( function( ) {
             var active = $(this).parents(".post-more").find("ul.branch_keys li:visible").prev("li");
             if (active.length < 1)

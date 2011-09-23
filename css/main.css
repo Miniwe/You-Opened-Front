@@ -251,30 +251,39 @@ nav.toolbar .tab.active:hover{
 
 
 button {
-    background: #c0c0c0 url(../img/bg_toolbar.png) repeat-x bottom left;
+    background: #dddddd url(../img/bg_main.png) repeat fixed;
     
-    border-left:1px solid #ccc;
-    border-top: 1px solid #ccc;
-
-    border-bottom:1px solid #444;
-    border-right:   1px solid #444;
- 
-    height: 24px;
+    font-size: 16px;
+    font-family: Open Sans Condensed;
     
-    font-size: 13px;
+    padding: 3px 12px;
     text-shadow: #ffffff 1px 1px 0px ;
     white-space: nowrap;
+    
+    -moz-box-shadow: 3px 3px 6px #b2b2b2;
+    -webkit-box-shadow: 3px 3px 6px #b2b2b2; 
+    box-shadow: 3px 3px 6px #b2b2b2;
+    
+    border: 1px outset #ffffff;
 }
 button.icon{
-    padding-left: 24px;
+    padding-left: 36px;
 }    
 
+button.icon.icon-user-reg{
+    background: url(../img/icon16_user_reg.png) no-repeat 6px center, url(../img/bg_toolbar.png);
+}
+
+button.icon.icon-user-auth{
+    background: url(../img/icon16_user.png) no-repeat 6px center, url(../img/bg_toolbar.png);
+}
+
 button.icon.icon-del{
-    background: url(../img/icon24_del.png) no-repeat left center, url(../img/bg_toolbar.png);
+    background: url(../img/icon24_del.png) no-repeat 6px center, url(../img/bg_toolbar.png);
 }
 
 button.icon.icon-send{
-    background: url(../img/innnerref.png) no-repeat left center, url(../img/bg_toolbar.png);
+    background: url(../img/innnerref.png) no-repeat 6px center, url(../img/bg_toolbar.png);
 }
 
 .post-content .left-side {
@@ -424,7 +433,7 @@ ul.tags li.active{
     height: 0px;
     position: absolute;
     margin-top: 32px;
-    margin-left: 0px;
+    margin-left: 24px;
     background-color: #ededeb;
     z-index: 1000;
     
@@ -565,4 +574,30 @@ ul.tags li.active{
     width:48px;
     height: 48px;
     float: left;
+}
+
+.hidden {
+    display: none;
+}
+
+.inline {
+    display: inline-block;
+}
+
+.divider.no-padding {
+    padding: 0;
+}
+
+#user-area .icon-container {
+    margin: 0 6px;
+}
+
+a {
+    color: #727272;
+    text-decoration: none;
+}
+
+a:hover {
+    color: #616161;
+    text-decoration: underline;
 }

@@ -54,75 +54,14 @@
                     <input type="image" src="s.png" class="icon24set search" alt="find" title="find" />
                 </form>
                 <div class="icon24set right-icon open-params"></div>
-    <!--            <div class="opts-cont"></div>-->
-            </div>
-            <!--
-            <div class="divider">
-                <div class="inner">
-                </div>
-            </div><div class="tab active round-border selected">
-                <div class="icon24set left-icon move"></div>
-                <div class="tab-title">
-                    Second Tab
-                </div>
-                <div class="icon24set right-icon action newposts">
-                    <span class="count">23</span>
-                </div>
-                <div class="icon24set right-icon open-params"></div>
                 <div class="opts-cont"></div>
-            </div><div class="divider">
-                <div class="inner">
-                </div>
-            </div><div class="tab active round-border">
-                <div class="icon24set left-icon move"></div>
-                <div class="tab-title">
-                    Third Tab
-                </div>
-                <div class="icon24set right-icon action"></div>
-                <div class="icon24set right-icon open-params"></div>
-            </div><div class="divider">
-                <div class="inner">
-                </div>
-            </div><div class="tab icon-container round-border">
+            </div>
+            <div class="tab icon-container round-border hidden">
                 <div class="icon24set left-icon all-opened-tabs"></div>
-            </div><div class="divider">
-                <div class="inner">
-                </div>
             </div>
-            -->
-            <div class="tab right-tab icon-container round-border">
-                <div class="icon24set right-icon opts"></div>
-            </div>
-            <div class="tab right-tab avatar-container">
-                <div class="avatar round-border">
-                    <img src="img/ava1.png" alt="user name" title="user name" class="round-border" />
-                </div>
-            </div>
-            <div class="tab right-tab icon-container round-border">
-                <div class="icon24set right-icon new-post"></div>
-            </div>
-            <div class="divider" style="float: right; margin-right: 12px;">
-                <div class="inner">
-                </div>
-            </div>        
-            <div class="tab right-tab icon-container round-border">
-                <div class="icon24set right-icon ntfn-dm"></div>
-            </div>
-            <div class="tab right-tab icon-container round-border">
-                <div class="icon24set right-icon ntfn-invite"></div>
-            </div>
-            <div class="tab right-tab icon-container round-border">
-                <div class="icon24set right-icon ntfn-external"></div>
-            </div>
-            <div class="tab right-tab icon-container round-border">
-                <div class="icon24set right-icon ntfn-reply"></div>
-            </div>
-            <div class="divider" style="float: right; margin-right: 12px;">
-                <div class="inner">
-                </div>
-            </div>        
-            <div class="tab right-tab icon-container round-border">
-                <div class="icon24set left-icon saved-tabs"></div>
+            
+            <div id="user-area" class="tab right-tab">
+              checking user
             </div>
         </nav>
         <div id="toolbar-shadow">
@@ -200,12 +139,14 @@
     //            console.log('part 4');
                 Application ( {
                     path : "http://youopened.com",
-                    sessionkey : $.cookie("yo_sessionkey")?$.cookie("yo_sessionkey"):"",
+                    sessionkey : $.cookie("SessionKey")?$.cookie("SessionKey"):"",
                     templates : [
                         "fragment",
                         "reply",
                         "top-tab",
                         "post",
+                        "userarea-noauth",
+                        "userarea-auth",
                         "post-more"
                     ]
                 } ).run();

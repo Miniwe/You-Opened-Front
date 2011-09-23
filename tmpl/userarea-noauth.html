@@ -1,0 +1,55 @@
+<button id="show-userarea-noauth" class="icon icon-user-auth round-border" style="margin-top: -2px;">
+Show Login Form
+</button>
+<div id="userarea-noauth" class="avatar-container inline hidden">
+    <div class="avatar round-border" style="z-index: 100400; position: relative; height: auto; padding-top: 6px; padding-bottom: 12px; padding-left: 72px; margin-top: -12px;background-position: left top; width: 240px; border:1px solid #dddddd;">
+        <div  id="closeauth" class="icon24set left-icon close" style="float: right"></div>
+        <form action="/Auth.json" method="get" id="auth-form">
+            <div>
+                Username : <br />
+                <input type="text" name="userName" id="userName" />
+            </div> 
+            <div>
+                Password : <br />
+                <input type="password" name="password" id="password" />
+            </div> 
+            <div class="non-registred-area hidden">
+                <div>
+                    <label>
+                    Check password :
+                    <input type="checkbox" name="check_password" id="check_password" />
+                    </label>
+                </div> 
+                <div>
+                    Email : <br />
+                    <input type="text" name="email" id="email" />
+                </div> 
+                <div style="padding-top:6px;">
+                    <input type="hidden" name="procedure" id="procedure" value="SignIn" />
+                    <button class="icon icon-user-reg round-border" style="float: right; margin-right:24px;">
+                        Register
+                    </button>
+                </div>  
+            </div>
+            <div class="registred-area">
+                <div class="hidden">
+                    <label>
+                    Remember me: 
+                    <input type="checkbox" name="remember" id="remember" />
+                    </label>
+                </div> 
+                <div style="padding-top:6px;">
+                    <button class="icon icon-user-auth round-border" style="float: right; margin-right:24px;">
+                        Login
+                    </button>
+                </div> 
+            </div>
+            <div style="margin: 6px 0;">
+            <a href="#new_user" class="auth_new_user">New User ?</a>
+            <a href="#new_user" class="auth_existing_user hidden">Existing User ?</a>
+            </div>
+            
+        </form>
+    </div>
+
+</div>

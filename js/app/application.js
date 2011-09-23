@@ -212,7 +212,8 @@ var Application = function ( opts )
     /*
      * Вывод сообщения
      */
-    this.msg = function (message, mode) {
+    this.msg = function (message, mode)
+    {
         if ( 'console' == mode ) {
                 console.log(message);
         }
@@ -220,6 +221,60 @@ var Application = function ( opts )
             alert(message);
         }
         
+    };
+    
+    /*
+     * 
+     */
+    this.processAuthResponse = function ( response )
+    {
+        if ( response.Result.IsSuccess == "True") {
+            
+            if ( response.SessionKey != null ) {
+                
+                // save key to cookies and app
+                $.cookie("SessionKey", response.SessionKey, {
+                    expires: 7,
+                    path: '/',
+                    domain: '.youopened.com'
+                });
+                this.sessionkey = response.SessionKey;
+                
+                // save user data to siteUser
+                this.siteUser = new User( this, response.UserId, {
+                    Id : response.UserId,
+                    Name : "",
+                    AvatarUri : ""
+                });
+                
+                // clear userarea
+                // show userInfo form
+                this.View.fillUserArea( true );
+            }
+            else {
+                // show message
+            }
+            this.msg( "Auth result: " + response.Result.UserInfo );
+
+        }
+        else {
+            this.msg( "Auth error: " + response.Result.UserInfo );
+        }
+    };
+    
+    /*
+     * 
+     */
+    this.userState = function ( )
+    {
+        var userAuthorized = false;
+        this.View.fillUserArea( userAuthorized );
+        
+        /* 
+         * сделать заполнение реальными данными userarea 
+         * после авторизации запустить функцию проверки directmessage
+         * если что то есть то указывать это како то...
+         */
     };
 
     /*
@@ -234,6 +289,9 @@ var Application = function ( opts )
             .then(function ( ) {
                 /* start Application here */
                 Application.View.attachBehavior();
+                
+                Application.userState();
+                
                 Application.router();
             });
     };
