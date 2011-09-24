@@ -31,13 +31,12 @@ MarkerView.prototype = {
             tabWidth = 0;
 
         var tab = $.tmpl( 'top-tab', {
-            name: this. Marker.name
+            name: this.Marker.name
         })
-            .css({ "opacity": "0" })
-            .insertAfter("#search-tab")
-            .animate({ "opacity": "1" });
+//            .css({ "opacity": "0" })
+            .insertAfter("#search-tab");
+//            .animate({ "opacity": "1" });
         
-            
         // tab events    
         tab.find(".icon24set.action").click(function(){
             if ( $(this).hasClass('newposts') ) {
@@ -94,8 +93,8 @@ MarkerView.prototype = {
     },
     selectTab : function ()
     {
-        $("nav.toolbar .tab-title").removeClass("selected")
-        this.tabView.find(".tab-title").addClass("selected")
+        $("nav.toolbar .tab-title").removeClass("selected");
+        this.tabView.find(".tab-title").addClass("selected");
     }
 }
 

@@ -43,7 +43,6 @@ Marker.prototype = {
         return fragment;
     },
     addFragments : function ( newData ) {
-        
         var fragment,
             issetFragmentId = 0,
             branchId = 0;
@@ -71,6 +70,7 @@ Marker.prototype = {
     },
     makeRequest : function ( ) {
         var marker = this;
+                
         this.Application.ajaxRequest(
             '/Slice.json',
             function ( response ) {

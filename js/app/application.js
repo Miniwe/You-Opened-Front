@@ -1,4 +1,3 @@
-
 var Application = function ( opts )
 {
     this.globalPath = opts.path || "";
@@ -8,7 +7,7 @@ var Application = function ( opts )
     this.templates_load_completed = 0;
     this.templates = opts.templates || [];
     
-    this.sessionkey = opts.sessionkey;
+    this.sessionkey = "";
     
     this.siteUser         = null;
     
@@ -24,8 +23,8 @@ var Application = function ( opts )
     this.ajaxCount = 0;
     this.ajaxTimer = 0;
     
-    
     this.View = new ApplicationView ( this );
+    
     /*
      *  Двигаемся по списку цветов для веток,
      *  По достижении конца переходим вначало списка
@@ -48,7 +47,7 @@ var Application = function ( opts )
             cnt ++;
             return color;
         }
-    })();
+    } ) ( );
     
     /*
      * @name Кеширование шаблонов 
@@ -63,7 +62,6 @@ var Application = function ( opts )
             d = new Date();
             
         Application.templates_load_completed = 0;
-        
         for (var i=0; i < this.templates.length; i++) {
             $.ajax('tmpl/'+ this.templates[i] +".html", {
                url : 'tmpl/'+ this.templates[i] + '.html',
@@ -71,14 +69,13 @@ var Application = function ( opts )
                     templateName : this.templates[i] 
                 },
                success : function ( templateBody, status, object ) {
-                    
                     Application.templates_load_completed ++;
 
                     $("<script id='tmpl-"+ this.templateName +"' type=\"text/x-jquery-tmpl\">"+ templateBody + "</script>").appendTo('body');
 
                     $("#tmpl-" + this.templateName).template( this.templateName );
-
-                    (Application.templates_load_completed == Application.templates.length) ? dfd.resolve({}) : "";
+                    
+                    (Application.templates_load_completed == Application.templates.length) ?  dfd.resolve({}) : "";
                    
                },
                data : {
@@ -263,12 +260,10 @@ var Application = function ( opts )
                 
                 if ( !newData.users.length )
                 {
-                    this.msg( "Auth result: Error with user data" );
+                    this.msg( "Auth result: Error with user data");
                     return false;
                 }
                 
-                console.log('id',newData.users[0]);
-                console.log('self',this.users, this.users[newData.users[0]] );
                 // save user data to siteUser
                 this.siteUser = this.users[newData.users[0]] ;
                 
@@ -278,12 +273,15 @@ var Application = function ( opts )
             }
             else {
                 // show message
+                this.msg( "Auth result: true but no sessionKey", 'console');
+                this.View.fillUserArea( false );
             }
-            this.msg( "Auth result: " + response.Result.UserInfo );
+            this.msg( "Auth result: " + response.Result.UserInfo, 'console' );
 
         }
         else {
             this.msg( "Auth error: " + response.Result.UserInfo );
+            this.View.fillUserArea( false );
         }
     };
     
@@ -292,8 +290,20 @@ var Application = function ( opts )
      */
     this.userState = function ( )
     {
-        var userAuthorized = false;
-        this.View.fillUserArea( userAuthorized );
+            this.ajaxRequest('/Auth.js',
+            function( response ) {
+                
+                this.processAuthResponse ( response );
+            },
+            function(){
+                var userAuthorized = false;
+                this.msg('Auth error', 'console');
+                this.View.fillUserArea( userAuthorized );
+            },
+            {
+                procedure: "SignState"
+            }
+        );
         
         /* 
          * сделать заполнение реальными данными userarea 
@@ -373,6 +383,7 @@ var Application = function ( opts )
         
         result = (!result || result[1] == undefined)?[null,"index"]:result;
         
+
         switch ( result[1] ) 
         {
             case "index":
@@ -486,6 +497,7 @@ var Application = function ( opts )
         return out;
     };    
     
-        return this;
     
+    return this;
 };
+

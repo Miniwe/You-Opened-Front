@@ -1,13 +1,11 @@
 /* Author: Messir
 */
-
-
 (function($) {
   
     // * * * global functions * * *
     
     // * * * same as $(document).ready(); * * *
-    $(function() {
+    $(function() { 
         $.waypoints.settings.scrollThrottle = 30;
         $('#main-header').waypoint(function(event, direction) {
             $(this).parent().toggleClass('sticky', direction === "down");

@@ -8,9 +8,9 @@
 
 
 .icon24set, .icon16set {
-/*    background: transparent url(../img/icons24.png) no-repeat;*/
+    background: transparent url(../img/icons24.png) no-repeat;
 /*    background: transparent url(../img/icons24_blue.png) no-repeat;*/
-    background: transparent url(../img/icons24_black.png) no-repeat;
+/*    background: transparent url(../img/icons24_black.png) no-repeat;*/
     -webkit-transition: opacity .2s ease-in-out .2s;
 }
 .icon24set {
@@ -126,6 +126,17 @@
     opacity: 1;
 }
 
+.color {
+    background-position: -108px -72px;
+    opacity: .5;
+}
+
+.color:hover {
+    background-position: -108px -72px;
+    opacity: 1;
+}
+
+
 .gobranch{
     background-position: -0px -72px;
     opacity: .5;
@@ -228,4 +239,8 @@ nav .tab:hover .right-icon:hover, nav .tab:hover .left-icon:hover {
 
 .post:hover .move:hover{
     opacity: 1;
+}
+
+.state .icon24set {
+    margin-left: 2px;
 }

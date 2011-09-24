@@ -1,5 +1,5 @@
 body, input {
-    font-family: Ubuntu;
+    font-family: Ubuntu, Arial, sans-serif;
     font-size: 14px;
 }
 
@@ -230,7 +230,7 @@ nav.toolbar .tab.active:hover{
     padding-bottom: 12px;
 }
 
-.side .content .hr{
+.hr{
 
     margin-right: 24px;
     border-top: 1px solid #b8b8b6;
@@ -254,7 +254,7 @@ button {
     background: #dddddd url(../img/bg_main.png) repeat fixed;
     
     font-size: 16px;
-    font-family: Open Sans Condensed;
+    font-family: Open Sans Condensed, sans-serif;
     
     padding: 3px 12px;
     text-shadow: #ffffff 1px 1px 0px ;
@@ -294,7 +294,7 @@ button.icon.icon-send{
 .post-content .date {
     float: right;
     font-size: 16px;
-    font-family: Open Sans Condensed;
+    font-family: Open Sans Condensed, sans-serif;
     color: #999999;
     text-shadow: #ffffff 1px 1px 0px ;
     white-space: nowrap;
@@ -306,7 +306,7 @@ button.icon.icon-send{
     text-shadow: #ffffff 1px 1px 0px ;
     white-space: nowrap;
     font-size: 16px;
-    font-family: Open Sans Condensed;
+    font-family: Open Sans Condensed, sans-serif;
 }
 
 .post-content .post-info .author-name{
@@ -334,7 +334,7 @@ ul.tags {
 
 ul.tags li{
     font-size: 14px;
-    font-family: Open Sans Condensed;
+    font-family: Open Sans Condensed, sans-serif;
     margin-left: 6px;
     padding-left: 12px;
 /*    background: transparent url(../img/bg_tag.png) repeat-x top;*/
@@ -364,9 +364,7 @@ ul.tags li.active{
 .post-more {
     padding-left: 120px;
 }
-
-.reply-closed {
-    
+.reply {
     margin: 12px 0;
     padding-left: 36px;
     padding-top: 6px;
@@ -375,7 +373,7 @@ ul.tags li.active{
     
     font-size: 14px;
     
-    background: #ededeb; /* Old browsers */
+    background: #ededeb;
     
     -moz-box-shadow: inset 3px 3px 6px #b2b2b2;
     -webkit-box-shadow: inset 3px 3px 6px #b2b2b2; 
@@ -384,8 +382,8 @@ ul.tags li.active{
     opacity: .5;
     -webkit-transition: opacity .2s ease-in-out .2s;
     color: #333;
-}
 
+}
 .reply .modes{
     float: right;
     padding-right: 12px;
@@ -395,7 +393,7 @@ ul.tags li.active{
     margin-right: 12px;
 }
 
-.reply-closed:hover, .reply-closed:focus{
+.reply:hover, .reply:focus{
     opacity: 1;
 }
 
@@ -600,4 +598,33 @@ a {
 a:hover {
     color: #616161;
     text-decoration: underline;
+}
+
+.additional-fields .field {
+    padding: 12px 0;
+}
+textarea.reply-textarea {
+    background-color: #f4f4f4;
+    font-family: Ubuntu, Arial, sans-serif;
+    line-height: 18px;
+    outline: none; 
+    margin: 12px 0;
+    width:500px;
+    height: 18px;
+    -webkit-box-shadow: inset 0px 0px 2px #88888;
+    border: none; 
+}
+
+textarea.directusernames { 
+     background-color: #f4f4f4;
+     border: none;
+     outline: none;
+     height: 1.2em;
+     width: 500px;
+     display: block;
+}
+
+.additional-fields .field .icon16set.close_small{
+    float: right;
+    margin-right: 32px;
 }

@@ -27,14 +27,32 @@ function extend(Child, Parent) {
     Child.superclass = Parent.prototype;
 }
 
-function formatDate (indate)
+function formatDate ( indate )
 {
     var outdate = indate;
-//    outdate = Math.round(outdate);
     var d = new Date();
     d.setTime(outdate * 1000);
     
-    return d.toLocaleString(); // + " - " + outdate;
+//    return d.toLocaleString(); // + " - " + outdate;
+    return d.format("dd, mmmm HH:MM");
 }
 
+
+function getIds (str)
+{
+    
+    var result = str.match(/(\(s0_\d+\))+/g);
+    if (result)
+    {
+        for (var i=0; i< result.length; i++)
+        {
+            result[i] = result[i].substr(1, result[i].length-2);
+        }
+        return result.join(",");        
+    }
+    else
+    {
+        return "";
+    }
+}
 

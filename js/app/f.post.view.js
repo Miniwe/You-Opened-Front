@@ -67,11 +67,6 @@ PostView.prototype = {
             
         });
 
-
-        this.View.find("header").click( function (){
-            Facade.openFacade( );
-        } );
-        
         this.View.find(".gotobranch").click(function (){
 //            var parent_id = $(this).parents('article').attr("data-parent");
             var go_params = $(this).attr("data-ref").match(/\#[a-z]+\-[a-w0-9_]+/g); 
@@ -82,96 +77,6 @@ PostView.prototype = {
             
             return false;
         });
-        
-        this.View.find(".show_reply").click( function( ) {
-           
-           var control = $(this);
-           
-           control.toggleClass("opened");
-           
-           if (control.hasClass("opened"))
-           {
-               $.tmpl("reply", {
-                   id : Facade.id
-               }).insertAfter( Facade.View.find(".inner") ).show();
-               
-               Facade.Application.addReplyFormBehavior( Facade, Facade.View );
-           }
-           else
-           {
-               Facade.Application.removeReplyForm()
-           }
-           
-           return false;
-        });
-        
-        /*
-        View.find(".show_reply").click( function ( ) {
-           
-            var control = $(this);
-           
-            control.toggleClass("opened");
-           
-            if (control.hasClass("opened"))
-            {
-                $.tmpl("reply", {
-                    id : Facade.id
-                }).insertAfter( View.find(".inner") ).show();
-               
-                View.find("form.replyform").submit(function(){
-                    
-                    Facade.Application.removeReplyForm();
-                    
-                    View.find(".show_reply").removeClass( "opened" );
-
-                    var data = Facade.Application.formArrayToData( $(this).formToArray( ) );
-                    
-                    Facade.Application.ajaxRequest( "/Slice.json", 
-                        function ( data ) {
-                            
-                            // сделать правильное добавление поста в режиме plain
-                            
-                            var newData = Facade.Application.parseResponseData( data );
-
-                            var parentFacade = Facade.id;
-                            var parentView = View;
-                            
-                            if ($("[name=mode]:checked").val() == "plain" ) {
-                                parentFacade = View.attr("data-parent");
-                                parentView = $("article[data-id=" + parentFacade + "]");
-                            }
-                            
-                            for (var i=0; i< newData.posts.length; i++)
-                            {
-                                var post = Facade.Application.posts[newData.posts[i]];
-                                //                                var postView = $("article[data-id='" + post.id + "']");
-                                post.render({
-                                    el     : parentView, 
-                                    tmpl   : 'post', 
-                                    mode   : 'insertAfter',
-                                    parent : parentFacade
-                                });
-                                
-//                                window.location.href="#post-"+post.id;
-                            }
-
-                        }, function(){
-                            Facade.Application.msg("Couldn't post comment");
-                        },
-                        data
-                        );        
-                    return false;
-                } );        
-                
-            }
-            else
-            {
-                Facade.Application.removeReplyForm()
-            }
-           
-            return false;
-        } );
-        */
         
     },
     
@@ -220,7 +125,7 @@ PostView.prototype = {
         
         return newView;
     },
-    drawListHierarhy: function ( posts_list, color, View, updateChilds )
+    drawListHierarhy: function ( posts_list, color, View )
     {
         var b, id;
         var app_posts = this.Post.Application.posts,
@@ -302,6 +207,39 @@ PostView.prototype = {
         
         return this.View;
     },
+    addAutocomplete : function ( filed, facadeType )
+    {
+        var Application = this.Post.Application;
+        filed.find(".directusernames").autocomplete( Application.globalPath + 
+            Application.frameworkPath + '/Suggest.json', {
+                width: filed.find(".directusernames").width(),
+                dataType : "jsonp",
+                multiple: true,
+                matchContains: true,
+                selectFirst: true,
+                minChars: 1,
+                autoFill: true,
+                extraParams:  {
+                    facadeType : facadeType
+                },
+                parse : function ( data ) {
+                    var parsed = [];
+                    for ( i in data) {
+                        parsed[parsed.length] = {
+                            data: data[i],
+                            id: i,
+                            value: data[i]+"("+i+")",
+                            result: data[i]+"("+i+")"
+                        };
+                    }
+                    return parsed;
+
+                },
+                formatItem: function ( row ) {
+                    return row;
+                }
+            });        
+    },
     addReplyForm : function ( )
     {
         var Post = this.Post,
@@ -314,30 +252,74 @@ PostView.prototype = {
         
         $(content).appendTo( this.View.find('.reply-cont') );
         
-        var postArea = $("#post-"+this.Post.id);
+        var replyForm = $("#post-"+this.Post.id).find(".reply");
         
 
-        postArea.find(".icon16set").mouseover( function ( ) {
-            var parentCont = $(this).parents(".reply-closed");
-            parentCont.find(".reply .content")
-                .html( $(this).attr("title") );
-        } );
-                       
+        replyForm
+            .mouseout( function ( ) {
+            replyForm
+                .find(".content .title")
+                .html( replyForm.attr("title") );
+        });
+        
+        replyForm.find(".modes .icon16set")
+            .mouseover( function ( ) {
+                replyForm.find('.title').html(  );
+            } )
+            .click( function ( ) {
+                var newField = false;
+                switch ( $(this).attr('data-type') )
+                {
+                    case 'dm':
+                        if ( replyForm.find('.directusernames').length < 1 ) {
+                            newField = $.tmpl("field-direct-users").prependTo( replyForm.find(".additional-fields"));
+                            Post.View.addAutocomplete( newField, "user" );
+                        }
+                        break;
+                    case 'invite':
+                        if ( replyForm.find('.field.withInvite').length < 1 ) {
+                            newField = $.tmpl("field-with-invite").appendTo( replyForm.find(".additional-fields"));
+                        }
+                        break;
+                    default:
+                        // no actions
+                }
+                
+                if (newField) {
+                    newField.find(".close_small").click(function(){
+                        newField.remove();
+                    });
+                }
+                // to close add action to remove
+                replyForm.find('.title').click();
+                
+                if (replyForm.find('.directusernames').length > 0) {
+                    replyForm.find('.directusernames').focus();
+                }
+                // focus to direct users if exist
+                
+            });
+            
         // form events
-        postArea.find('.title').click( function ( ) {
-            postArea.find('form').resetForm();
-            postArea.find('.inner').slideDown('medium', function(){
-                postArea.find('.reply-textarea').focus();
+        replyForm.find('.title').click( function ( ) {
+            replyForm.addClass("opened");
+            
+            replyForm.find('form').resetForm();
+
+            replyForm.find('.inner').slideDown('medium', function(){
+                replyForm.find('.reply-textarea').focus();
             });
         });
         
-        postArea.find('.cancel-reply').click( function ( ) {
-            postArea.find('.postform').resetForm();
-            postArea.find('.inner').slideUp();
+        replyForm.find('.cancel-reply').click( function ( ) {
+            replyForm.find('.postform').resetForm();
+            replyForm.find('.inner').slideUp("fast",function (){
+                replyForm.find('.field').remove();
+            });
             return false;
         });
         
-        postArea.find('textarea.reply-textarea')
+        replyForm.find('textarea.reply-textarea')
             .css({"height": "18px"})
             .autoResize({ // On resize:
                 onResize : function() {
@@ -353,12 +335,13 @@ PostView.prototype = {
                 extraSpace : 18
             });
             
-        postArea.find(".postform").submit( function ( ) {
+        replyForm.find(".postform").submit( function ( ) {
             var data = Post.Application.formArrayToData($(this).formToArray());
+            data.directUserIds = getIds(data.directusernames);
             
-            postArea.find('.cancel-reply').click();
+            replyForm.find('.cancel-reply').click();
             
-            Post.Application.ajaxRequest(postArea.find(".postform").attr("action"), 
+            Post.Application.ajaxRequest(replyForm.find(".postform").attr("action"), 
                 function( response ){
                     
                     Post.processPostSubmit( response );
