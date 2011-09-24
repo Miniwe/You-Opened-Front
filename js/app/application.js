@@ -270,6 +270,9 @@ var Application = function ( opts )
                 // clear userarea
                 // show userInfo form
                 this.View.fillUserArea( true );
+                
+                // start user update status
+                
             }
             else {
                 // show message

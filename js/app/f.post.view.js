@@ -252,9 +252,8 @@ PostView.prototype = {
         
         $(content).appendTo( this.View.find('.reply-cont') );
         
-        var replyForm = $("#post-"+this.Post.id).find(".reply");
+        var replyForm = $("#post-"+ Post.id).find(".reply");
         
-
         replyForm
             .mouseout( function ( ) {
             replyForm
@@ -337,7 +336,15 @@ PostView.prototype = {
             
         replyForm.find(".postform").submit( function ( ) {
             var data = Post.Application.formArrayToData($(this).formToArray());
-            data.directUserIds = getIds(data.directusernames);
+            
+            if ( data.directusernames != undefined)
+            {
+                data.directUserIds = getIds(data.directusernames);
+            }
+            if ( data.inviteinclude != undefined)
+            {
+                data.text += '<hr /> Link to post <strong>'+ Post.id + '</strong>'
+            }
             
             replyForm.find('.cancel-reply').click();
             
