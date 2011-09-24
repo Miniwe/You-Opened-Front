@@ -377,7 +377,6 @@ PostView.prototype = {
         for ( var id in this.Post.Application.posts ) {
             if ( this.Post.Application.posts[id].parentPostId == parentPost.id ) {
                 
-                
                 this.removePostChilds( this.Post.Application.posts[id], true );
                 
                 $("#post-" + this.Post.Application.posts[id].id)

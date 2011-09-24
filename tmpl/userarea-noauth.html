@@ -7,11 +7,11 @@ Show Login Form
         <form action="/Auth.json" method="get" id="auth-form">
             <div>
                 Username : <br />
-                <input type="text" name="userName" id="userName" />
+                <input type="text" name="userName" id="userName" value="${userName}" />
             </div> 
             <div>
                 Password : <br />
-                <input type="password" name="password" id="password" />
+                <input type="password" name="password" id="password" value="${password}" />
             </div> 
             <div class="non-registred-area hidden">
                 <div>
@@ -32,10 +32,10 @@ Show Login Form
                 </div>  
             </div>
             <div class="registred-area">
-                <div class="hidden">
+                <div class="">
                     <label>
                     Remember me: 
-                    <input type="checkbox" name="remember" id="remember" />
+                    <input type="checkbox" name="remember" id="remember" ${checked} />
                     </label>
                 </div> 
                 <div style="padding-top:6px;">

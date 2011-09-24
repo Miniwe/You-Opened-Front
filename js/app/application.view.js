@@ -58,7 +58,11 @@ ApplicationView.prototype = {
     {
         var Application = this.Application;
         
-        $.tmpl("userarea-noauth", {}).appendTo("#user-area");
+        $.tmpl("userarea-noauth", {
+            userName : $.cookie("userName"),
+            password : $.cookie("password"),
+            checked : ( ($.cookie("userName") + $.cookie("password") ).length > 0) ? 'checked="checked"' : ""
+        }).appendTo("#user-area");
         $("#user-area .auth_new_user").click(function ( ) {
             $("#user-area .auth_new_user, #user-area .auth_existing_user").toggleClass("hidden");
             $("#user-area .non-registred-area, #user-area .registred-area").toggleClass("hidden");
@@ -86,7 +90,11 @@ ApplicationView.prototype = {
         });
         
         $("#auth-form").submit(function(){
+            
             var data = Application.formArrayToData($(this).formToArray());
+            
+            Application.rememberUser(data);
+            
             $(this).resetForm();
             Application.ajaxRequest($("#auth-form").attr("action"), 
                 function( data ){
@@ -129,6 +137,7 @@ ApplicationView.prototype = {
         $("#search-form").submit( function ( ) {
             
             var marker = new Marker( Application );
+            marker.setPath( '/Slice.json' );
             marker.setName( $("#search-field").val() );
             marker.addParams( {
                 'query' : $("#search-field").val()
@@ -137,7 +146,15 @@ ApplicationView.prototype = {
             marker.setAction ( function ( newData ) {
                 this.Application.msg('action of marker', 'console');
                 this.addFragments( newData );
-                this.makeActive();
+                
+                this.View.updateTab();
+
+                this.Application.View.clearMain();
+
+                this.View.drawFragments();
+
+                this.View.selectTab();
+                
             } );
 
             Application.markers.push( marker );

@@ -31,7 +31,7 @@ function formatDate ( indate )
 {
     var outdate = indate;
     var d = new Date();
-    d.setTime(outdate * 1000);
+    d.setTime(outdate);
     
 //    return d.toLocaleString(); // + " - " + outdate;
     return d.format("dd, mmmm HH:MM");

@@ -7,19 +7,31 @@ var Marker = function ( Application )
     
     this.name = 'Marker_' + (new Date()).getTime();
     
-    this.params = {};
+    this.path = '/Slice.json';
+    
     this.params = {};
     
     this.action = undefined;
     
     this.fragments = [];
+    this.posts = {};
+ 
+    this.postsCount = 0;
     
     this.View = new MarkerView ( this );
+    
+    this.isActive = false;
     
     return this;
 }
 
 Marker.prototype = {
+    setPath : function ( path ) {
+        this.path = path;
+    },
+    getPath : function ( ) {
+        return this.path;
+    },
     setName : function ( name ) {
         this.name = name;
     },
@@ -62,17 +74,31 @@ Marker.prototype = {
         }
         
     },
-    makeActive : function ( ) {
-        this.View.addTab();
-        this.Application.View.clearMain();
-        this.View.drawFragments();
-        this.View.selectTab();
+    addPosts: function ( newData )
+    {
+        var id = 0,
+            post,
+            issetPostId = 0;
+            
+        for ( var i = newData.posts.length; i--; )
+        {
+            id = newData.posts[i];
+            if ( this.posts[id] != undefined ) {
+                this.posts[id].update( this.Application.posts[id] );
+            }
+            else {
+                this.posts[id] = this.Application.posts[id];
+                this.postsCount ++;
+            }
+        }
+        
     },
-    makeRequest : function ( ) {
+    makeRequest : function ( )
+    {
         var marker = this;
                 
         this.Application.ajaxRequest(
-            '/Slice.json',
+            this.path,
             function ( response ) {
                 var newData = marker.Application.parseResponseData(response);
                 marker.action( newData );

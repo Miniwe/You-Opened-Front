@@ -3,6 +3,10 @@
  */
 function Post (Application, id, data)
 {
+    if (data.CreateTime == undefined)
+    {
+        console.log('error', id, data);
+    }
     Post.superclass.constructor.call( this );
 
     this.Application     = Application;
@@ -66,48 +70,6 @@ extend( Post, Facade );
 Post.prototype = {
     prepareRender : function()
     {
-        this.branchId = 0;
-        for (var id in this.Application.branches)
-        {
-            if ( this.id == this.Application.branches[id].postId ) {
-                this.branchId = id; 
-                this.postCount = this.Application.branches[id].postCount;
-                break;
-            } else if ( this.parentPostId == this.Application.branches[id].postId ) {
-                this.branchId = id; 
-            }
-        }
-        if ( this.branchId )
-        {
-            this.branchRef = "#branch-"+id+"#post-"+this.id;
-            this.fragment = null;
-            if ( this.branchRef.length > 0 ) {
-                for (var i = this.Application.fragments.length; i--;)
-                {
-                    if ( this.Application.fragments[i].branch && this.Application.fragments[i].branch.id == this.branchId )
-                    {
-                        this.fragment = this.Application.fragments[i];
-                    }
-                    else
-                    { 
-                        if ( this.Application.fragments[i].branch && this.Application.fragments[i].branch.branches) {
-                            for ( var j in this.Application.fragments[i].branch.branches )
-                            {
-                                if ( this.Application.fragments[i].branch.branches[j].id == this.branchId )
-                                {
-                                    this.fragment = this.Application.fragments[i];
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                    if ( this.fragment )
-                    {
-                        break;
-                    }
-                }
-            }
-        }
     },
     openPostChilds : function ( dfd )
     {

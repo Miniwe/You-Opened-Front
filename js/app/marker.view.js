@@ -7,6 +7,7 @@ var MarkerView = function ( Marker )
     this.Marker = Marker;
         
     this.tabView = null; 
+    this.iconView = null; 
         
     return this;
 }
@@ -23,7 +24,71 @@ MarkerView.prototype = {
         $(parentContainer)
             .animate({"width": "0"}, function ( ){
                 $(this).remove();
+                
             });
+        this.tabView = null;
+    },
+    iconExist : function ()
+    {
+        return this.iconView;
+    },
+    updateIcon : function ( iconType )
+    {
+        if ( this.iconExist( ) ) {
+            this.iconView.find(".count").html(this.Marker.postsCount);
+            if (this.Marker.postsCount > 0) {
+                this.iconView.removeClass("hidden");
+            } else {
+                this.iconView.addClass("hidden");
+            }
+        }
+        else {
+            this.addIcon( iconType );
+        }
+    },
+    addIcon : function ( iconType )
+    {
+        if (this.Marker.postsCount < 1) {
+            return false;
+        }
+        var Marker = this.Marker;
+        
+        this.iconView = $('<div class="icon-container inline" title="' +
+            this.Marker.name + '"><div class="icon24set right-icon ntfn-'+
+            iconType +'"></div></div>')
+            .css({ "opacity": "0" })
+            .appendTo("#notifications")
+            .animate({ "opacity": "1"});
+        $('<span class="count"></span>').appendTo(this.iconView.find(".icon24set"));
+        this.iconView.find(".count").html( this.Marker.postsCount );
+        
+        this.iconView.click(function(){
+            
+            Marker.setAction ( function ( newData ) {
+                
+                this.addPosts( newData );
+                this.View.updateTab();
+                this.Application.View.clearMain();
+                this.View.drawPosts();
+            } );
+
+            Marker.makeRequest();
+
+        });
+            
+    },
+    tabExist : function ()
+    {
+        return this.tabView;
+    },
+    updateTab : function ()
+    {
+        if ( this.tabExist() ) {
+            // update process
+        }
+        else {
+            this.addTab();
+        }
     },
     addTab : function ()
     {
@@ -33,9 +98,9 @@ MarkerView.prototype = {
         var tab = $.tmpl( 'top-tab', {
             name: this.Marker.name
         })
-//            .css({ "opacity": "0" })
-            .insertAfter("#search-tab");
-//            .animate({ "opacity": "1" });
+            .css({ "opacity": "0" })
+            .insertAfter("#search-tab")
+            .animate({ "opacity": "1"});
         
         // tab events    
         tab.find(".icon24set.action").click(function(){
@@ -62,6 +127,19 @@ MarkerView.prototype = {
         this.tabView = tab;
 
     },
+    drawPosts : function ()
+    {
+        
+        for ( var id in this.Marker.posts ) {
+            
+            var postView = this.Marker.posts[id].View.render({
+                parentView : $("#main"),
+                insertMode : 'prependTo',
+                tmpl : 'post',
+                parent : "#main"
+            });
+        }
+    },
     drawFragments : function ()
     {
         for ( var id in this.Marker.fragments ) {
@@ -87,8 +165,6 @@ MarkerView.prototype = {
             });
             
             this.Marker.fragments[id].View.attachBehavior ();
-// open post должен для поста порождать открытие подпостов
-// для фрагмента должен порождать открытие фрагмента
         }        
     },
     selectTab : function ()

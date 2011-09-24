@@ -37,7 +37,7 @@
     position: relative;
     left: 18px;
     top: 12px;
-/*    text-shadow: #ffffff -2px -2px 0px, #ffffff 2px 2px 0px, #ffffff -2px 2px 0px, #ffffff 2px -2px 0px;*/
+    text-shadow: #ffffff -2px -2px 0px, #ffffff 2px 2px 0px, #ffffff -2px 2px 0px, #ffffff 2px -2px 0px;
 }
 
 .right-icon {
@@ -68,6 +68,11 @@
 
 .ntfn-invite {
     background-position: -144px -24px;
+    opacity: .5;
+}
+
+.ntfn-userposts {
+    background-position: -132px -72px;
     opacity: .5;
 }
 

@@ -8,8 +8,8 @@ var Application = function ( opts )
     this.templates = opts.templates || [];
     
     this.sessionkey = "";
-    
-    this.siteUser         = null;
+    this.siteUser    = null;
+    this.siteUserTimer = null;
     
     this.markers     = [];
     this.fragments   = [];
@@ -162,7 +162,7 @@ var Application = function ( opts )
                 // [pre actions]
                 success.call( Application, data, textStatus, jqXHR );
                 // [post actions] 
-                
+                return true;
             },
             dataType  : 'jsonp',
             jsonp     : 'jsonp_callback',
@@ -222,6 +222,10 @@ var Application = function ( opts )
             path: '/',
             domain: '.youopened.com'
         });
+        
+        clearTimeout(this.siteUserTimer);
+        this.siteUserTimer = null;
+        
     }
     
     
@@ -239,6 +243,145 @@ var Application = function ( opts )
         
     };
     
+    this.getModeParams = function ( mode_type )
+    {
+        var mode_params = false;
+        
+        switch (mode_type)
+        {
+            case 'dm':
+                mode_params = {
+                    name : 'Direct messages',
+                    params : {
+                        directUserIds : this.siteUser.id,
+                        onlyInBranches : "False"
+                    }
+                };
+                break;
+            case 'invite':
+                mode_params = {
+                    name : 'Invites',
+                    params : {
+                        directUserIds : this.siteUser.id,
+                        onlyInBranches : "False",
+                        artifacts : "HasNativeArtifacts"
+                    }
+                };
+                break;
+            case 'external':
+                mode_params = {
+                    name : 'External links',
+                    params : {
+                        directUserIds : this.siteUser.id,
+                        onlyInBranches : "False",
+                        artifacts : "HasWebSharedArtifacts"
+                    }
+                };
+                break;
+            case 'userposts':
+                mode_params = {
+                    name : 'Self posts',
+                    params : {
+                        authorIds : this.siteUser.id
+                    }
+                }
+                
+                break;
+            default: 
+                return false;
+        }
+        
+        if ( mode_params ) {
+            mode_params.path = '/Slice.json';
+            mode_params.action = function ( newData ) {
+//              console.log('marker results', mode_type, newData)  ;
+              this.addPosts( newData );
+              this.View.updateIcon( mode_type );
+            };
+        }
+        return mode_params;
+    };
+    
+    this.markerExist = function ( name )
+    {
+        var marker = false;
+        for (var i=this.markers.length; i--; )
+        {
+            if ( this.markers[i].name == name )
+            {
+                marker = this.markers[i];
+                break;
+            }
+        }
+        return marker;
+    };
+    
+    this.updateUserState = function ( )
+    {
+        var mode_params = false,
+            modes = ['dm', 'invite', 'external', 'userposts'],
+            marker = false;
+        
+        // если пользователь не залогинен вернуть false и не продолжать
+        if ( this.siteUser == null ) {
+            return false;
+        }
+        
+        // сделат все директ
+        for (var i=modes.length; i--;)
+        {
+//            console.log('modes[i]',modes[i]);
+            if (mode_params = this.getModeParams(modes[i]))
+            {
+//                console.log('mode_params',mode_params);
+                console.log(modes[i], mode_params);
+                marker = this.markerExist(mode_params.name);
+                if ( !marker ) {
+                    marker = new Marker( this );
+                    marker.setName(mode_params.name);
+                    marker.setPath(mode_params.path);
+                    marker.addParams( mode_params.params);
+                    this.markers.push( marker );
+                }
+                
+                marker.setAction ( mode_params.action );
+                
+//                console.log('marker', marker);
+                
+                marker.makeRequest();
+
+            }
+        }
+        
+        this.siteUserTimer = setTimeout(function() {
+            this.updateUserState()
+        }, 30000);
+        
+        return true;
+    };
+    
+    /*
+     * 
+     */
+    this.rememberUser = function ( data )
+    {
+        if (data.remember != undefined)
+        {
+            $.cookie("userName", data.userName, {
+                expires: 7,
+                path: '/'
+            });
+            $.cookie("password", data.password, {
+                expires: 7,
+                path: '/'
+            });
+        }
+        else {
+            $.cookie("userName", null );
+            $.cookie("password", null );
+        }
+        
+    }
     /*
      * 
      */
@@ -272,6 +415,7 @@ var Application = function ( opts )
                 this.View.fillUserArea( true );
                 
                 // start user update status
+                this.updateUserState();
                 
             }
             else {
@@ -286,6 +430,8 @@ var Application = function ( opts )
             this.msg( "Auth error: " + response.Result.UserInfo );
             this.View.fillUserArea( false );
         }
+        
+        return true;
     };
     
     /*
@@ -353,12 +499,20 @@ var Application = function ( opts )
     this.loadIndexPage = function ( ) {
         var marker = new Marker( this );
         marker.setName('Index:girls');
+        marker.setPath('/Slice.json');
         marker.addParams( {
             'query' : 'girls'
         } );
         marker.setAction ( function ( newData ) {
           this.addFragments( newData );
-          this.makeActive();
+
+          this.View.updateTab();
+          
+          this.Application.View.clearMain();
+
+          this.View.drawFragments();
+
+          this.View.selectTab();
         } );
 
         this.markers.push( marker );
