@@ -131,7 +131,7 @@ ApplicationView.prototype = {
             this.fillNonAuthorizedData();
         }
     },
-    searchFormEvents : function ()
+    searchFormEvents : function ( )
     {
         var Application = this.Application;
         $("#search-form").submit( function ( ) {
@@ -152,6 +152,8 @@ ApplicationView.prototype = {
                 this.Application.View.clearMain();
 
                 this.View.drawFragments();
+
+                this.View.drawRightSide( this.rigthSideData );
 
                 this.View.selectTab();
                 

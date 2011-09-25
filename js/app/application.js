@@ -294,7 +294,6 @@ var Application = function ( opts )
         if ( mode_params ) {
             mode_params.path = '/Slice.json';
             mode_params.action = function ( newData ) {
-//              console.log('marker results', mode_type, newData)  ;
               this.addPosts( newData );
               this.View.updateIcon( mode_type );
             };
@@ -330,11 +329,8 @@ var Application = function ( opts )
         // сделат все директ
         for (var i=modes.length; i--;)
         {
-//            console.log('modes[i]',modes[i]);
             if (mode_params = this.getModeParams(modes[i]))
             {
-//                console.log('mode_params',mode_params);
-                console.log(modes[i], mode_params);
                 marker = this.markerExist(mode_params.name);
                 if ( !marker ) {
                     marker = new Marker( this );
@@ -345,8 +341,6 @@ var Application = function ( opts )
                 }
                 
                 marker.setAction ( mode_params.action );
-                
-//                console.log('marker', marker);
                 
                 marker.makeRequest();
 
@@ -511,8 +505,11 @@ var Application = function ( opts )
           this.Application.View.clearMain();
 
           this.View.drawFragments();
-
+          
+          this.View.drawRightSide( this.rigthSideData );
+          
           this.View.selectTab();
+          
         } );
 
         this.markers.push( marker );
@@ -634,7 +631,6 @@ var Application = function ( opts )
                 newData.branches.push(id);
             }
         }
-//        console.log( 'Application data', this, this.posts, this.branches, this.tags, this.tags );
         return newData;
     };
     

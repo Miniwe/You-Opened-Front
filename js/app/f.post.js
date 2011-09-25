@@ -3,10 +3,6 @@
  */
 function Post (Application, id, data)
 {
-    if (data.CreateTime == undefined)
-    {
-        console.log('error', id, data);
-    }
     Post.superclass.constructor.call( this );
 
     this.Application     = Application;
