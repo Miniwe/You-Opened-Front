@@ -153,7 +153,7 @@ ApplicationView.prototype = {
 
                 this.View.drawFragments();
 
-                this.View.drawRightSide( this.rigthSideData );
+                this.View.drawRightSide( this.rightSideData );
 
                 this.View.selectTab();
                 

@@ -67,7 +67,7 @@ MarkerView.prototype = {
                 this.View.updateTab();
                 this.Application.View.clearMain();
                 this.View.drawPosts();
-                this.View.drawRightSide( Marker.rigthSideData );
+                this.View.drawRightSide( Marker.rightSideData );
                 
             } );
 
@@ -121,7 +121,7 @@ MarkerView.prototype = {
             Marker.Application.View.clearMain();
             Marker.View.drawFragments();
             
-            Marker.View.drawRightSide( Marker.rigthSideData );
+            Marker.View.drawRightSide( Marker.rightSideData );
             
             Marker.View.selectTab();
             
@@ -132,6 +132,10 @@ MarkerView.prototype = {
     },
     drawRightSide : function ( sideData )
     {
+        if (sideData == undefined) {
+            sideData = this.Marker.rightSideData;
+        }
+        
         $("#side").find(".content").html("");
         
         this.drawNavigram( sideData.navigram );
@@ -149,10 +153,10 @@ MarkerView.prototype = {
         
         
     },
-    drawNavigram : function ( navigram ) {
-        if ( !navigram ) { return false; }
+    drawNavigram : function ( navigramBranch ) {
+        if ( !navigramBranch ) { return false; }
         $('<div class="navdiag"></div>').appendTo($("#side .content"));
-//        this.Fragment.branch.drawNavGraph( this.View.find(".navdiag") );
+        navigramBranch.drawNavGraph( $("#side .content").find(".navdiag") );
     },
     drawTagCloud : function( tagCloud ) {
         if ( tagCloud == {} ) { return false; }
@@ -202,6 +206,7 @@ MarkerView.prototype = {
                 tmpl : 'post',
                 parent : id
             });
+            postView.addClass('rootPost');
             
             this.Marker.fragments[id].View.attachBehavior ();
         }        

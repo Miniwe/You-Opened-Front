@@ -29,7 +29,7 @@ FragmentView.prototype = {
         this.Fragment.branch.post.View.closeContent( );
         
         this.showFragmentElements();
-//        this.closeRightSide();
+        this.closeRightSide();
     },
     closeOtherFragments : function ( )
     {
@@ -45,52 +45,19 @@ FragmentView.prototype = {
 //        this.Fragment.openMainBranch();
         
         this.hideFragmentElements();
-//        this.openRightSide();
-    },
-    drawContent : function ( parentView, content )
-    {
-        $( content )
-//            .css({"opacity":"0"})
-            .insertAfter( parentView );
-//            .animate({"opacity":"1"}, 400, function (){} );
+        this.openRightSide();
     },
     closeRightSide : function ( )
     {
-        var Fragment = this.Fragment;
-        
-        this.View.find(".side").css({
-            "opacity" : "0",
-            "display": 'none'
-        });
-        Fragment.removeNavGraph();
-        Fragment.View.View.find(".side .content *").remove();
-        
-//        this.View.find(".side")
-//            .animate({
-//                "opacity":"0"
-//            }, 'slow', function () {
-//                
-//                $(this).css({
-//                    "opacity":"0",
-//                    "display": 'none'
-//                });
-//                Fragment.removeNavGraph();
-//                Fragment.View.View.find(".side .content *").remove();
-//            });
+        this.Fragment.parentMarker.View.drawRightSide();
     },
     openRightSide : function ( )
     {
-        this.drawNavigram();
-        this.drawTagCloud();
-        this.drawAuthorCloud();
-        this.View.find(".side")
-            .css({
-                "opacity":"0",
-                "display": 'block'
-            })
-            .animate({
-                "opacity":"1"
-            }, 'slow');
+        this.Fragment.Marker.View.drawRightSide({
+            navigram : this.Fragment.branch,
+            tagCloud : this.Fragment.branch.tags,
+            userCloud : this.Fragment.branch.authors
+        });
     },
     render : function ( params )
     {

@@ -12,20 +12,29 @@ function Fragment ( Application )
     
     this.View = new FragmentView ( this );
     
+    this.Marker = new Marker ( this.Application );
+    this.parentMarker = null;
+    
     this.navGraph = null;
     
     this.cbIndex = 0;
-    
 
 }
 
 Fragment.prototype = {
-    /*
-     * add branch 
-     */
+    addParentMarker: function ( marker )
+    {
+        this.parentMarker = marker;
+    },
+    addMarkerParams : function ( params )
+    {
+        this.Marker.addParams( params );
+    },
     addMainBranch : function ( branch )
     {
         this.branch = branch;
+        
+        this.addMarkerParams(this.branch.marker);
         
         var item = branch,
             Facade = this;

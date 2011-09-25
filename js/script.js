@@ -10,7 +10,9 @@
         $('#main-header').waypoint(function(event, direction) {
             $(this).parent().toggleClass('sticky', direction === "down");
             event.stopPropagation();
-	});
+	}, {
+            offset: "0"
+        });
         /*
         $(".icon24set.action").live( 'click', function ( ) {
             if ( $(this).hasClass('newposts') ) {
@@ -32,6 +34,17 @@
     });
     
     $(window).bind('hashchange', function() {
+    });    
+	        
+    $(window).bind('scroll', function() {
+        var scrollTop = $(document.body).scrollTop();
+        if (scrollTop > 0)  {
+            scrollTop += 110;
+        }
+        scrollTop += "px";
+        $("#side").css({
+            "margin-top" : scrollTop
+        });
     });    
 	        
 })(jQuery);

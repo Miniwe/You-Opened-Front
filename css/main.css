@@ -52,7 +52,7 @@ body.main {
 
 .sticky #main-header {
     position:fixed;
-    top:0;
+    top:100;
     z-index: 100500;
     width: inherit;
 }
@@ -647,4 +647,14 @@ textarea.directusernames {
 .fragment-arrow {
     position:absolute;
     margin-left: -20px;    
+}
+
+.rootPost {
+    -webkit-border-radius: 6px;
+    -moz-border-radius: 6px;
+    border-radius: 6px;    
+    -moz-box-shadow: -6px 6px 6px #cccccc;
+    -webkit-box-shadow: -6px 6px 6px #cccccc;
+    box-shadow: -6px 6px 6px #cdcdcd, 6px 6px 6px #cdcdcd;
+
 }

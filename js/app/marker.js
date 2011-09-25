@@ -5,7 +5,7 @@ var Marker = function ( Application )
     
     this.Application = Application;
     
-    this.name = 'Marker_' + (new Date()).getTime();
+    this.name = 'Marker_' + ( new Date() ).getTime();
     
     this.path = '/Slice.json';
     
@@ -22,7 +22,7 @@ var Marker = function ( Application )
     
     this.isActive = false;
     
-    this.rigthSideData = {
+    this.rightSideData = {
         navigram  : null,
         tagCloud  : {},
         userCloud : {}
@@ -77,13 +77,14 @@ Marker.prototype = {
             else
             {
                 fragment = new Fragment( this.Application );
+                fragment.addParentMarker( this );
                 this.fragments.push( fragment );
                 
             }
             fragment.addMainBranch( tmpBranch );
             
-            $.extend(this.rigthSideData.tagCloud, tmpBranch.tags); 
-            $.extend(this.rigthSideData.userCloud, tmpBranch.authors); 
+            $.extend(this.rightSideData.tagCloud, tmpBranch.tags); 
+            $.extend(this.rightSideData.userCloud, tmpBranch.authors); 
             
         }
         
@@ -110,12 +111,12 @@ Marker.prototype = {
                 this.postsCount ++;
             }
             
-            $.extend(this.rigthSideData.tagCloud, tmpPost.tags); 
+            $.extend(this.rightSideData.tagCloud, tmpPost.tags); 
             tmpAuthor[tmpPost.author.id] = {
                 author : tmpPost.author,
                 entryRating : 1
             };
-            $.extend(this.rigthSideData.userCloud, tmpAuthor ); 
+            $.extend(this.rightSideData.userCloud, tmpAuthor ); 
         }
         
     },
@@ -152,13 +153,13 @@ Marker.prototype = {
       this.params[name] = value;    
     },
     clearRightSideData : function ( ) {
-        this.rigthSideData = {
+        this.rightSideData = {
             navigram  : null,
             tagCloud  : {},
             userCloud : {}
         };
     },
-    fillRightSideData : function () {
-        
+    fillRightSideData : function ( rightSideData ) {
+        this.rightSideData = rightSideData;
     }
 };

@@ -66,6 +66,17 @@ extend( Post, Facade );
 Post.prototype = {
     prepareRender : function()
     {
+        this.branchId = 0;
+        for (var id in this.Application.branches)
+        {
+            if ( this.id == this.Application.branches[id].postId ) {
+                this.branchId = id; 
+                this.postCount = this.Application.branches[id].postCount;
+                break;
+            } else if ( this.parentPostId == this.Application.branches[id].postId ) {
+                this.branchId = id; 
+            }
+        }
     },
     openPostChilds : function ( dfd )
     {
@@ -80,6 +91,8 @@ Post.prototype = {
             if ( this.id == this.Application.posts[ curPostId ].parentPostId )
             {
                 this.posts[curPostId] = this.Application.posts[ curPostId ];
+                
+                
             }
         }
     },
