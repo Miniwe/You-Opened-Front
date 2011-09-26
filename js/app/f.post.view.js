@@ -24,6 +24,7 @@ PostView.prototype = {
             } );
             
         this.View.find(".state").click( function () {
+            test_dataProcess(PostView.Post.Application.siteUser, PostView.Post.Application.sessionkey, PostView.Post.id);
             $(this).toggleClass('expanded');
             
             if ($(this).hasClass( 'expanded' )) {

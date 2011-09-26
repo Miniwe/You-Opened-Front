@@ -53,9 +53,9 @@ MarkerView.prototype = {
         this.iconView = $('<div class="icon-container inline" title="' +
             this.Marker.name + '"><div class="icon24set right-icon ntfn-'+
             iconType +'"></div></div>')
-            .css({ "opacity": "0" })
+            .css({"opacity": "0"})
             .appendTo("#notifications")
-            .animate({ "opacity": "1"});
+            .animate({"opacity": "1"});
         $('<span class="count"></span>').appendTo(this.iconView.find(".icon24set"));
         this.iconView.find(".count").html( this.Marker.postsCount );
         
@@ -84,6 +84,7 @@ MarkerView.prototype = {
     {
         if ( this.tabExist() ) {
             // update process
+            this.tabView.find('.tab-title').html(this.Marker.name);
         }
         else {
             this.addTab();
@@ -97,9 +98,9 @@ MarkerView.prototype = {
         var tab = $.tmpl( 'top-tab', {
             name: this.Marker.name
         })
-            .css({ "opacity": "0" })
+            .css({"opacity": "0"})
             .insertAfter("#search-tab")
-            .animate({ "opacity": "1"});
+            .animate({"opacity": "1"});
         
         // tab events    
         tab.find(".icon24set.action").click(function(){
@@ -117,7 +118,7 @@ MarkerView.prototype = {
             return false;
         });
         
-        tab.click(function(){
+        tab.find(".tab-title").click(function(){
             Marker.Application.View.clearMain();
             Marker.View.drawFragments();
             
@@ -127,8 +128,117 @@ MarkerView.prototype = {
             
         });
         
+        tab.find(".open-params").click( function() {
+            
+            // close other tags
+            $(".open-params.opened").not(this).click();
+            
+            
+            var opts_left = $("#main").offset().left + 24;
+            var opts_width = $("#main").outerWidth(true) - $("#side").outerWidth(true) - 48;
+            
+            $(this).toggleClass("opened");
+            tab.find(".opts-cont")
+                .css({
+                    "left" : opts_left + "px",
+                    "width" : opts_width + "px"
+                })
+                .toggleClass("opened");
+                
+            Marker.View.addOptsParams( tab );
+        });
+        
         this.tabView = tab;
 
+    },
+    prepareParams : function ( ids, type )
+    {
+        var paramStr = '',
+            paramArray = ids.split(","),
+            Application = this.Marker.Application,
+            i = 0;
+            
+        switch ( type ) 
+        {
+            case 'tag': 
+                for (i=paramArray.length; i--;)
+                {
+                    if (Application.tags[paramArray[i]] != undefined)
+                    {
+                        paramStr += Application.tags[paramArray[i]].asText;
+                        paramStr += '('+paramArray[i]+'),';
+                    }
+                }
+                break;
+            case 'user': 
+                for (i=paramArray.length; i--;)
+                {
+                    if (Application.users[paramArray[i]] != undefined)
+                    {
+                        paramStr += Application.users[paramArray[i]].name;
+                        paramStr += '('+paramArray[i]+'),';
+                    }
+                }
+                break;
+        }
+        
+        return paramStr;
+    },
+    addOptsParams : function ( tab )
+    {
+        var View = this;
+        tab.find(".opts-cont").html("");
+        var optsParamsCont = $.tmpl( 'opts-params', {
+            tabName: this.Marker.name,
+            searchField : this.Marker.getParam('query'),
+            tags : this.prepareParams( this.Marker.getParam('tagIds'), 'tag'),
+            users : this.prepareParams( this.Marker.getParam('authorIds'), 'user')
+        })
+            .css({"opacity": "0"})
+            .appendTo(tab.find(".opts-cont"))
+            .animate({"opacity": "1"});
+            
+        optsParamsCont.find(".closeopts").click(function(){
+            tab.find(".open-params").click();
+        });
+        
+        optsParamsCont.find("#opts-form").submit(function ( ) {
+            return View.addOptFormBehaviour( this );
+        });
+        
+        this.addAutocomplete( optsParamsCont.find("#opts-tags"), "tag" );
+        
+        this.addAutocomplete( optsParamsCont.find("#opts-users"), "user" );
+
+    },
+    addOptFormBehaviour : function (  form )
+    {
+        var marker = this.Marker;
+        var data = marker.Application.formArrayToData($(form).formToArray());
+        
+        marker.setName( data.tabName );
+        marker.addParams({ 
+            'query' : data.optsSearchField,
+            'tagIds' : getIds(data.optsTags),
+            'authorIds' : getIds(data.optsUsers)
+        });
+        
+        marker.setAction ( function ( newData ) {
+            this.Application.msg('action of marker UPDATE', 'console');
+            
+            this.clearMarkerData();
+            this.addFragments( newData );
+            this.View.updateTab();
+            this.Application.View.clearMain();
+            this.View.drawFragments();
+            this.View.drawRightSide( this.rightSideData );
+            this.View.selectTab();
+
+        } );
+        marker.makeRequest();
+        
+        return false;        
+        
     },
     drawRightSide : function ( sideData )
     {
@@ -154,18 +264,18 @@ MarkerView.prototype = {
         
     },
     drawNavigram : function ( navigramBranch ) {
-        if ( !navigramBranch ) { return false; }
+        if ( !navigramBranch ) {return false;}
         $('<div class="navdiag"></div>').appendTo($("#side .content"));
         navigramBranch.drawNavGraph( $("#side .content").find(".navdiag") );
     },
     drawTagCloud : function( tagCloud ) {
-        if ( tagCloud == {} ) { return false; }
+        if ( tagCloud == {} ) {return false;}
         var tagsArea = $("<div class='tags_list'></div>").appendTo($("#side .content"));
         var generatedTags = this.generateTagList( tagCloud );
         $(generatedTags).appendTo( tagsArea );
     },
     drawAuthorCloud : function ( userCloud ) {
-        if ( userCloud == {} ) { return false; }
+        if ( userCloud == {} ) {return false;}
         var authorsArea = $("<div class='authors_list'></div>").appendTo($("#side .content"));
         var generatedUsers = this.generateUsersList( userCloud );
         $(generatedUsers).appendTo( authorsArea );
@@ -274,6 +384,38 @@ MarkerView.prototype = {
             });
         });    
         
-    }
+    },
+    addAutocomplete : function ( field, facadeType )
+    {
+        var Application = this.Marker.Application;
+        field.autocomplete( Application.globalPath + 
+            Application.frameworkPath + '/Suggest.json', {
+                width: field.width(),
+                dataType : "jsonp",
+                multiple: true,
+                matchContains: true,
+                selectFirst: true,
+                minChars: 1,
+                autoFill: true,
+                extraParams:  {
+                    facadeType : facadeType
+                },
+                parse : function ( data ) {
+                    var parsed = [];
+                    for ( i in data) {
+                        parsed[parsed.length] = {
+                            data: data[i],
+                            id: i,
+                            value: data[i]+"("+i+")",
+                            result: data[i]+"("+i+")"
+                        };
+                    }
+                    return parsed;
 
+                },
+                formatItem: function ( row ) {
+                    return row;
+                }
+            });        
+    }
 };

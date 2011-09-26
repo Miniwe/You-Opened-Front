@@ -131,7 +131,7 @@ Marker.prototype = {
                 marker.action( newData );
             },
             function (){
-                this.Application.msg('marker result error');
+                marker.Application.msg('marker result error');
             }, 
             this.params
         );
@@ -144,13 +144,16 @@ Marker.prototype = {
         return this.action;
     },
     getParams : function ( ) {
-        return this.paramsжы
+        return this.params;
     },
     addParams : function ( params ) {
        $.extend( this.params, params );  
     },
     addParam : function ( name, value ) {
       this.params[name] = value;    
+    },
+    getParam : function ( name ) {
+        return (this.params[name] != undefined) ? this.params[name] : ''
     },
     clearRightSideData : function ( ) {
         this.rightSideData = {
@@ -161,5 +164,12 @@ Marker.prototype = {
     },
     fillRightSideData : function ( rightSideData ) {
         this.rightSideData = rightSideData;
+    },
+    clearMarkerData : function () {
+        this.fragments = [];
+        this.posts = {};
+        this.postsCount = 0;
+        this.clearRightSideData();
     }
+    
 };
