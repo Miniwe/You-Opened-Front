@@ -29,11 +29,13 @@ function Branch (Application, id, data)
     
     this.color = this.Application.nextColor();
     
-    this.marker = {
-        parentPostId: (data.Marker.parentPostId != undefined) ? data.Marker.parentPostId : this.postId,
-        query: (data.Marker.query != undefined) ? data.Marker.query : "",
-        depth : (data.Marker.depth != undefined) ? data.Marker.depth : 1
-    };
+//    this.marker = {
+//        parentPostId: (data.Marker.parentPostId != undefined) ? data.Marker.parentPostId : this.postId,
+//        query: (data.Marker.query != undefined) ? data.Marker.query : "",
+//        depth : (data.Marker.depth != undefined) ? data.Marker.depth : 1
+//    };
+    
+    this.marker = data.Marker;
 
     this.View = new BranchView ( this );
     
@@ -68,11 +70,12 @@ function Branch (Application, id, data)
         this.keysCount  = data.KeyPostIds.length;
         this.keyPostIds = data.KeyPostIds;
 
-        this.marker = {
-            parentPostId: (data.Marker.parentPostId != undefined) ? data.Marker.parentPostId : this.postId,
-            query: (data.Marker.query != undefined) ? data.Marker.query : "",
-            depth : (data.Marker.depth != undefined) ? data.Marker.depth : 1
-        };
+//        this.marker = {
+//            parentPostId: (data.Marker.parentPostId != undefined) ? data.Marker.parentPostId : this.postId,
+//            query: (data.Marker.query != undefined) ? data.Marker.query : "",
+//            depth : (data.Marker.depth != undefined) ? data.Marker.depth : 1
+//        };
+        this.marker = data.Marker;
         
         this.keys = {};
         
@@ -99,7 +102,7 @@ function Branch (Application, id, data)
                     author: this.Application.users[authorId]
                 };
             }
-            this.authors[authorId].entryRating = data.Authors[authorId].EntryRating;
+            this.authors[authorId].postCount = data.Authors[authorId].PostCount;
         }
         
         this.branches = {};

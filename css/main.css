@@ -19,7 +19,7 @@ body.main {
 }
 
 #toolbar-shadow {
-    background: transparent url(../img/toolbar_shadow.png) no-repeat center top;
+    background: url(../img/toolbar_shadow.png) no-repeat center top, url(../img/bg_content.png) no-repeat fixed center top, url(../img/bg_main.png) repeat fixed;
     height: 24px;
 }
 .divider {
@@ -214,7 +214,7 @@ nav.toolbar .tab.active:hover{
 
 
 .fragment .main {
-    padding-top: 24px;
+    margin-bottom: 24px;
 }
 .post-content, .post-more {
 }
@@ -622,7 +622,7 @@ textarea.directusernames {
     margin-right: 32px;
 }
 
-.fragment-arrow {
+#fragment-arrow {
     position:absolute;
     margin-left: -20px;    
 }
@@ -653,3 +653,12 @@ textarea.directusernames {
     height: 110px;
 }
 
+.fragment.active {
+}
+
+.post-content.float {
+    position: fixed;
+    top: 85px;
+    background: #dddddd url(../img/bg_main.png) repeat fixed;
+    z-index: 100440;
+}

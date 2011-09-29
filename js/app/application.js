@@ -25,6 +25,8 @@ var Application = function ( opts )
     
     this.View = new ApplicationView ( this );
     
+    this.activeFragment = 0;
+    
     /*
      *  Двигаемся по списку цветов для веток,
      *  По достижении конца переходим вначало списка
@@ -101,6 +103,13 @@ var Application = function ( opts )
        var markerIndex = 0,
            fragmentIndex = 0,
            curMarkerFragments = null;
+    
+        this.activeFragment = 0;
+        for (var i = this.fragments.length; i--; )
+        {
+            this.fragments[i].isActive = false;
+        }
+        
         for (markerIndex = this.markers.length; markerIndex--; )
         {
             var curMarkerFragments = this.markers[markerIndex].fragments;

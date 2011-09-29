@@ -11,8 +11,9 @@ function Post (Application, id, data)
     this.parentPostId    = data.ParentPostId;
     
     this.branchId         = 0;
-    this.fragment         = 0;
+    this.fragment         = null;
     this.branchRef        = "";
+    this.branch           = null;
     
     this.authorId        = data.AuthorId;
     this.author          = (this.Application.users[this.authorId] != undefined)?this.Application.users[this.authorId]:null;
@@ -167,6 +168,26 @@ Post.prototype = {
                 'parentPostId' : this.id
             })
         );        
+    },
+    getFramentMarker : function ( )
+    {
+        
+    },
+    getFragment : function ( fragmentId )
+    {
+        console.log('in get fragment', fragmentId);
+        var marker = null;
+        var fragment = false;
+
+        var markers = this.Application.markers;
+        for ( var i=markers.length; i--; ) {
+            if ( fragment = markers[i].getFragment( fragmentId ) ) {
+                console.log('founded', fragment);
+                return fragment;
+            }
+        }
+        console.log('not found ');
+        return false;
     }
   
 };

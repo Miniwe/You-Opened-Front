@@ -1,4 +1,4 @@
-function test_dataProcess (user, sessionKey, parentPostId)
+function test_dataProcess (user, sessionKey, parentPostId, branch)
 {
-	console.log(user, sessionKey, parentPostId);
+//	console.log(user, sessionKey, parentPostId);
 }

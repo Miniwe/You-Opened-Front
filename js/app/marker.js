@@ -5,11 +5,13 @@ var Marker = function ( Application )
     
     this.Application = Application;
     
-    this.name = 'Marker_' + ( new Date() ).getTime();
+    this.name = 'Marker_' + getRandomInt(0,( new Date() ).getTime() );
     
     this.path = '/Slice.json';
     
-    this.params = {};
+    this.params = {
+        onlyInBranches: "False"
+    };
     
     this.action = undefined;
     
@@ -32,23 +34,27 @@ var Marker = function ( Application )
 }
 
 Marker.prototype = {
-    setPath : function ( path ) {
+    setPath : function ( path )
+    {
         this.path = path;
     },
     getPath : function ( ) {
         return this.path;
     },
-    setName : function ( name ) {
+    setName : function ( name )
+    {
         this.name = name;
     },
-    getName : function ( ) {
+    getName : function ( )
+    {
         return this.name;
     },
     run : function ( ) {
         this.Application.msg('marker run started');
 //        this.makeRequest ();
     },
-    fragmentSearch : function ( branchId ) {
+    fragmentSearch : function ( branchId )
+    {
         var fragment = false;
             
         for ( var i = this.fragments.length; i--; ) {
@@ -60,22 +66,21 @@ Marker.prototype = {
         
         return fragment;
     },
-    addFragments : function ( newData ) {
+    addFragments : function ( newData )
+    {
         this.clearRightSideData();
         var fragment,
             issetFragmentId = 0,
             branchId = 0,
             tmpBranch = null;
             
-        for ( var i = newData.branches.length; i--; )
-        {
+        for ( var i = newData.branches.length; i--; ) {
             branchId = newData.branches[i];
             tmpBranch = this.Application.branches[ branchId ];
             if ( fragment = this.fragmentSearch( branchId ) ) {
                 fragment.update( tmpBranch );
             }
-            else
-            {
+            else {
                 fragment = new Fragment( this.Application );
                 fragment.addParentMarker( this );
                 this.fragments.push( fragment );
@@ -98,8 +103,7 @@ Marker.prototype = {
             tmpAuthor = {},
             tmpPost = null;
            
-        for ( var i = newData.posts.length; i--; )
-        {
+        for ( var i = newData.posts.length; i--; ) {
             id = newData.posts[i];
             tmpPost= this.Application.posts[id];
             
@@ -123,7 +127,7 @@ Marker.prototype = {
     makeRequest : function ( )
     {
         var marker = this;
-                
+        console.log('fragment request', this.path, this.params);
         this.Application.ajaxRequest(
             this.path,
             function ( response ) {
@@ -137,39 +141,69 @@ Marker.prototype = {
         );
 
     },
-    setAction : function ( f ) {
+    setAction : function ( f )
+    {
         this.action = f;
     },
-    getAction : function ( f ) {
+    getAction : function ( f )
+    {
         return this.action;
     },
-    getParams : function ( ) {
+    getParams : function ( )
+    {
         return this.params;
     },
-    addParams : function ( params ) {
+    addParams : function ( params )
+    {
        $.extend( this.params, params );  
     },
-    addParam : function ( name, value ) {
+    addParam : function ( name, value )
+    {
       this.params[name] = value;    
     },
-    getParam : function ( name ) {
+    getParam : function ( name )
+    {
         return (this.params[name] != undefined) ? this.params[name] : ''
     },
-    clearRightSideData : function ( ) {
+    clearRightSideData : function ( )
+    {
         this.rightSideData = {
             navigram  : null,
             tagCloud  : {},
             userCloud : {}
         };
     },
-    fillRightSideData : function ( rightSideData ) {
+    fillRightSideData : function ( rightSideData )
+    {
         this.rightSideData = rightSideData;
     },
-    clearMarkerData : function () {
+    clearMarkerData : function ()
+    {
         this.fragments = [];
         this.posts = {};
         this.postsCount = 0;
         this.clearRightSideData();
+    },
+    hasFragment : function ( fragmentId )
+    {
+        for (var i = this.fragments.length; i--; ) {
+            if ( fragmentId == this.fragments[i].id ) {
+                return true;
+            }
+        }
+        return false;
+    },
+    getFragment : function ( fragmentId )
+    {
+        console.log('in markerr', fragmentId);
+        for (var i = this.fragments.length; i--; ) {
+            if ( fragmentId == this.fragments[i].id ) {
+            console.log('in markerr found ', this.fragments[i]);
+                return this.fragments[i];
+            }
+        }
+        console.log('in marker not found');
+        return false;
     }
     
 };

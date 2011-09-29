@@ -3,12 +3,9 @@ function Fragment ( Application )
     this.Application = Application;
     
     var myDate = new Date();
-    this.id = 'fragment-' + myDate.getMilliseconds();
+    this.id = getRandomInt(0,myDate.getMilliseconds());
     
     this.branch = null;
-    this.focusedBranch = null;
-    
-    this.branchHistory = new History( );
     
     this.View = new FragmentView ( this );
     
@@ -17,11 +14,16 @@ function Fragment ( Application )
     
     this.navGraph = null;
     
-    this.cbIndex = 0;
-
+    this.isActive = false;
 }
 
 Fragment.prototype = {
+    clear: function (  )
+    {
+        this.branch = null;
+        this.focusedBranch = null;
+        this.navGraph = null;
+    },
     addParentMarker: function ( marker )
     {
         this.parentMarker = marker;
@@ -49,49 +51,6 @@ Fragment.prototype = {
             */
         };
 
-        this.branchHistory.addItem( item );
-        
-    },
-    addFocusedBranch : function ( branch )
-    {
-        /*
-        var item = branch;
-        var Facade = this;
-
-        item.action = function () {
-            
-            // действия для чилдовой ветки
-            
-            Facade.removeFocusedBranch( );
-            
-            Facade.focusedBranch = branch;   
-            
-            Facade.branch = Facade.Application.branches[Facade.focusedBranch.parentBranchId];   
-            
-            if (Facade.branch == undefined)
-            {
-                Facade.branch = Facade.focusedBranch;
-            }
-            Facade.redrawFragment( Facade.focusedBranch, true);
-            
-            Facade.navGraph.activeBranch = Facade.focusedBranch;
-            
-//            Facade.focusedBranch.View.find("header").click();
-        };
-
-        Facade.branchHistory.addItem( item );
-        Facade.branchHistory.process( true );
-            */
-
-    },
-    removeFocusedBranch : function ( )
-    {
-        // @todo add history
-        this.focusedBranch = null;   
-        if ( this.navGraph )
-        {
-            this.navGraph.activeBranch = this.focusedBranch;
-        }
     },
     /*
      * @param params Object {
@@ -110,15 +69,11 @@ Fragment.prototype = {
         return fragmentView;
         
     },
-    remove : function ()
+    fillData : function ( newData )
     {
-        this.branch = null;
-        this.focusedBranch = null;
-        this.navGraph = null;
-    },
-    removeNavGraph : function ()
-    {
-        this.focusedBranch = null;
-        this.navGraph = null;
+        if (newData.branches)
+        {
+            this.branch = this.Application.branches[newData.branches[0]] ;
+        }
     }
 }

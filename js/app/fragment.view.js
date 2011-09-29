@@ -26,18 +26,32 @@ FragmentView.prototype = {
     },
     closeContent : function ( )
     {
-        this.Fragment.branch.post.View.closeContent( );
+        this.Fragment.branch.post.View.closeContent();
         
         this.showFragmentElements();
+        
         this.closeRightSide();
+        
+        $(this.View).find(".post-content").removeClass("float");
+        $(this.View).removeClass("active");
+        
     },
     closeOtherFragments : function ( )
     {
         this.Fragment.Application.closeAllFragments();
+        
+        $(".fragment").not(this.View).removeClass("active");
+        
     },
     openContent : function ( )
     {
         this.closeOtherFragments();
+        
+        this.Fragment.Application.activeFragment = this.Fragment;
+        
+        this.Fragment.isActive = true;
+        
+        $(this.View).addClass("active");
         
         this.Fragment.branch.post.View.openContent( this.Fragment.branch.post.View );
         
@@ -58,29 +72,31 @@ FragmentView.prototype = {
             tagCloud : this.Fragment.branch.tags,
             userCloud : this.Fragment.branch.authors
         });
+        $("#fragment-arrow").removeClass("hidden");
     },
     render : function ( params )
     {
+        
         switch ( params.insertMode )
         {
             case "appendTo":
-                this.View = $.tmpl( params.tmpl, this ).appendTo( params.parentView );
+                this.View = $.tmpl( params.tmpl, this.Fragment ).appendTo( params.parentView );
                 break;
             
             case "prependTo":
-                this.View = $.tmpl(params.tmpl, this).prependTo( params.parentView );
+                this.View = $.tmpl(params.tmpl, this.Fragment).prependTo( params.parentView );
                 break;
             
             case "insertAfter":
-                this.View = $.tmpl(params.tmpl, this).insertAfter( params.parentView );
+                this.View = $.tmpl(params.tmpl, this.Fragment).insertAfter( params.parentView );
                 break;
             
             case "insertBefore":
-                this.View = $.tmpl(params.tmpl, this).insertBefore( params.parentView );
+                this.View = $.tmpl(params.tmpl, this.Fragment ).insertBefore( params.parentView );
                 break;
             
             case "prepend":
-                this.View = $.tmpl(params.tmpl, this).prepend( params.parentView );
+                this.View = $.tmpl(params.tmpl, this.Fragment ).prepend( params.parentView );
                 break;
             
             default:
@@ -88,6 +104,38 @@ FragmentView.prototype = {
         }
         
         return this.View;
+    },
+    updateFragment : function ()
+    {
+        this.closeContent();
+        
+        this.View.find(".post").html("");
+        
+        var branchView = this.Fragment.branch.View.render( {
+            parentView : this.View.find(".post"),
+            insertMode : 'appendTo',
+            tmpl : 'post-more',
+            parent : this.Fragment.id
+        });
+
+        var postView = this.Fragment.branch.post.View.render({
+            parentView : this.View.find(".post"),
+            insertMode : 'prependTo',
+            tmpl : 'post',
+            parent : this.Fragment.id
+        });
+
+        this.attachBehavior();
+        
+        postView.find(".state").click();
+        // add main
+        // add branch data
+        // click to open main ...
+        
+    },
+    updateRightSide : function ()
+    {
+        
     }
 
 }

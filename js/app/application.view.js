@@ -13,6 +13,57 @@ ApplicationView.prototype = {
     attachBehavior : function ()
     {
         this.searchFormEvents();
+        this.scrollBehaviour();
+        
+    },
+    scrollBehaviour : function ( )
+    {
+        var Application = this.Application;
+        $(window).bind('scroll', function() {
+            var scrollTop = document.body.scrollTop,
+            side_left = $("#main").outerWidth(true) 
+                + $("#main").offset().left - $("#side").outerWidth(true);
+            if (scrollTop > 0) {
+                $("#side")
+                    .css({
+                        "left" : side_left + "px",
+                        "top" : (85) + "px"
+                    })
+                    .addClass('float');
+            }
+            else {
+                $("#side").removeClass('float');
+            }
+            
+            var activeFragmentView = $(".fragment.active"),
+                activeFragmentView_top = 0,
+                activePostView = 0,
+                activePostView_top = 0;
+                
+            if (activeFragmentView.length < 1) {
+                $(".post-content.float").removeClass("float");
+                return false;
+            }
+            
+            activeFragmentView_top = $(activeFragmentView).offset().top,
+            activePostView = $(".fragment.active").find('.post-content').first(),
+            activePostView_top = $(activePostView).offset().top,
+            
+            activePostView.css({
+                "width" : $(activeFragmentView).outerWidth(true)
+            })
+            
+            if ( activeFragmentView_top - scrollTop < 85 ) {
+                console.log('add');
+                activePostView.addClass("float");
+            }
+            else {
+                console.log('remove', activePostView_top, scrollTop);
+                activePostView.removeClass("float");
+            }
+            
+        });    
+        
     },
     renderAvatar : function ( View, user, size )
     {

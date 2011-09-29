@@ -24,7 +24,7 @@ PostView.prototype = {
             } );
             
         this.View.find(".state").click( function () {
-            test_dataProcess(PostView.Post.Application.siteUser, PostView.Post.Application.sessionkey, PostView.Post.id);
+            test_dataProcess(PostView.Post.Application.siteUser, PostView.Post.Application.sessionkey, PostView.Post.id, PostView.Post.branch);
             $(this).toggleClass('expanded');
             
             if ($(this).hasClass( 'expanded' )) {
@@ -34,6 +34,64 @@ PostView.prototype = {
                 ParentView.closeContent();
             }
         });
+        
+        this.View.find(".date")
+            .css({
+                "cursor" : "pointer"
+            })
+            .click( function () {
+//                $(".post-content").removeClass('tmps');
+//                $(this).addClass('tmps');
+                var post = $(this).parents(".post-content"),
+                    postOffset = post.offset(),
+                    parentPost = $(this).parents(".fragment").find(".post-content").first();
+                var 
+                    postId = PostView.Post.id;
+                
+                $(document.body).scrollTop(postOffset.top - 85 - parentPost.outerHeight(true));
+                
+                
+            });
+        
+        this.View.find(".gobranch")
+            .css({
+                "cursor" : "pointer"
+            })
+            .click( function () {
+                var fragmentId = $( PostView.View ).parents('.fragment').attr('data-id'),
+                    marker = null,
+                    base_params = {},
+                    fragment = null;
+                console.log('click', $( PostView.View ), fragmentId);
+                    
+                if ( fragment = PostView.Post.getFragment( fragmentId ) ) {
+                    marker = fragment.Marker;
+                    
+                    var guid = marker.getParam('Guid');
+                    
+                    marker.params = {
+                        Guid : guid,
+                        parentPostId : PostView.Post.id
+                    };
+                    
+//                    marker.addParams({});
+                    
+//                    marker.addParams({parentPostId : PostView.Post.id});
+                    
+                    marker.setAction( function ( newData ){
+                          fragment.clear();
+                          fragment.fillData( newData );
+                          console.log('fragment->',fragment);
+                          fragment.View.updateFragment();
+                          fragment.View.updateRightSide();
+                    } );
+                    marker.makeRequest();
+                }
+                return false;
+                
+            });
+        
+        
     },
     attachBehaviorOld : function ( )
     {

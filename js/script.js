@@ -36,20 +36,4 @@
     $(window).bind('hashchange', function() {
     });    
 	        
-    $(window).bind('scroll', function() {
-        var scrollTop = $(document.body).scrollTop(),
-        side_left = $("#main").outerWidth(true) + $("#main").offset().left - $("#side").outerWidth(true);
-        if (scrollTop > 0)  {
-            $("#side")
-                .css({
-                    "left" : side_left + "px",
-                    "top" : (85) + "px"
-                })
-                .addClass('float');
-        }
-        else {
-            $("#side").removeClass('float');
-        }
-    });    
-	        
 })(jQuery);

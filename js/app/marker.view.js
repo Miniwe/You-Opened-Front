@@ -242,6 +242,7 @@ MarkerView.prototype = {
     },
     drawRightSide : function ( sideData )
     {
+        $("#fragment-arrow").addClass("hidden");
         if (sideData == undefined) {
             sideData = this.Marker.rightSideData;
         }
@@ -267,6 +268,7 @@ MarkerView.prototype = {
         if ( !navigramBranch ) {return false;}
         $('<div class="navdiag"></div>').appendTo($("#side .content"));
         navigramBranch.drawNavGraph( $("#side .content").find(".navdiag") );
+        $('<div></div>').appendTo($("#side .content"));
     },
     drawTagCloud : function( tagCloud ) {
         if ( tagCloud == {} ) {return false;}
@@ -297,13 +299,13 @@ MarkerView.prototype = {
     {
         for ( var id in this.Marker.fragments ) {
             
-            var fragmentView = this.Marker.fragments[id].render({
+            var fragmentView = this.Marker.fragments[id].render( {
                 parentView : $("#main"),
                 insertMode : 'prependTo',
                 tmpl : 'fragment'
             });
             
-            var branchView = this.Marker.fragments[id].branch.View.render({
+            var branchView = this.Marker.fragments[id].branch.View.render( {
                 parentView : fragmentView.find(".post"),
                 insertMode : 'appendTo',
                 tmpl : 'post-more',
@@ -316,10 +318,17 @@ MarkerView.prototype = {
                 tmpl : 'post',
                 parent : id
             });
-            postView.addClass('rootPost');
+            
+            this.addRootPostBahaviour( postView );
             
             this.Marker.fragments[id].View.attachBehavior ();
         }        
+    },
+    addRootPostBahaviour : function ( postView )
+    {
+        postView.addClass('rootPost');
+        
+//        var gotoBranchView = $('<div class="icon24set left-icon gobranch" title="goto branch (${postCount})"></div>').appendTo(postView.find('.state'));
     },
     selectTab : function ()
     {
@@ -333,7 +342,7 @@ MarkerView.prototype = {
             tmpView = [];
         
         for (var tagId in tags) {
-            tmpView = $("<a href='#tag-" + tagId + "' title='" +  + tags[tagId].entryRating+ "'> " 
+            tmpView = $("<a href='#tag-" + tagId + "' title='" + tags[tagId].entryRating+ "'> " 
                 + tags[tagId].tag.asText 
                 + " </a>");
             content.appendChild( tmpView[0] );
@@ -355,6 +364,7 @@ MarkerView.prototype = {
 //                + " </a>");
             avaContent = '<a href="#avatar-author-'+ id + '" \n\
                 data-id="' + id + '" \n\
+                title="' + authors[id].postCount + '" \n\
                 class="avatarHref" title="'+ authors[id].author.name + '"></a>';
             
             if ((authors[id].avataruri != null))
