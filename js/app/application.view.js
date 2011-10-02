@@ -209,6 +209,8 @@ ApplicationView.prototype = {
                 this.View.selectTab();
                 
             } );
+            
+            marker.saveState();
 
             Application.markers.push( marker );
 

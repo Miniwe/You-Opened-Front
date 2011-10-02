@@ -80,10 +80,10 @@
             </div>
 
             <div class="tab right-tab icon-container round-border">
-                <div class="icon24set right-icon filter"></div>
+                <div class="icon24set right-icon filter hidden"></div>
             </div>
         </nav>
-        <div class="content" >
+        <div class="content">
         </div>
     </div>
 
@@ -113,6 +113,12 @@
  <script>
     head
         .js(
+            "js/plugins.js",
+            function ( ) {
+//                console.log('part 2');
+            }
+        )
+        .js(
             "js/libs/jquery-1.6.4.min.js", 
             "js/libs/jquery.form.js", 
             "js/libs/jquery.tmpl.min.js", 
@@ -124,11 +130,10 @@
             "js/libs/autoresize.jquery.min.js",
             "js/libs/date.format.js",
             function ( ) {
-    //            console.log('part 1');
+                console.log('part 1');
             }
         )
         .js(
-            "js/plugins.js",
             "js/app/application.view.js",
              "js/app/application.js",
             "js/app/marker.js",
@@ -150,7 +155,7 @@
         )
         .js(
             "js/graph/grapharea.js",
-            "js/graph/g.nav.js",
+//            "js/graph/g.nav.js",
             function ( ) {
     //            console.log('part 2');
             }
@@ -164,6 +169,7 @@
                     templates : [
                         "fragment",
                         "reply",
+                        "filter-form",
                         "top-tab",
                         "post",
                         "userarea-noauth",

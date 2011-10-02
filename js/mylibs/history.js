@@ -12,12 +12,12 @@ var History = function ()
     {
         items.push( item );
         currentIndex = items.length - 1; 
+        console.log('added', item );
     };
           
     this.getItem = function ( index )
     {
-        if ( index != undefined)
-        {
+        if ( index != undefined) {
             return (items[index] != undefined) ? items[index] : false;
         }
               
@@ -36,8 +36,7 @@ var History = function ()
         if (currentIndex < 0) {
             currentIndex = 0;
         }
-        if (old == currentIndex)
-        {
+        if ( old == currentIndex ) {
             return false;
         }
               
@@ -51,8 +50,7 @@ var History = function ()
         if (currentIndex > items.length - 1) {
             currentIndex = items.length - 1;
         }
-        if (old == currentIndex)
-        {
+        if (old == currentIndex) {
             return false;
         }
               
@@ -61,8 +59,8 @@ var History = function ()
 
     this.process = function ( processFlag )
     {
-        if (processFlag)
-        {
+        console.log( currentIndex, items );
+        if ( processFlag ) {
             items[ currentIndex ].action();
         }
     };

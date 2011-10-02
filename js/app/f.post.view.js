@@ -81,10 +81,11 @@ PostView.prototype = {
                     marker.setAction( function ( newData ){
                           fragment.clear();
                           fragment.fillData( newData );
-                          console.log('fragment->',fragment);
                           fragment.View.updateFragment();
                           fragment.View.updateRightSide();
                     } );
+                    
+                    marker.saveState();
                     marker.makeRequest();
                 }
                 return false;

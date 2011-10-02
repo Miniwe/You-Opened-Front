@@ -24,6 +24,8 @@ var Marker = function ( Application )
     
     this.isActive = false;
     
+    this.history = new History();
+    
     this.rightSideData = {
         navigram  : null,
         tagCloud  : {},
@@ -34,6 +36,30 @@ var Marker = function ( Application )
 }
 
 Marker.prototype = {
+    saveState : function ( )
+    {
+        var marker = this;
+        var item = {
+            name: this.name,
+            path: this.path,
+            params: this.params,
+            marker_action: this.action,
+            action: function () {
+                
+                marker.setPath( this.path );
+                marker.setName( this.name );
+                
+                marker.params = {};
+                marker.addParams( this.params );
+
+                marker.setAction = this.marker_action;
+
+                marker.makeRequest();
+                
+            }
+        };
+        this.history.addItem( item );
+    },
     setPath : function ( path )
     {
         this.path = path;
@@ -55,15 +81,14 @@ Marker.prototype = {
     },
     fragmentSearch : function ( branchId )
     {
+        
         var fragment = false;
-            
         for ( var i = this.fragments.length; i--; ) {
             if (this.fragments[i].branch.id == branchId) {
                 fragment = this.fragments[i];
                 break;
             };
         }
-        
         return fragment;
     },
     addFragments : function ( newData )
@@ -127,7 +152,6 @@ Marker.prototype = {
     makeRequest : function ( )
     {
         var marker = this;
-        console.log('fragment request', this.path, this.params);
         this.Application.ajaxRequest(
             this.path,
             function ( response ) {
@@ -195,14 +219,11 @@ Marker.prototype = {
     },
     getFragment : function ( fragmentId )
     {
-        console.log('in markerr', fragmentId);
         for (var i = this.fragments.length; i--; ) {
             if ( fragmentId == this.fragments[i].id ) {
-            console.log('in markerr found ', this.fragments[i]);
                 return this.fragments[i];
             }
         }
-        console.log('in marker not found');
         return false;
     }
     

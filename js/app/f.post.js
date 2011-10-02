@@ -175,18 +175,15 @@ Post.prototype = {
     },
     getFragment : function ( fragmentId )
     {
-        console.log('in get fragment', fragmentId);
         var marker = null;
         var fragment = false;
 
         var markers = this.Application.markers;
         for ( var i=markers.length; i--; ) {
             if ( fragment = markers[i].getFragment( fragmentId ) ) {
-                console.log('founded', fragment);
                 return fragment;
             }
         }
-        console.log('not found ');
         return false;
     }
   

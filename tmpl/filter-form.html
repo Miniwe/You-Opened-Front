@@ -1,0 +1,29 @@
+<div class="filter-form">
+    <div class="inner">
+    <div class="icon16set left-icon close_small closeopts" style="float: right"></div>
+
+    <form action="/Slise.json" method="get" id="opts-form">
+        <div class="field">
+            Search string: <br />
+            <input type="text" name="filterSearchField" id="filter-search-field" value="${searchField}" />
+        </div> 
+        <div class="field">
+            Tags: <br />
+            <input type="text" name="filterTags" id="filter-tags" value="${tags}" />
+        </div> 
+        <div class="field">
+            Users: <br />
+            <input type="text" name="filterUsers" id="filter-users" value="${users}" />
+        </div> 
+        
+        <button class="round-border" style="float: right;">
+            Refresh data
+        </button>
+
+<!--        <button class="round-border" style="float: right;" disabled="true">
+            Delete tab
+        </button>-->
+
+    </form>
+    </div>
+</div>

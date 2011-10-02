@@ -67,12 +67,78 @@ FragmentView.prototype = {
     },
     openRightSide : function ( )
     {
+        var Fragment = this.Fragment;
         this.Fragment.Marker.View.drawRightSide({
             navigram : this.Fragment.branch,
             tagCloud : this.Fragment.branch.tags,
             userCloud : this.Fragment.branch.authors
         });
+        
         $("#fragment-arrow").removeClass("hidden");
+        $("#side .filter").removeClass("hidden");
+        $("#side .mode").removeClass("hidden");
+        $("#side .move").removeClass("hidden");
+        
+        $("#side .filter").unbind("click").click( function (){
+            // show filter form
+            // при update form делать обновление полей
+            // и перегружать маркер как при сменене основного поста 
+            console.log("filter on");
+            Fragment.View.showFilterForm();
+            
+        });
+        
+    },
+    showFilterForm : function ( )
+    {
+        var fragment = this.Fragment;
+        var marker = fragment.Marker;
+        
+        var filterForm = $.tmpl("filter-form", {
+            searchField : "",
+            tags : marker.View.prepareParams( marker.getParam('tagIds'), 'tag'),
+            users : marker.View.prepareParams( marker.getParam('authorIds'), 'user')
+        })
+            .css({"opacity": "0"})
+            .prependTo("#side .content")
+            .animate({"opacity": "1"});
+            
+        filterForm.find(".closeopts").click(function(){
+            filterForm.remove();
+        });
+        
+        marker.View.addAutocomplete( filterForm.find("#filter-tags"), "tag" );
+        
+        marker.View.addAutocomplete( filterForm.find("#filter-users"), "user" );
+        
+        filterForm.find("form").submit(function(){
+        
+            var data = fragment.Application.formArrayToData($(this).formToArray());
+            
+            marker.addParams({
+                'query' : data.filterSearchField,
+                'tagIds' : getIds(data.filterTags),
+                'authorIds' : getIds(data.filterUsers)
+            });
+
+            marker.setAction( function ( newData ) {
+                  fragment.clear();
+                  fragment.fillData( newData );
+                  fragment.View.updateFragment();
+                  fragment.View.updateRightSide();
+            } );
+            
+            marker.saveState();
+            
+            marker.makeRequest();
+            
+            return false;
+        })
+        
+    },
+    closeFilterForm : function ( )
+    {
+        $("#side .content").find(".filterForm").remove();
     },
     render : function ( params )
     {

@@ -70,7 +70,8 @@ MarkerView.prototype = {
                 this.View.drawRightSide( Marker.rightSideData );
                 
             } );
-
+            
+            Marker.saveState();
             Marker.makeRequest();
 
         });
@@ -235,13 +236,19 @@ MarkerView.prototype = {
             this.View.selectTab();
 
         } );
+        marker.saveState();
+        
         marker.makeRequest();
         
         return false;        
-        
     },
     drawRightSide : function ( sideData )
     {
+        
+        $("#side .filter").addClass("hidden")
+        $("#side .mode").addClass("hidden")
+        $("#side .move").addClass("hidden")
+        
         $("#fragment-arrow").addClass("hidden");
         if (sideData == undefined) {
             sideData = this.Marker.rightSideData;
@@ -249,6 +256,7 @@ MarkerView.prototype = {
         
         $("#side").find(".content").html("");
         
+        this.drawHistory();
         this.drawNavigram( sideData.navigram );
         this.drawTagCloud( sideData.tagCloud );
         this.drawAuthorCloud( sideData.userCloud );
@@ -264,11 +272,25 @@ MarkerView.prototype = {
         
         
     },
+    drawHistory : function ( ) {
+        var Marker = this.Marker;
+        $('<div class="icon24set icon-left go-back" style="margin-top:12px; float:left;"></div><div class="icon24set icon-right go-next" style="margin-top:12px; float: right;"></div>').appendTo($("#side .content"));
+         console.log('add event');
+        $("#side").find(".go-back").click( function( ) {
+            Marker.history.process( Marker.history.prev( ) );
+            return false;
+        });
+        
+        $("#side").find(".go-next").click( function( ) {
+            Marker.history.process( Marker.history.next( ) );
+            return false;
+        });
+         
+    },
     drawNavigram : function ( navigramBranch ) {
         if ( !navigramBranch ) {return false;}
         $('<div class="navdiag"></div>').appendTo($("#side .content"));
         navigramBranch.drawNavGraph( $("#side .content").find(".navdiag") );
-        $('<div></div>').appendTo($("#side .content"));
     },
     drawTagCloud : function( tagCloud ) {
         if ( tagCloud == {} ) {return false;}

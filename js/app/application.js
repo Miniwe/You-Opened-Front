@@ -406,7 +406,7 @@ var Application = function ( opts )
                 
                 if ( !newData.users.length )
                 {
-                    this.msg( "Auth result: Error with user data");
+                    this.msg( "Auth result: Error with user data", "console");
                     return false;
                 }
                 
@@ -506,6 +506,8 @@ var Application = function ( opts )
         marker.addParams( {
             'query' : 'girls'
         } );
+        
+        
         marker.setAction ( function ( newData ) {
           this.addFragments( newData );
 
@@ -519,6 +521,8 @@ var Application = function ( opts )
           this.View.selectTab();
           
         } );
+        
+        marker.saveState();
 
         this.markers.push( marker );
         
