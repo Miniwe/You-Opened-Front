@@ -79,15 +79,17 @@ MarkerView.prototype = {
     },
     tabExist : function ()
     {
-        return this.tabView;
+        return (this.tabView != null) ? this.tabView : false;
     },
     updateTab : function ()
     {
         if ( this.tabExist() ) {
+
             // update process
             this.tabView.find('.tab-title').html(this.Marker.name);
         }
         else {
+
             this.addTab();
         }
     },
@@ -99,9 +101,9 @@ MarkerView.prototype = {
         var tab = $.tmpl( 'top-tab', {
             name: this.Marker.name
         })
-            .css({"opacity": "0"})
-            .insertAfter("#search-tab")
-            .animate({"opacity": "1"});
+//            .css({"opacity": "0"})
+            .insertAfter("#search-tab");
+//            .animate({"opacity": "1"});
         
         // tab events    
         tab.find(".icon24set.action").click(function(){

@@ -1,5 +1,5 @@
 body, input {
-	font-family: Ubuntu, Arial, sans-serif;
+	font-family: Ubuntu, PTSansRegular, Arial, sans-serif;
 	font-size: 14px;
 }
 
@@ -281,7 +281,7 @@ nav.toolbar .tab.active:hover {
 button {
 	background: #dddddd url(../img/bg_main.png) repeat fixed;
 	font-size: 16px;
-	font-family: Open Sans Condensed, sans-serif;
+	font-family: 'Open Sans Condensed', PTSansNarrowRegular, sans-serif;
 	padding: 3px 12px;
 	text-shadow: #ffffff 1px 1px 0px;
 	white-space: nowrap;
@@ -321,7 +321,7 @@ button.icon.icon-send {
 .post-content .date {
 	float: right;
 	font-size: 16px;
-	font-family: Open Sans Condensed, sans-serif;
+	font-family: 'Open Sans Condensed', PTSansNarrowRegular, sans-serif;
 	color: #999999;
 	text-shadow: #ffffff 1px 1px 0px;
 	white-space: nowrap;
@@ -332,7 +332,7 @@ button.icon.icon-send {
 	text-shadow: #ffffff 1px 1px 0px;
 	white-space: nowrap;
 	font-size: 16px;
-	font-family: Open Sans Condensed, sans-serif;
+	font-family: 'Open Sans Condensed', PTSansNarrowRegular, sans-serif;
 }
 
 .post-content .post-info .author-name {
@@ -360,7 +360,7 @@ ul.tags {
 
 ul.tags li {
 	font-size: 14px;
-	font-family: Open Sans Condensed, sans-serif;
+	font-family: 'Open Sans Condensed', PTSansNarrowRegular, sans-serif;
 	margin-left: 6px;
 	padding-left: 12px;
 	/*    background: transparent url(../img/bg_tag.png) repeat-x top;*/
@@ -599,10 +599,6 @@ ul.tags li.active {
 	float: left;
 }
 
-.hidden {
-	display: none;
-}
-
 .inline {
 	display: inline-block;
 }
@@ -631,7 +627,7 @@ a:hover {
 
 textarea.reply-textarea {
 	background-color: #f4f4f4;
-	font-family: Ubuntu, Arial, sans-serif;
+	font-family: Ubuntu, PTSansRegular, Arial, sans-serif;
 	line-height: 18px;
 	outline: none;
 	margin: 12px 0;

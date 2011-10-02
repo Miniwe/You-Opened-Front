@@ -1,8 +1,3 @@
-const NORMAL = 0;
-const HOVER = 1;
-const DRAG  = 2;
-const HIGHLIGHT = 3;
-
 /* Graph Area
  */
 
@@ -141,15 +136,6 @@ function inBoundCircle (cPos, tc)
 {
     return ( Math.pow(cPos.x-tc.x, 2) + Math.pow(cPos.y - tc.y,2)
             < Math.pow(tc.r, 2) );
-}
-
-
-function extend(Child, Parent) {
-	var F = function() { };
-	F.prototype = Parent.prototype;
-	Child.prototype = new F();
-	Child.prototype.constructor = Child;
-	Child.superclass = Parent.prototype;
 }
 
 /**

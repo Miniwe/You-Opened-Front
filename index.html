@@ -24,6 +24,8 @@
   <!-- External Fonts -->
   <link href='http://fonts.googleapis.com/css?family=Open+Sans+Condensed:300,300italic&subset=latin,cyrillic-ext' rel='stylesheet' type='text/css' />
   <link href='http://fonts.googleapis.com/css?family=Ubuntu:300,400,500,700,300italic,400italic,500italic,700italic&subset=latin,cyrillic-ext' rel='stylesheet' type='text/css' />
+  
+  <link href='fonts/pt_sans/stylesheet.css' rel='stylesheet' type='text/css' />
  
   <!-- CSS: implied media=all -->
   <!-- CSS concatenated and minified via ant build script-->
@@ -113,12 +115,6 @@
  <script>
     head
         .js(
-            "js/plugins.js",
-            function ( ) {
-//                console.log('part 2');
-            }
-        )
-        .js(
             "js/libs/jquery-1.6.4.min.js", 
             "js/libs/jquery.form.js", 
             "js/libs/jquery.tmpl.min.js", 
@@ -130,7 +126,13 @@
             "js/libs/autoresize.jquery.min.js",
             "js/libs/date.format.js",
             function ( ) {
-                console.log('part 1');
+    //            console.log('part 1');
+            }
+        )
+        .js(
+            "js/plugins.js",
+            function ( ) {
+    //            console.log('part 1.5');
             }
         )
         .js(
@@ -155,7 +157,7 @@
         )
         .js(
             "js/graph/grapharea.js",
-//            "js/graph/g.nav.js",
+            "js/graph/g.nav.js",
             function ( ) {
     //            console.log('part 2');
             }
