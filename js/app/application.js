@@ -1,3 +1,46 @@
+var Templater = function ( )
+{
+    var templates = [ ];
+}
+
+var Messager = function ( )
+{
+    
+}
+
+var DataProvider = function ( )
+{
+    this.url = '';
+    this.params = {};
+    this.successFunction = function ( ) { };
+    this.errorFunction = function ( ) { };
+    
+    this.addUrl = function ( url )
+    {
+        this.url = url;
+    };
+    
+    this.addParams = function ( params )
+    {
+        this.params = params;
+    };
+    
+    this.addSuccessFunc = function ( successFunction )
+    {
+        this.successFunction = successFunction;
+    };
+    
+    this.addErrorFunc = function ( errorFunction )
+    {
+        this.errorFunction = errorFunction;
+    };
+    
+    this.getData = function ( )
+    {
+    };
+}
+
+
 var Application = function ( opts )
 {
     this.globalPath = opts.path || "";
@@ -105,16 +148,13 @@ var Application = function ( opts )
            curMarkerFragments = null;
     
         this.activeFragment = 0;
-        for (var i = this.fragments.length; i--; )
-        {
+        for (var i = this.fragments.length; i--; ) {
             this.fragments[i].isActive = false;
         }
         
-        for (markerIndex = this.markers.length; markerIndex--; )
-        {
+        for (markerIndex = this.markers.length; markerIndex--; ) {
             var curMarkerFragments = this.markers[markerIndex].fragments;
-            for ( fragmentIndex = curMarkerFragments.length; fragmentIndex--; )
-            {
+            for ( fragmentIndex = curMarkerFragments.length; fragmentIndex--; ) {
                 curMarkerFragments[fragmentIndex].View.closeContent();
             }
         }
@@ -154,7 +194,8 @@ var Application = function ( opts )
      * @param error funciton
      * @param data object
      */
-    this.ajaxRequest = function ( url, success, error, data ) {
+    this.ajaxRequest = function ( url, success, error, data )
+    {
         var data = data || {};
         data.sessionKey = this.sessionkey;
         var Application = this;
@@ -198,8 +239,8 @@ var Application = function ( opts )
     /*
      * анимация загрузчика
      */        
-    this.animateLoader = function ( ) {
-        
+    this.animateLoader = function ( )
+    {
         if (this.ajaxCount > 0) {
             /* process show */
             clearTimeout( this.ajaxTimer );
@@ -211,16 +252,15 @@ var Application = function ( opts )
             /* stop show */
             clearTimeout( this.ajaxTimer );
         }
-        
-            
     };
     
     /*
      */
-    this.logoutUser = function ( ) {
+    this.logoutUser = function ( )
+    {
 //        @todo доделать разлогинивание - не работает корректо сейчас
-//      чистка всего
-//      изменение Экрана
+//        чистка всего
+//        изменение Экрана
 
         this.siteUser = null;
         
@@ -256,14 +296,12 @@ var Application = function ( opts )
     {
         var mode_params = false;
         
-        switch (mode_type)
-        {
+        switch (mode_type) {
             case 'dm':
                 mode_params = {
                     name : 'Direct messages',
                     params : {
-                        directUserIds : this.siteUser.id,
-                        onlyInBranches : "False"
+                        directUserIds : this.siteUser.id
                     }
                 };
                 break;
@@ -272,7 +310,6 @@ var Application = function ( opts )
                     name : 'Invites',
                     params : {
                         directUserIds : this.siteUser.id,
-                        onlyInBranches : "False",
                         artifacts : "HasNativeArtifacts"
                     }
                 };
@@ -282,7 +319,6 @@ var Application = function ( opts )
                     name : 'External links',
                     params : {
                         directUserIds : this.siteUser.id,
-                        onlyInBranches : "False",
                         artifacts : "HasWebSharedArtifacts"
                     }
                 };
@@ -313,10 +349,8 @@ var Application = function ( opts )
     this.markerExist = function ( name )
     {
         var marker = false;
-        for (var i=this.markers.length; i--; )
-        {
-            if ( this.markers[i].name == name )
-            {
+        for (var i=this.markers.length; i--; ) {
+            if ( this.markers[i].name == name ) {
                 marker = this.markers[i];
                 break;
             }
@@ -336,10 +370,8 @@ var Application = function ( opts )
         }
         
         // сделат все директ
-        for (var i=modes.length; i--;)
-        {
-            if (mode_params = this.getModeParams(modes[i]))
-            {
+        for (var i=modes.length; i--;) {
+            if (mode_params = this.getModeParams(modes[i])) {
                 marker = this.markerExist(mode_params.name);
                 if ( !marker ) {
                     marker = new Marker( this );
@@ -357,7 +389,7 @@ var Application = function ( opts )
         }
         
         this.siteUserTimer = setTimeout(function() {
-            this.updateUserState()
+//            this.updateUserState()
         }, 30000);
         
         return true;
@@ -368,8 +400,7 @@ var Application = function ( opts )
      */
     this.rememberUser = function ( data )
     {
-        if (data.remember != undefined)
-        {
+        if (data.remember != undefined) {
             $.cookie("userName", data.userName, {
                 expires: 7,
                 path: '/'
@@ -442,14 +473,14 @@ var Application = function ( opts )
      */
     this.userState = function ( )
     {
-            this.ajaxRequest('/Auth.js',
+            this.ajaxRequest( '/Auth.js',
             function( response ) {
                 
                 this.processAuthResponse ( response );
             },
-            function(){
+            function ( ) {
                 var userAuthorized = false;
-                this.msg('Auth error', 'console');
+                this.msg( 'Auth error', 'console');
                 this.View.fillUserArea( userAuthorized );
             },
             {

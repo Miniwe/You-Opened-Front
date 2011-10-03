@@ -62,7 +62,6 @@ PostView.prototype = {
                     marker = null,
                     base_params = {},
                     fragment = null;
-                console.log('click', $( PostView.View ), fragmentId);
                     
                 if ( fragment = PostView.Post.getFragment( fragmentId ) ) {
                     marker = fragment.Marker;
@@ -94,52 +93,6 @@ PostView.prototype = {
         
         
     },
-    attachBehaviorOld : function ( )
-    {
-        var Facade = this;
-        /*
-        var parentFacade = facade.Application.branches[facade.parentBranchId];
-        if (parentFacade && parentFacade.navGraph != undefined)
-        {
-            View.hover(function( ){
-                    parentFacade.navGraph.highlightBranch = facade.id;
-                }, function( ){
-                    parentFacade.navGraph.highlightBranch = 0;
-            });
-        }
-        */
-       
-        this.View.mouseover(function (){
-            // послать сингал для navGraph фрагмента чтоб выделил на диаграме нужную ветку
-            if ( Facade.fragment && Facade.fragment.navGraph )
-            {
-                Facade.fragment.navGraph.highlightBranch = Facade.branchId;
-            }
-            
-        });
-
-        this.View.mouseout( function ( ) {
-            // послать сингал для navGraph фрагмента чтоб выделил на диаграме нужную ветку
-            if ( Facade.fragment && Facade.fragment.navGraph )
-            {
-                Facade.fragment.navGraph.highlightBranch = "";
-            }
-            
-        });
-
-        this.View.find(".gotobranch").click(function (){
-//            var parent_id = $(this).parents('article').attr("data-parent");
-            var go_params = $(this).attr("data-ref").match(/\#[a-z]+\-[a-w0-9_]+/g); 
-            var branch_id = go_params[0].split("-")[1];
-            var post_id = go_params[1].split("-")[1];
-            
-            Facade.fragment.addFocusedBranch( Facade.Application.branches[ branch_id ] );
-            
-            return false;
-        });
-        
-    },
-    
     closeContent : function ( )
     {
         this.View.find(".state").removeClass('expanded');
@@ -162,7 +115,8 @@ PostView.prototype = {
     },
     showPostChils : function ( )
     {
-        var content = this.drawChildsList( );
+        var mode = 'hierarhy';
+        var content = this.drawChildsList( mode );
         this.drawContent( content );
     },
     
@@ -185,8 +139,9 @@ PostView.prototype = {
         
         return newView;
     },
-    drawListHierarhy: function ( posts_list, color, View )
+    drawListPlain: function ( posts_list, color, View )
     {
+        console.log('P');
         var b, id;
         var app_posts = this.Post.Application.posts,
             newView = null;
@@ -212,11 +167,44 @@ PostView.prototype = {
         }
         
     },
-    drawChildsList : function ( )
+    drawListHierarhy: function ( posts_list, color, View )
+    {
+        console.log('H');
+        var b, id;
+        var app_posts = this.Post.Application.posts,
+            newView = null;
+        for ( id in posts_list )
+        {
+//            b = this.Application.branchExist( id );
+            b = false;
+            
+            newView = this.drawPost( app_posts[ id ] );
+            
+//            if ( b = this.Application.branchExist( id ) )
+//            {
+//                b.drawListHierarhy( posts_list, b.color, newView );
+//            }
+            
+            /*
+             * перебирать все посты ветки
+             * если пост является корнем другой ветки то его рисовать с другим цветом
+             * запускать с этим цветом перебор 
+             */
+            
+            View.appendChild( newView[0] );
+        }
+        
+    },
+    drawChildsList : function ( mode )
     {
         var content = document.createDocumentFragment();
         
-        this.drawListHierarhy ( this.Post.posts, "#ffffff", content );
+        if (mode == 'hierarhy') {
+            this.drawListHierarhy ( this.Post.posts, "#ffffff", content );
+        }
+        else {
+            this.drawListPlain ( this.Post.posts, "#ffffff", content );
+        }
         
         return content;
         

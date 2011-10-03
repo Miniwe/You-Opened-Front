@@ -86,14 +86,14 @@ Post.prototype = {
     },
     addPoststoPost : function ( posts )
     {
+        var c = 0;
         for (var i=posts.length; i--; )
         {
             var curPostId = posts[i];
             if ( this.id == this.Application.posts[ curPostId ].parentPostId )
             {
                 this.posts[curPostId] = this.Application.posts[ curPostId ];
-                
-                
+                c++;
             }
         }
     },
@@ -152,6 +152,7 @@ Post.prototype = {
         this.Application.ajaxRequest( '/Slice.json',
             function ( response ) {
                 var newData = this.parseResponseData( response );
+                Facade.clearPosts();
                 Facade.addPoststoPost (newData.posts);
                 if (typeof(callback) == 'function')
                 {
@@ -169,9 +170,9 @@ Post.prototype = {
             })
         );        
     },
-    getFramentMarker : function ( )
+    clearPosts : function ( )
     {
-        
+        this.posts = {};
     },
     getFragment : function ( fragmentId )
     {

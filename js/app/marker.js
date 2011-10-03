@@ -20,6 +20,8 @@ var Marker = function ( Application )
  
     this.postsCount = 0;
     
+    this.viewMode = 'hierarhy';
+    
     this.View = new MarkerView ( this );
     
     this.isActive = false;

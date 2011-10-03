@@ -109,8 +109,12 @@ Purpose of the stylesheet follows.
 	opacity: .5;
 }
 
-.mode {
+.mode-hierarhy {
 	background-position: -48px -24px;
+	opacity: .5;
+}
+.mode-plain {
+	background-position: -72px -24px;
 	opacity: .5;
 }
 

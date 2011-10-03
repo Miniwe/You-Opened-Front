@@ -163,7 +163,7 @@ MarkerView.prototype = {
             
         switch ( type ) 
         {
-            case 'tag': 
+            case 'tag':
                 for (i=paramArray.length; i--;)
                 {
                     if (Application.tags[paramArray[i]] != undefined)
@@ -173,7 +173,7 @@ MarkerView.prototype = {
                     }
                 }
                 break;
-            case 'user': 
+            case 'user':
                 for (i=paramArray.length; i--;)
                 {
                     if (Application.users[paramArray[i]] != undefined)
@@ -246,12 +246,21 @@ MarkerView.prototype = {
     },
     drawRightSide : function ( sideData )
     {
+        var Marker = this.Marker;
         
-        $("#side .filter").addClass("hidden")
-        $("#side .mode").addClass("hidden")
-        $("#side .move").addClass("hidden")
+        $("#side .mode").addClass("hidden");
+        
+        /*
+         * set viewMode to marker
+         * change mode icon
+         * on change ViewMode reload main marker view - main params not change
+         */
+        
+        $("#side .filter").addClass("hidden");
+        $("#side .move").addClass("hidden");
         
         $("#fragment-arrow").addClass("hidden");
+        
         if (sideData == undefined) {
             sideData = this.Marker.rightSideData;
         }

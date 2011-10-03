@@ -78,7 +78,7 @@
             <img src="img/fragment_arrow.png" id="fragment-arrow"class="hidden" />
             <div class="tab icon-container round-border" style="width:176px; padding-left:12px;">
                 <div class="icon24set left-icon move"></div>
-                <div class="icon24set left-icon mode"></div>
+                <div class="icon24set left-icon mode mode-hierarhy"></div>
             </div>
 
             <div class="tab right-tab icon-container round-border">
@@ -131,13 +131,15 @@
         )
         .js(
             "js/plugins.js",
+            "js/mylibs/history.js",
+            "js/test.js",
             function ( ) {
     //            console.log('part 1.5');
             }
         )
         .js(
             "js/app/application.view.js",
-             "js/app/application.js",
+            "js/app/application.js",
             "js/app/marker.js",
             "js/app/marker.view.js",
             "js/app/fragment.js",
@@ -149,8 +151,6 @@
             "js/app/f.post.view.js",
             "js/app/f.branch.js",
             "js/app/f.branch.view.js",
-            "js/mylibs/history.js",
-            "js/test.js",
             function ( ) {
     //            console.log('part 2');
             }

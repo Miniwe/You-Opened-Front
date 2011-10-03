@@ -53,7 +53,8 @@ FragmentView.prototype = {
         
         $(this.View).addClass("active");
         
-        this.Fragment.branch.post.View.openContent( this.Fragment.branch.post.View );
+        console.log('open content ' , this.Fragment.Marker.viewMode );
+        this.Fragment.branch.post.View.openContent( );
         
 //        this.View.find(".state").addClass('expanded');
 //        this.Fragment.openMainBranch();
@@ -77,6 +78,39 @@ FragmentView.prototype = {
         $("#fragment-arrow").removeClass("hidden");
         $("#side .filter").removeClass("hidden");
         $("#side .mode").removeClass("hidden");
+        
+        console.log('fr open');
+        $("#side .mode").unbind('click').click(function(){
+            console.log('mode clIck'); 
+            var action = 'plain',
+                subParams = {
+                    depth : 2
+                };
+            if ( $(this).hasClass('mode-hierarhy') ) {
+                action = 'hierarhy';
+                subParams = {
+                    depth : 0
+                };
+            }
+            
+            Fragment.Marker.viewMode = action;
+            
+            $(this).toggleClass("mode-hierarhy").toggleClass("mode-plain");
+            
+            Fragment.Marker.addParams(subParams);
+            
+            Fragment.Marker.setAction( function ( newData ) {
+                Fragment.clear();
+                Fragment.fillData( newData );
+                Fragment.View.updateFragment();
+                Fragment.View.updateRightSide();
+            } );
+
+            Fragment.Marker.saveState();
+            
+            Fragment.Marker.makeRequest();
+        });
+            
         $("#side .move").removeClass("hidden");
         
         $("#side .filter").unbind("click").click( function (){
@@ -113,13 +147,21 @@ FragmentView.prototype = {
         
         filterForm.find("form").submit(function(){
         
-            var data = fragment.Application.formArrayToData($(this).formToArray());
+            var data = fragment.Application.formArrayToData($(this).formToArray()),
+                tagIds = getIds(data.filterTags),
+                userIds = getIds(data.filterUsers);
             
-            marker.addParams({
-                'query' : data.filterSearchField,
-                'tagIds' : getIds(data.filterTags),
-                'authorIds' : getIds(data.filterUsers)
-            });
+            if ( data.filterSearchField != '' ) {
+                marker.addParams({'query' : data.filterSearchField});
+            }
+            if ( tagIds != '') {
+                marker.addParams({'tagIds' : tagIds});
+            }
+            if ( userIds != '' ) {
+                marker.addParams({'authorIds' : userIds});
+                
+            }
+                
 
             marker.setAction( function ( newData ) {
                   fragment.clear();
