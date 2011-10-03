@@ -82,7 +82,7 @@ Post.prototype = {
     openPostChilds : function ( dfd )
     {
         var Post = this;
-        this.loadChilds( {}, function( ) { Post.View.showPostChils (); dfd.resolve({}); } );
+        this.loadChilds( {}, function( ) { Post.View.showPostChils ( ); dfd.resolve({}); } );
     },
     addPoststoPost : function ( posts )
     {
@@ -145,6 +145,24 @@ Post.prototype = {
         }
         
     },
+    sortList: function ( posts_list, sortField )
+    {
+        for ( var i = posts_list.length; i--; )
+        {
+            posts_list[i] = {
+                id :  posts_list[i],
+                sortField : this.Application.posts[ posts_list[ i ] ][sortField]
+            };
+        }
+        posts_list.sort( function(a,b) { 
+            return b.sortField - a.sortField;
+        } );
+        for ( var i = posts_list.length; i--; )
+        {
+            posts_list[i] = posts_list[i].id;
+        }
+        return posts_list;
+    },    
     loadChilds : function ( params, callback )
     {
         var Facade = this;

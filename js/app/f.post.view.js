@@ -115,8 +115,7 @@ PostView.prototype = {
     },
     showPostChils : function ( )
     {
-        var mode = 'hierarhy';
-        var content = this.drawChildsList( mode );
+        var content = this.drawChildsList( );
         this.drawContent( content );
     },
     
@@ -141,12 +140,13 @@ PostView.prototype = {
     },
     drawListPlain: function ( posts_list, color, View )
     {
-        console.log('P');
+        this.Post.sortList( posts_list, "createTime" );            
+
         var b, id;
         var app_posts = this.Post.Application.posts,
             newView = null;
-        for ( id in posts_list )
-        {
+        for (var i = posts_list.length; i--; ) {
+            id = posts_list[i];
 //            b = this.Application.branchExist( id );
             b = false;
             
@@ -169,12 +169,13 @@ PostView.prototype = {
     },
     drawListHierarhy: function ( posts_list, color, View )
     {
-        console.log('H');
+        this.Post.sortList( posts_list, "parentPostId" );
+
         var b, id;
         var app_posts = this.Post.Application.posts,
             newView = null;
-        for ( id in posts_list )
-        {
+        for (var i = posts_list.length; i--; ) { 
+            id = posts_list[i];
 //            b = this.Application.branchExist( id );
             b = false;
             
@@ -197,13 +198,26 @@ PostView.prototype = {
     },
     drawChildsList : function ( mode )
     {
+        
         var content = document.createDocumentFragment();
         
+        var fragment = false,
+            fragmentId = $( this.View ).parents('.fragment').attr('data-id'),
+            mode = 'hierarhy';
+            
+        if ( fragment = this.Post.getFragment( fragmentId ) ) {
+            mode = fragment.Marker.viewMode;
+        }
+        var postId_list = [];
+        for (var id in this.Post.posts)
+        {
+            postId_list.push(id);
+        }
         if (mode == 'hierarhy') {
-            this.drawListHierarhy ( this.Post.posts, "#ffffff", content );
+            this.drawListHierarhy ( postId_list, "#ffffff", content );
         }
         else {
-            this.drawListPlain ( this.Post.posts, "#ffffff", content );
+            this.drawListPlain ( postId_list, "#ffffff", content );
         }
         
         return content;

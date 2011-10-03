@@ -54,11 +54,10 @@ ApplicationView.prototype = {
             })
             
             if ( activeFragmentView_top - scrollTop < 85 ) {
-                console.log('add');
+
                 activePostView.addClass("float");
             }
             else {
-                console.log('remove', activePostView_top, scrollTop);
                 activePostView.removeClass("float");
             }
             

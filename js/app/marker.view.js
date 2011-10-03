@@ -286,7 +286,7 @@ MarkerView.prototype = {
     drawHistory : function ( ) {
         var Marker = this.Marker;
         $('<div class="icon24set icon-left go-back" style="margin-top:12px; float:left;"></div><div class="icon24set icon-right go-next" style="margin-top:12px; float: right;"></div>').appendTo($("#side .content"));
-         console.log('add event');
+
         $("#side").find(".go-back").click( function( ) {
             Marker.history.process( Marker.history.prev( ) );
             return false;

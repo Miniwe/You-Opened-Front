@@ -53,7 +53,6 @@ FragmentView.prototype = {
         
         $(this.View).addClass("active");
         
-        console.log('open content ' , this.Fragment.Marker.viewMode );
         this.Fragment.branch.post.View.openContent( );
         
 //        this.View.find(".state").addClass('expanded');
@@ -79,9 +78,8 @@ FragmentView.prototype = {
         $("#side .filter").removeClass("hidden");
         $("#side .mode").removeClass("hidden");
         
-        console.log('fr open');
+
         $("#side .mode").unbind('click').click(function(){
-            console.log('mode clIck'); 
             var action = 'plain',
                 subParams = {
                     depth : 2
@@ -117,7 +115,7 @@ FragmentView.prototype = {
             // show filter form
             // при update form делать обновление полей
             // и перегружать маркер как при сменене основного поста 
-            console.log("filter on");
+
             Fragment.View.showFilterForm();
             
         });
