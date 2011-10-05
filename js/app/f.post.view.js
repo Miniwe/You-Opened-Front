@@ -158,50 +158,36 @@ PostView.prototype = {
 //                b.drawListHierarhy( posts_list, b.color, newView );
 //            }
             
-            /*
-             * перебирать все посты ветки
-             * если пост является корнем другой ветки то его рисовать с другим цветом
-             * запускать с этим цветом перебор 
-             */
-            
             View.appendChild( newView[0] );
         }
         
     },
-    drawListHierarhy: function ( posts_list, color, View )
+    drawListHierarhy: function ( postId, color, View )
     {
-        this.Post.sortList( posts_list, "parentPostId" );
-
-        var b, id;
         var app_posts = this.Post.Application.posts,
-            newView = null;
-        for (var i = posts_list.length; i--; ) { 
-            id = posts_list[i];
+            newView = null,
+            curPost = null;
             
-            newView = this.drawPost( app_posts[ id ] );
-            
-            if ( b = this.Post.Application.branchExist( id ) )
-            {
-                console.log('will draw', b);
+        var b;
+        for (var id in app_posts) {
+            if (app_posts[id].parentPostId == postId) {
+                console.log( postId, id );
+                newView = this.drawPost( app_posts[id] );
+                if ( b = this.Post.Application.branchExist( id ) ) {
+                    app_posts[id].View.drawListHierarhy( id, b.color, newView );
+                }
+
+                newView.insertAfter( View );
                 
-                // !!! все должно рисоваться от текущего поста 
-//                b.post.View.drawListHierarhy( posts_list, b.color, newView );
             }
-            
-            /*
-             * перебирать все посты ветки
-             * если пост является корнем другой ветки то его рисовать с другим цветом
-             * запускать с этим цветом перебор 
-             */
-            
-            View.appendChild( newView[0] );
         }
-        
+            
     },
     drawChildsList : function ( mode )
     {
         
-        var content = document.createDocumentFragment();
+        var content = document.createDocumentFragment(),
+            contentJQuery = $('<div></div>');
         
         var fragment = false,
             fragmentId = $( this.View ).parents('.fragment').attr('data-id'),
@@ -216,7 +202,9 @@ PostView.prototype = {
             postId_list.push(id);
         }
         if (mode == 'hierarhy') {
-            this.drawListHierarhy ( postId_list, "#ffffff", content );
+            
+//            content.appendChild( contentJQuery [0] );
+            this.drawListHierarhy ( this.Post.id, "#ffffff", this.View );
         }
         else {
             this.drawListPlain ( postId_list, "#ffffff", content );
