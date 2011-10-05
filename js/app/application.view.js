@@ -35,6 +35,9 @@ ApplicationView.prototype = {
                 $("#side").removeClass('float');
             }
             
+            
+            return true;
+            
             var activeFragmentView = $(".fragment.active"),
                 activeFragmentView_top = 0,
                 activePostView = 0,

@@ -26,12 +26,15 @@
   <link href='http://fonts.googleapis.com/css?family=Ubuntu:light,lightitalic,regular,italic,500,500italic,bold,bolditalic&subset=cyrillic,latin' rel='stylesheet' type='text/css' />
 
   <!-- CSS: implied media="all" -->
-  <link rel="stylesheet" href="css/style.css?v=2" />
-  <link rel="stylesheet" href="css/main.css?v=3" />
-  <link rel="stylesheet" href="css/arrow.css?v=1" />
+  <link rel="stylesheet" href="css/style.css?v=t1" />
+  <style>
+	.flextest {
+		width: 500px;
+		display: flexbox;		
+		flex-direction: block;
+	}
+  </style>
   
-  <link rel="stylesheet" href="css/jquery.autocomplete.css?v=1" />
-
   <!-- Uncomment if you are specifically targeting less enabled mobile browsers
   <link rel="stylesheet" media="handheld" href="css/handheld.css?v=2">  -->
 
@@ -42,79 +45,28 @@
 
 <body>
 
-    <div id="params-container" style="display: none;">
-        <form id="params-form" action="/" method="get">
-            <h3>Params</h3>
-            
-            <span>Mode:</span>
-            <label>Plain<input type="radio" id="mode-1" name="mode" value="plain"/></label>
-            <label>Hierarhy<input type="radio" id="mode-0" name="mode"  value="hierarchy" checked="checked" /></label>
-            <br />
-            <label><span>Depth:</span>
-                <!--
-                <select id="depth" name="depth">
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                </select>
-                -->
-                <input id="depth" name="depth" value="2" />
-            </label>
-            <br />
-            
-            <span>Filter:</span>
-            <label>On<input type="radio" id="filter-1" name="filter" value="On" checked="checked"/></label>
-            <label>Off<input type="radio" id="filter-0" name="filter" value="Off" /></label>
-            <br />
-            
-            <label><span>Query:</span>
-            <input type="text" id="query" name="query" value="girls" /></label>
-            <br />
-            
-            <input type="submit" value="New request" />
-        </form>
-        <hr />
-        <form id="auth-form" action="/Auth.json" method="get">
-            <h3>Auth</h3>
-            <input type="hidden" id="auth-procedure" name="procedure" value="SignIn" />
-            
-            <label><span>Login:</span>
-                <input type="text" id="auth-login" name="userName" value="" />
-            </label>
-            <br />
-            <label><span>Password:</span>
-                <input type="text" id="auth-password" name="password" value="" />
-            </label>
-            <br />
-            
-            <input type="submit" value="Auth user" />
-        </form>
-        <hr />
-        <form id="reg-form" action="/Auth.json" method="get">
-            <h3>Registration</h3>
-            <input type="hidden" id="reg-procedure" name="procedure" value="SignUp" />
-            
-            <label><span>Login:</span>
-                <input type="text" id="reg-login" name="userName" value="" />
-            </label>
-            <br />
-            <label><span>Password:</span>
-                <input type="text" id="reg-password" name="password" value="" />
-            </label>
-            <br />
-            
-            <label><span>Email:</span>
-                <input type="text" id="reg-email" name="email" value="" />
-            </label>
-            <br />
-            
-            <input type="submit" value="New user" />
-        </form>
-        <hr />
+    <div id="main-container"  style="">
+<style>
+div { display: flexbox; }
+	#span1 { flex-order: 2; }
+	#span3 { flex-order: 2; }
+	#span4 { flex-order: 1; }
 
-    </div>
-    
-    <div id="main-container"  style="z-index: 1000">
+	</style>
+	<div>
+		<span id="span1">span1</span>
+		<span id="span2">span2</span>
+		<span id="span3">span3</span>
+		<span id="span4">span4</span>
+	</div>
+
+<hr />
+<p class="flextest">
+	<button style="width: 400px;">Child 1</button>
+	<button style="width: 200px;">Child 2</button>
+	<button style="width: 100px;">Child 3</button>
+</p>
+
     </div>
           
   <!-- JavaScript at the bottom for fast page loading -->
@@ -126,49 +78,11 @@
     (function () {
 
         var scripts = [
-            "js/libs/jquery-1.6.2.min.js",
-
-            "js/libs/jquery.tmpl.min.js",
-            "js/libs/jquery.cookie.js",
-            "js/libs/jquery.md5.js",
-//            "js/libs/jquery.identicon5.packed.js",
-            "js/libs/jquery.form.js",
-//            "js/libs/jquery.highlight-3.js",
-            "js/libs/jquery.autocomplete.js",
-//            "js/libs/jquery.tinysort.min.js",
-//            "js/libs/jquery.tagcanvas.js",
-            "js/libs/jquery.scrollto-min.js",
-            
-            "js/mylibs/history.js",
-            "js/plugins.js",
-//            "js/align.floats.base.js",
-
-            "js/graph/grapharea.js",
-            "js/graph/g.nav.js",
-            
-            "js/app/fragment.js",
-            "js/app/facade.js",
-
-            "js/app/application.js",
-//
-//            "js/app/f.word.js",
-            "js/app/f.tag.js",
-            "js/app/f.user.js",
-            "js/app/f.post.js",
-            "js/app/f.branch.js",
-
-            "js/script.js"
+            "js/libs/jquery-1.6.4.min.js",
         ];
-
-        function updateScriptsLoaderStatus(msg)
-        {
-            // update scriptS loader status here
-            console.log('' + msg); // <- simple message
-        }
 
         (function loadNext( ind  )
         {
-//            updateScriptsLoaderStatus('Loading JS: ' + (ind+1) + '/' + scripts.length + ' - ' + scripts[ind]);
             var d = new Date();
             var filename = scripts[ind];
             var fileref = document.createElement('script')
@@ -177,15 +91,10 @@
                 {
                     loadNext( ++ind  );
                 }    
-                else
-                {
-//                    update    ScriptsLoaderStatus('JS loading complete');
-                    
-                }
             };
             fileref.setAttribute( "type","text/javascript" );
             fileref.setAttribute( "src", filename + "?d="+d.getTime() );
-            document.getElementsByTagName("head")[0].appendChild( fileref );
+            document.getElementsByTagName("script")[0].appendChild( fileref );
         } (0) );
         
     }());

@@ -48,7 +48,7 @@ PostView.prototype = {
                 var 
                     postId = PostView.Post.id;
                 
-                $(document.body).scrollTop(postOffset.top - 85 - parentPost.outerHeight(true));
+//                $(document.body).scrollTop(postOffset.top - 85 - parentPost.outerHeight(true));
                 
                 
             });
@@ -103,11 +103,12 @@ PostView.prototype = {
     },
     openContent : function ()
     {
-        var dfd = $.Deferred();
+        var dfd = $.Deferred(),
+            fragmentId = $( this.View ).parents('.fragment').attr('data-id');
         
         this.View.find(".state").addClass('expanded');
         
-        this.Post.openPostChilds( dfd );
+        this.Post.openPostChilds( dfd, fragmentId );
         
         this.Post.opened = true;
         
@@ -127,7 +128,7 @@ PostView.prototype = {
     },
     drawPost : function ( post )
     {
-         var newView = post.View.render({
+        var newView = post.View.render({
             parentView: this.View, 
             tmpl: "post", 
             insertMode :"insertAfter",
@@ -176,15 +177,16 @@ PostView.prototype = {
             newView = null;
         for (var i = posts_list.length; i--; ) { 
             id = posts_list[i];
-//            b = this.Application.branchExist( id );
-            b = false;
             
             newView = this.drawPost( app_posts[ id ] );
             
-//            if ( b = this.Application.branchExist( id ) )
-//            {
-//                b.drawListHierarhy( posts_list, b.color, newView );
-//            }
+            if ( b = this.Post.Application.branchExist( id ) )
+            {
+                console.log('will draw', b);
+                
+                // !!! все должно рисоваться от текущего поста 
+//                b.post.View.drawListHierarhy( posts_list, b.color, newView );
+            }
             
             /*
              * перебирать все посты ветки
@@ -236,8 +238,7 @@ PostView.prototype = {
         
         var renderObj = this.Post;
         
-        switch ( params.insertMode )
-        {
+        switch ( params.insertMode ) {
             case "appendTo":
                 this.View = $.tmpl( params.tmpl, renderObj ).appendTo( params.parentView );
                 break;
@@ -262,6 +263,8 @@ PostView.prototype = {
                 this.Post.Application.msg("Incorrect render mode for " + params.tmpl);
                 return false;
         }
+        
+        this.View.css({"border-color": this.Post.getBranch().color});
         
         this.addReplyForm();
         
@@ -399,19 +402,17 @@ PostView.prototype = {
         replyForm.find(".postform").submit( function ( ) {
             var data = Post.Application.formArrayToData($(this).formToArray());
             
-            if ( data.directusernames != undefined)
-            {
+            if ( data.directusernames != undefined) {
                 data.directUserIds = getIds(data.directusernames);
             }
-            if ( data.inviteinclude != undefined)
-            {
+            if ( data.inviteinclude != undefined) {
                 data.text += '<hr /> Link to post <strong>'+ Post.id + '</strong>'
             }
             
             replyForm.find('.cancel-reply').click();
             
-            Post.Application.ajaxRequest(replyForm.find(".postform").attr("action"), 
-                function( response ){
+            Post.Application.ajaxRequest( replyForm.find(".postform").attr("action" ), 
+                function ( response ) {
                     
                     Post.processPostSubmit( response );
 
@@ -457,4 +458,3 @@ PostView.prototype = {
     },
     doNothing : function () {}
 }
-

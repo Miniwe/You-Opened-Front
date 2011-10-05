@@ -230,6 +230,8 @@ FragmentView.prototype = {
             tmpl : 'post',
             parent : this.Fragment.id
         });
+        
+        postView.css({"border-color": this.Fragment.branch.color});
 
         this.attachBehavior();
         

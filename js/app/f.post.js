@@ -67,22 +67,36 @@ extend( Post, Facade );
 Post.prototype = {
     prepareRender : function()
     {
-        this.branchId = 0;
-        for (var id in this.Application.branches)
-        {
+        var branch = this.getBranch();
+        this.branchId = branch.id;
+    },
+    getBranch : function ( )
+    {
+        var branch = null;
+        
+        for (var id in this.Application.branches) {
             if ( this.id == this.Application.branches[id].postId ) {
-                this.branchId = id; 
-                this.postCount = this.Application.branches[id].postCount;
+                branch = this.Application.branches[id]; 
+                this.postCount = branch.postCount;
                 break;
             } else if ( this.parentPostId == this.Application.branches[id].postId ) {
-                this.branchId = id; 
+                branch = this.Application.branches[id]; 
             }
         }
+        return branch;
     },
-    openPostChilds : function ( dfd )
+    openPostChilds : function ( dfd, fragmentId )
     {
-        var Post = this;
-        this.loadChilds( {}, function( ) { Post.View.showPostChils ( ); dfd.resolve({}); } );
+        var Post = this,
+            subParams = {},
+            fragment = false;
+            
+        if (fragment = this.getFragment( fragmentId ))
+        {
+            subParams = fragment.Marker.getParams() ;
+        }
+        
+        this.loadChilds( subParams, function( ) {Post.View.showPostChils ( ); dfd.resolve({});} );
     },
     addPoststoPost : function ( posts )
     {

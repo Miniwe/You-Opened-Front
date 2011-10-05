@@ -234,6 +234,9 @@ nav.toolbar .tab.active:hover {
 
 .post-content, .post-more {
 }
+.post-content{
+    border-right: 4px solid transparent;
+}
 
 #side nav {
 	height: 36px;
