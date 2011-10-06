@@ -29,12 +29,10 @@ function extend(Child, Parent) {
 
 function formatDate ( indate )
 {
-    var outdate = indate;
     var d = new Date();
-    d.setTime(outdate);
+    d.setTime(indate * 1000);
     
-//    return d.toLocaleString(); // + " - " + outdate;
-    return d.format("dd, mmmm HH:MM");
+    return d.format("dd, mmmm yyyy HH:MM");
 }
 
 

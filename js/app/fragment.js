@@ -10,6 +10,7 @@ function Fragment ( Application )
     this.View = new FragmentView ( this );
     
     this.Marker = new Marker ( this.Application );
+    
     this.parentMarker = null;
     
     this.navGraph = null;
@@ -30,7 +31,18 @@ Fragment.prototype = {
     },
     addMarkerParams : function ( params )
     {
+        var fragment = this.fragment;
+        
         this.Marker.addParams( params );
+
+        this.Marker.setAction( function ( newData ) {
+              fragment.clear();
+              fragment.fillData( newData );
+              fragment.View.updateFragment();
+              fragment.View.updateRightSide();
+        } );
+        
+        this.Marker.saveState();
     },
     addMainBranch : function ( branch )
     {

@@ -13,7 +13,7 @@ var PostView = function ( Post )
 PostView.prototype = {
     attachBehavior : function ( ParentView )
     {
-        ParentView = ( ParentView ) ? ParentView : this.View;
+//        ParentView = ( ParentView ) ? ParentView : this.View;
         
         var PostView = this;
         
@@ -85,6 +85,7 @@ PostView.prototype = {
                     } );
                     
                     marker.saveState();
+                    
                     marker.makeRequest();
                 }
                 return false;
@@ -114,9 +115,9 @@ PostView.prototype = {
         
         return dfd.promise();
     },
-    showPostChils : function ( )
+    showPostChils : function ( posts_list )
     {
-        var content = this.drawChildsList( );
+        var content = this.drawChildsList( posts_list );
         this.drawContent( content );
     },
     
@@ -134,8 +135,8 @@ PostView.prototype = {
             insertMode :"insertAfter",
             parent: this.Post.id
         });
-        
-        post.View.attachBehavior( );
+        console.log(this.Post.id);
+        post.View.attachBehavior( newView );
         
         return newView;
     },
@@ -162,30 +163,36 @@ PostView.prototype = {
         }
         
     },
-    drawListHierarhy: function ( postId, color, View )
-    {
-        var app_posts = this.Post.Application.posts,
-            newView = null,
-            curPost = null;
-            
-        var b;
-        for (var id in app_posts) {
-            if (app_posts[id].parentPostId == postId) {
-                console.log( postId, id );
-                newView = this.drawPost( app_posts[id] );
-                if ( b = this.Post.Application.branchExist( id ) ) {
-                    app_posts[id].View.drawListHierarhy( id, b.color, newView );
-                }
-
-                newView.insertAfter( View );
-                
-            }
-        }
-            
-    },
-    drawChildsList : function ( mode )
+    drawListHierarhy: function ( postId_list, color, View )
     {
         
+        
+        var app_posts = this.Post.Application.posts,
+            id = '',
+            newView = null,
+            b = null,
+            curPost = null;
+            
+        this.Post.sortList( postId_list, "createTime" );
+
+        
+        for (var i=postId_list.length; i--; ) {
+            id = postId_list[i];
+            if ( app_posts[ id ].parentPostId == this.Post.id ) {
+                newView = this.drawPost( app_posts[id] );
+                newView.insertAfter( View );
+                
+                if ( b = this.Post.Application.branchExist( id ) ) {
+                    app_posts[id].View.drawListHierarhy( postId_list, b.color, newView );
+                }
+
+            }
+        }
+        
+            
+    },
+    drawChildsList : function ( posts_list )
+    {
         var content = document.createDocumentFragment(),
             contentJQuery = $('<div></div>');
         
@@ -196,18 +203,13 @@ PostView.prototype = {
         if ( fragment = this.Post.getFragment( fragmentId ) ) {
             mode = fragment.Marker.viewMode;
         }
-        var postId_list = [];
-        for (var id in this.Post.posts)
-        {
-            postId_list.push(id);
-        }
         if (mode == 'hierarhy') {
             
 //            content.appendChild( contentJQuery [0] );
-            this.drawListHierarhy ( this.Post.id, "#ffffff", this.View );
+            this.drawListHierarhy ( posts_list, "#ffffff", this.View );
         }
         else {
-            this.drawListPlain ( postId_list, "#ffffff", content );
+            this.drawListPlain ( posts_list, "#ffffff", content );
         }
         
         return content;

@@ -18,7 +18,7 @@ function Post (Application, id, data)
     this.authorId        = data.AuthorId;
     this.author          = (this.Application.users[this.authorId] != undefined)?this.Application.users[this.authorId]:null;
   
-    this.createTime      =  data.CreateTime;
+    this.createTime      = data.CreateTime;
     this.createTimeF     = formatDate(this.createTime);
     
     this.text            = data.Text;
@@ -91,21 +91,21 @@ Post.prototype = {
             subParams = {},
             fragment = false;
             
-        if (fragment = this.getFragment( fragmentId ))
-        {
+        if (fragment = this.getFragment( fragmentId )) {
             subParams = fragment.Marker.getParams() ;
         }
         
-        this.loadChilds( subParams, function( ) {Post.View.showPostChils ( ); dfd.resolve({});} );
+        this.loadChilds( subParams, function( posts_list ) {
+            Post.View.showPostChils ( posts_list );
+            dfd.resolve({});
+        } );
     },
     addPoststoPost : function ( posts )
     {
         var c = 0;
-        for (var i=posts.length; i--; )
-        {
+        for (var i=posts.length; i--; ) {
             var curPostId = posts[i];
-            if ( this.id == this.Application.posts[ curPostId ].parentPostId )
-            {
+            if ( this.id == this.Application.posts[ curPostId ].parentPostId ) {
                 this.posts[curPostId] = this.Application.posts[ curPostId ];
                 c++;
             }
@@ -161,8 +161,7 @@ Post.prototype = {
     },
     sortList: function ( posts_list, sortField )
     {
-        for ( var i = posts_list.length; i--; )
-        {
+        for ( var i = posts_list.length; i--; ) {
             posts_list[i] = {
                 id :  posts_list[i],
                 sortField : this.Application.posts[ posts_list[ i ] ][sortField]
@@ -171,8 +170,7 @@ Post.prototype = {
         posts_list.sort( function(a,b) { 
             return b.sortField - a.sortField;
         } );
-        for ( var i = posts_list.length; i--; )
-        {
+        for ( var i = posts_list.length; i--; ) {
             posts_list[i] = posts_list[i].id;
         }
         return posts_list;
@@ -186,9 +184,8 @@ Post.prototype = {
                 var newData = this.parseResponseData( response );
                 Facade.clearPosts();
                 Facade.addPoststoPost (newData.posts);
-                if (typeof(callback) == 'function')
-                {
-                    callback();
+                if (typeof(callback) == 'function') {
+                    callback( newData.posts );
                 }
 
             },
