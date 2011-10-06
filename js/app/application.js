@@ -553,8 +553,6 @@ var Application = function ( opts )
           
         } );
         
-        marker.saveState();
-
         this.markers.push( marker );
         
         marker.makeRequest();

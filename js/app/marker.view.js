@@ -71,7 +71,6 @@ MarkerView.prototype = {
                 
             } );
             
-            Marker.saveState();
             Marker.makeRequest();
 
         });
@@ -130,29 +129,53 @@ MarkerView.prototype = {
             Marker.View.selectTab();
             
         });
-        
         tab.find(".open-params").click( function() {
-            
-            // close other tags
-            $(".open-params.opened").not(this).click();
-            
-            
-            var opts_left = $("#main").offset().left + 24;
-            var opts_width = $("#main").outerWidth(true) - $("#side").outerWidth(true) - 48;
-            
-            $(this).toggleClass("opened");
-            tab.find(".opts-cont")
-                .css({
-                    "left" : opts_left + "px",
-                    "width" : opts_width + "px"
-                })
-                .toggleClass("opened");
-                
-            Marker.View.addOptsParams( tab );
-        });
+            if ( $(this).hasClass('opened') ) {
+                Marker.View.closeTabParams();
+            } else {
+                Marker.View.closeOtherTabParams();
+                Marker.View.openTabParams();
+            }
+        } );
         
         this.tabView = tab;
 
+    },
+    openTabParams : function ( )
+    {
+        this.tabView.find(".open-params").addClass("opened");
+        var opts_left = $("#main").offset().left + 24;
+        var opts_width = $("#main").outerWidth(true) - $("#side").outerWidth(true) - 48;
+
+        this.tabView.find(".opts-cont")
+            .css({
+                "left" : opts_left + "px",
+                "width" : opts_width + "px"
+            })
+            .addClass("opened");
+
+        this.addOptsParams( this.tabView );
+        
+    },
+    closeTabParams : function ( )
+    {
+        this.tabView.find(".open-params").removeClass("opened");
+        
+        this.tabView.find(".opts-cont")
+            .removeClass("opened", function(){
+            })
+            .html("");
+    },
+    closeOtherTabParams : function ( )
+    {
+        var tmpMarker = null;
+        for ( var i=this.Marker.Application.markers.length; i--; ) {
+            tmpMarker = this.Marker.Application.markers[i];
+            if (tmpMarker != this.Marker) {
+                tmpMarker.View.closeTabParams();
+            }
+        }
+            
     },
     prepareParams : function ( ids, type )
     {
@@ -190,7 +213,9 @@ MarkerView.prototype = {
     addOptsParams : function ( tab )
     {
         var View = this;
+        
         tab.find(".opts-cont").html("");
+        
         var optsParamsCont = $.tmpl( 'opts-params', {
             tabName: this.Marker.name,
             searchField : this.Marker.getParam('query'),
@@ -202,12 +227,14 @@ MarkerView.prototype = {
             .animate({"opacity": "1"});
             
         optsParamsCont.find(".closeopts").click(function(){
-            tab.find(".open-params").click();
+            View.closeTabParams();
         });
         
         optsParamsCont.find("#opts-form").submit(function ( ) {
             return View.addOptFormBehaviour( this );
         });
+        
+        this.drawHistory( optsParamsCont.find(".history-control") );
         
         this.addAutocomplete( optsParamsCont.find("#opts-tags"), "tag" );
         
@@ -238,8 +265,6 @@ MarkerView.prototype = {
             this.View.selectTab();
 
         } );
-        marker.saveState();
-        
         marker.makeRequest();
         
         return false;        
@@ -267,7 +292,7 @@ MarkerView.prototype = {
         
         $("#side").find(".content").html("");
         
-        this.drawHistory();
+        this.drawHistory( $("#side .content") );
         this.drawNavigram( sideData.navigram );
         this.drawTagCloud( sideData.tagCloud );
         this.drawAuthorCloud( sideData.userCloud );
@@ -283,16 +308,18 @@ MarkerView.prototype = {
         
         
     },
-    drawHistory : function ( ) {
+    drawHistory : function ( parentView ) {
         var Marker = this.Marker;
-        $('<div class="icon24set icon-left go-back" style="margin-top:12px; float:left;"></div><div class="icon24set icon-right go-next" style="margin-top:12px; float: right;"></div>').appendTo($("#side .content"));
+        $('<div class="icon24set icon-left go-back" style="margin-top:12px; float:left;"></div>'
+            + '<div class="icon24set icon-right go-next" style="margin-top:12px; float: right;"></div>')
+            .appendTo( parentView );
 
-        $("#side").find(".go-back").click( function( ) {
+        parentView.find(".go-back").click( function( ) {
             Marker.history.process( Marker.history.prev( ) );
             return false;
         });
         
-        $("#side").find(".go-next").click( function( ) {
+        parentView.find(".go-next").click( function( ) {
             Marker.history.process( Marker.history.next( ) );
             return false;
         });

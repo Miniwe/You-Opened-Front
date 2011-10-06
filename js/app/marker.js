@@ -153,6 +153,8 @@ Marker.prototype = {
     },
     makeRequest : function ( )
     {
+        this.saveState();
+        
         var marker = this;
         this.Application.ajaxRequest(
             this.path,

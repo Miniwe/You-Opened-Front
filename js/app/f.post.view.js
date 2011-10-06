@@ -84,8 +84,6 @@ PostView.prototype = {
                           fragment.View.updateRightSide();
                     } );
                     
-                    marker.saveState();
-                    
                     marker.makeRequest();
                 }
                 return false;
@@ -135,8 +133,7 @@ PostView.prototype = {
             insertMode :"insertAfter",
             parent: this.Post.id
         });
-        console.log(this.Post.id);
-        post.View.attachBehavior( newView );
+        post.View.attachBehavior( post.View );
         
         return newView;
     },

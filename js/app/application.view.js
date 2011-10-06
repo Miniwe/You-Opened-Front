@@ -212,8 +212,6 @@ ApplicationView.prototype = {
                 
             } );
             
-            marker.saveState();
-
             Application.markers.push( marker );
 
             marker.makeRequest();

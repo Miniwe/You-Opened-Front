@@ -104,8 +104,6 @@ FragmentView.prototype = {
                 Fragment.View.updateRightSide();
             } );
 
-            Fragment.Marker.saveState();
-            
             Fragment.Marker.makeRequest();
         });
             
@@ -167,8 +165,6 @@ FragmentView.prototype = {
                   fragment.View.updateFragment();
                   fragment.View.updateRightSide();
             } );
-            
-            marker.saveState();
             
             marker.makeRequest();
             
