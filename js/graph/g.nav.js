@@ -1,8 +1,8 @@
-function NavGraph ( holder ) {
+function NavGraph ( holder )
+{
     NavGraph.superclass.constructor.call(this, holder);
     
-    this.marker = null;
-    this.fragment = null;
+    this.Marker = null;
     
     this.activeBranch = undefined;
     this.hoverBranch  = undefined;
@@ -27,8 +27,10 @@ function NavGraph ( holder ) {
 
 extend(NavGraph, GraphArea);
 
-NavGraph.prototype = {
-    init : function ( ) {
+NavGraph.prototype =
+{
+    init : function ( )
+    {
         var canvas = document.getElementById( this.holder );
         var holder = $( "#"+this.holder );
         var navGraph = this;
@@ -53,39 +55,25 @@ NavGraph.prototype = {
         } );
         
         holder.click( function ( event ) {
+            log('hello holder click', navGraph.Marker, navGraph.hoverBranch.id);
+            return false;
             if ( navGraph.hoverTri ) {
                 navGraph.activeBranch.makeMainClick( navGraph.activeBranch.id );
                 return true;
             }
             if ( navGraph.hoverBranch != undefined ) {
-                var postId = navGraph.hoverBranch.id,
-                    fragment = navGraph.fragment;
-                navGraph.marker.addParams({'parentPostId' : postId});
-                
-                console.log('fragment in', fragment);
-                navGraph.marker.setAction( function ( newData ) {
-                    
-                  fragment.clear();
-                  fragment.fillData( newData );
-                  fragment.View.updateFragment();
-                  fragment.View.updateRightSide();  
-                } );
-                
-                navGraph.marker.makeRequest();
-                
-//                navGraph.hoverBranch.click( navGraph.hoverBranch.id );
-//                navGraph.activeBranch = navGraph.hoverBranch;
+                navGraph.hoverBranch.click( navGraph.hoverBranch.id );
+                navGraph.activeBranch = navGraph.hoverBranch;
             }
         } );
 
     },
-    addMarker : function ( marker ) {
-        this.marker = marker;
+    addMarker : function ( marker ) 
+    {
+        this.Marker = marker;
     },
-    addFragment : function ( fragment ) {
-        this.fragment = fragment;
-    },
-    addData : function ( parentBranch, data ) {
+    addData : function ( parentBranch, data )
+    {
         this.parentBranch = parentBranch;
         this.branchesData = data;
 //        console.log(this.parentBranch, this.branchesData);
@@ -93,8 +81,7 @@ NavGraph.prototype = {
         this.branchesWeightSumm = 0;
         this.postCountSumm = 0;
         
-        for ( var i = this.branchesData.length; i--; )
-        {
+        for ( var i = this.branchesData.length; i--; ) {
             this.branchesWeightSumm += parseFloat( this.branchesData[i].weight );
             this.postCountSumm += parseFloat( this.branchesData[i].postCount );
         }
@@ -103,8 +90,8 @@ NavGraph.prototype = {
         
         this.branchesWeightSummCoef = this.radius / ( this.branchesWeightSumm ? this.branchesWeightSumm : 1 ) ;
     },
-    draw : function ( ) {
-        
+    draw : function ( )
+    {
         var partsCount = this.branchesData.length;
         
         var deltaR = this.branchesWeightSummCoef;
@@ -145,8 +132,7 @@ NavGraph.prototype = {
             this.ctx.lineWidth = 2; this.ctx.stroke( );
         }
             
-        for (var i=this.branchesData.length; i--; )
-        {
+        for (var i=this.branchesData.length; i--; ) {
             curAngle = this.branchesData[i].postCount * deltaC;
             
             curRadius = this.branchesData[i].weight * deltaR;
@@ -165,8 +151,7 @@ NavGraph.prototype = {
             }
             this.ctx.fill();
             
-            if (this.ctx.isPointInPath(this.cPos.x, this.cPos.y))
-            {
+            if (this.ctx.isPointInPath(this.cPos.x, this.cPos.y)) {
                 this.ctx.strokeStyle = this.ctx.fillStyle;
                 this.ctx.lineWidth = 3;this.ctx.stroke();
                 
@@ -177,13 +162,12 @@ NavGraph.prototype = {
                 cursorState = true;
             }
             
-            if (this.activeBranch && this.activeBranch.id == this.branchesData[i].id)
-            {
+            if (this.activeBranch && this.activeBranch.id == this.branchesData[i].id) {
                 this.ctx.strokeStyle = "#f00";
                 this.ctx.lineWidth = 2; this.ctx.stroke();
             }
-            if (this.highlightBranch == this.branchesData[i].id)
-            {
+            
+            if (this.highlightBranch == this.branchesData[i].id) {
                 this.ctx.strokeStyle = "#f00";
                 this.ctx.lineWidth = 2; this.ctx.stroke();
             }
@@ -191,13 +175,14 @@ NavGraph.prototype = {
             
         }
         
-        if (cursorState)
+        if (cursorState) {
             $("#"+this.holder).css({cursor: "pointer"});
-        else
+        }
+        else {
             $("#"+this.holder).css({cursor: "default"});
+        }
         
-        if (this.activeBranch)
-        {
+        if (this.activeBranch) {
             this.drawTriControl( );
         }
         
@@ -223,7 +208,8 @@ NavGraph.prototype = {
     },
     startGraph : function ( )
     {
-//        this.subscribe('userEvents', this.checkMousePos);
+//        this.subscribe('userEvents', this.mousemove );
+//        this.subscribe('userEvents', this.click );
 //        this.subscribe('gameLogic',  this.resetTop);
         this.subscribe( 'drawGraph',  this.draw );
     },
@@ -234,4 +220,13 @@ NavGraph.prototype = {
 //        this.unsubscribe('drawGraph',  this.drawPosts);
         
     }
+//    ,
+//    mousemove : function ( )
+//    {   
+//        log('hello diag move');
+//    },
+//    click : function ( )
+//    {   
+//        log('hello diag click');
+//    }
 }

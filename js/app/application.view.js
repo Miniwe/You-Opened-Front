@@ -173,16 +173,28 @@ ApplicationView.prototype = {
         });
        
     },
+    fillTwitterAuth : function ( )
+    {
+
+        $.tmpl("twitter-auth", {
+        }).appendTo("#user-area");
+        $("#twitter-auth").click(function ( ) {
+            window.location.href='http://youopened.com/auth/twitter/';
+            return false;
+        });    
+    },
     fillUserArea : function ( userAuthorized )
     {
         $("#user-area").html("");
-        
+        /*
         if ( userAuthorized ) {
             this.fillAuthorizedData();
         }
         else {
             this.fillNonAuthorizedData();
         }
+        */
+        this.fillTwitterAuth();
     },
     searchFormEvents : function ( )
     {

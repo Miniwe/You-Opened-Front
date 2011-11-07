@@ -248,7 +248,8 @@ MarkerView.prototype = {
     {
         var marker = this.Marker;
         var data = marker.Application.formArrayToData($(form).formToArray());
-        
+        console.log($(form).formToArray());
+        return false;
         marker.setName( data.tabName );
         marker.addParams({ 
             'query' : data.optsSearchField,
@@ -296,7 +297,7 @@ MarkerView.prototype = {
         $("#side").find(".content").html("");
         
         this.drawHistory( $("#side .content") );
-        this.drawNavigram( sideData.fragment, sideData.navigram );
+        this.drawNavigram( sideData.navigram );
         this.drawTagCloud( sideData.tagCloud );
         this.drawAuthorCloud( sideData.userCloud );
         
@@ -330,10 +331,10 @@ MarkerView.prototype = {
         });
          
     },
-    drawNavigram : function ( fragment, navigramBranch ) {
+    drawNavigram : function ( navigramBranch ) {
         if ( !navigramBranch ) {return false;}
         $('<div class="navdiag"></div>').appendTo($("#side .content"));
-        navigramBranch.drawNavGraph( this.Marker, fragment, $("#side .content").find(".navdiag") );
+        navigramBranch.drawNavGraph( this.Marker, $("#side .content").find(".navdiag") );
     },
     drawTagCloud : function( tagCloud ) {
         var Marker = this.Marker;
@@ -373,7 +374,7 @@ MarkerView.prototype = {
             $(this).toggleClass("selected");
             if ( $(this).hasClass("selected") ) {
                 Marker.appendValue('authorIds', $(this).attr('data-id'));
-            }
+            }           
             else {
                 Marker.removeValue('authorIds', $(this).attr('data-id'));
             }
@@ -504,12 +505,12 @@ MarkerView.prototype = {
                 title="'+ authors[id].author.name+ '-' + authors[id].postCount + '" \n\
                 class="avatarHref" title="'+ authors[id].author.name + '"></a>';
             
-            if ((authors[id].avataruri != null))
+            if ((authors[id].author.avataruri != null))
             {
                 avaContent = '<img src="'+ authors[id].author.avataruri + '" \n\
                     alt="'+ authors[id].author.name+ '" title="'+ authors[id].author.name+ '" \n\
                     data-id="' + id + '" \n\
-                    class="round-border" />';
+                    class="round-border tmps" />';
             }
             tmpView = $('<div class="avatar" data-id="' + id + '">'+ avaContent + '</div>');
             content.appendChild( tmpView[0] );

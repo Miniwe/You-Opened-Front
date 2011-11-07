@@ -12,7 +12,6 @@ var History = function ()
     {
         items.push( item );
         currentIndex = items.length - 1; 
-        console.log('added', item );
     };
           
     this.getItem = function ( index )
@@ -59,7 +58,6 @@ var History = function ()
 
     this.process = function ( processFlag )
     {
-        console.log( currentIndex, items );
         if ( processFlag ) {
             items[ currentIndex ].action();
         }

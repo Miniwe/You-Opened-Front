@@ -96,6 +96,7 @@ Post.prototype = {
         }
         
         this.loadChilds( subParams, function( posts_list ) {
+            Post.nullifyChlds ( posts_list );
             Post.View.showPostChils ( posts_list );
             dfd.resolve({});
         } );
@@ -174,11 +175,46 @@ Post.prototype = {
             posts_list[i] = posts_list[i].id;
         }
         return posts_list;
-    },    
+    },
+    loadRelevantChilds : function ( Facade, params ) {
+        this.Application.ajaxRequest( '/Slice.json',
+            function ( response ) {
+                var newData = this.parseResponseData( response );
+                Facade.addPoststoPost (newData.posts);
+                Facade.highlightRelevantChilds( newData.posts );
+            },
+            function () {
+                Facade.Application.msg( "Count`t get post list for branch [2]: " + Facade.id );
+
+            },
+            $.extend(params, {
+                'parentPostId' : Facade.id
+            })
+        );
+    },
+    nullifyChlds : function ( posts_list )
+    {
+        for (var id in this.posts)
+        {
+            this.posts[id].relevantWeight = 0;
+        }
+    },
+    highlightRelevantChilds : function ( posts_list )
+    {
+        var id;
+        for ( id in this.posts )
+        {
+            if ( $.inArray(id, posts_list ) > 0) {
+                this.posts[id].View.makeFaded( false );
+            }
+            else {
+                this.posts[id].View.makeFaded( true );
+            }
+        }
+    },
     loadChilds : function ( params, callback )
     {
         var Facade = this;
-        
         this.Application.ajaxRequest( '/Slice.json',
             function ( response ) {
                 var newData = this.parseResponseData( response );
@@ -187,17 +223,34 @@ Post.prototype = {
                 if (typeof(callback) == 'function') {
                     callback( newData.posts );
                 }
-
+                Facade.loadRelevantChilds(Facade, params );
             },
             function () {
-
-                Facade.Application.msg( "Count`t get post list for branch: " + Facade.id );
+                Facade.Application.msg( "Count`t get post list for branch [1]: " + Facade.id );
 
             },
-            $.extend(params, {
+            {
                 'parentPostId' : this.id
-            })
+            }
         );        
+//        this.Application.ajaxRequest( '/Slice.json',
+//            function ( response ) {
+//                var newData = this.parseResponseData( response );
+//                Facade.clearPosts();
+//                Facade.addPoststoPost (newData.posts);
+//                if (typeof(callback) == 'function') {
+//                    callback( newData.posts );
+//                }
+//            },
+//            function () {
+//
+//                Facade.Application.msg( "Count`t get post list for branch: " + Facade.id );
+//
+//            },
+//            $.extend(params, {
+//                'parentPostId' : this.id
+//            })
+//        );        
     },
     clearPosts : function ( )
     {

@@ -26,7 +26,6 @@ FragmentView.prototype = {
     },
     closeContent : function ( )
     {
-        console.log('check check check')
         this.Fragment.branch.post.View.closeContent();
         
         this.showFragmentElements();
@@ -70,7 +69,6 @@ FragmentView.prototype = {
     {
         var Fragment = this.Fragment;
         this.Fragment.Marker.View.drawRightSide({
-            fragment : this.Fragment,
             navigram : this.Fragment.branch,
             tagCloud : this.Fragment.branch.tags,
             userCloud : this.Fragment.branch.authors
@@ -100,11 +98,11 @@ FragmentView.prototype = {
             Fragment.Marker.addParams(subParams);
             
             Fragment.Marker.setAction( function ( newData ) {
-              Fragment.clear();
-              Fragment.fillData( newData );
-              Fragment.View.updateFragment();
-              Fragment.View.updateRightSide();
-            });
+                Fragment.clear();
+                Fragment.fillData( newData );
+                Fragment.View.updateFragment();
+                Fragment.View.updateRightSide();
+            } );
 
             Fragment.Marker.makeRequest();
         });
@@ -160,10 +158,10 @@ FragmentView.prototype = {
             }
 
             marker.setAction( function ( newData ) {
-              fragment.clear();
-              fragment.fillData( newData );
-              fragment.View.updateFragment();
-              fragment.View.updateRightSide();
+                  fragment.clear();
+                  fragment.fillData( newData );
+                  fragment.View.updateFragment();
+                  fragment.View.updateRightSide();
             } );
             
             marker.makeRequest();
@@ -240,14 +238,6 @@ FragmentView.prototype = {
     updateRightSide : function ()
     {
         
-    },
-    rebuildFragment : function ( newData )
-    {
-      console.log('this', this, newData);  
-//      this.Fragment.clear();
-//      this.Fragment.fillData( newData );
-//      this.updateFragment();
-//      this.updateRightSide();
     }
 
 }

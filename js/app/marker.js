@@ -1,5 +1,6 @@
-
-
+/**
+ * 
+ */
 var Marker = function ( Application )
 {
     
@@ -111,7 +112,6 @@ Marker.prototype = {
                 fragment = new Fragment( this.Application );
                 fragment.addParentMarker( this );
                 this.fragments.push( fragment );
-                
             }
             fragment.addMainBranch( tmpBranch );
             

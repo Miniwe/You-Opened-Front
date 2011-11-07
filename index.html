@@ -48,16 +48,15 @@
 
   <div id="container">
     <div id="main-header">  
-        <div class="toolbar-top"></div>
+        <div class="toolbar-top">
+            <div id="user-area" style="float: right;">
+              checking user
+            </div>
+            
+        </div>
         <nav class="round-border toolbar highlight">
-            <div id="search-tab" class="tab round-border ">
-                <div class="icon24set left-icon"></div>
-                <form action="Slice.json" method="post" id="search-form" class="" style="">
-                    <input type="text" value="search" id="search-field" class="round-border" />
-                    <input type="image" src="s.png" class="icon24set search" alt="find" title="find" />
-                </form>
-                <div class="icon24set right-icon open-params"></div>
-                <div class="opts-cont"></div>
+            <div class="tab round-border">
+                &#0160;
             </div>
             <div class="tab icon-container round-border hidden">
                 <div class="icon24set left-icon all-opened-tabs">
@@ -65,8 +64,14 @@
                 </div>
             </div>
             
-            <div id="user-area" class="tab right-tab">
-              checking user
+            <div id="search-tab" class="tab right-tab ">
+                <div class="icon24set left-icon"></div>
+                <form action="Slice.json" method="post" id="search-form" class="" style="">
+                    <input type="text" value="search" id="search-field" class="round-border" />
+                    <input type="image" src="s.png" class="icon24set search" alt="find" title="find" />
+                </form>
+                <div class="icon24set right-icon open-params"></div>
+                <div class="opts-cont"></div>
             </div>
         </nav>
         <div id="toolbar-shadow">
@@ -178,6 +183,7 @@
                         "userarea-auth",
                         "field-direct-users",
                         "field-with-invite",
+                        "twitter-auth",
                         "opts-params",
                         "post-more"
                     ]

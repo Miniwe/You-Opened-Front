@@ -177,6 +177,9 @@ Purpose of the stylesheet follows.
 
 .move {
 	background-position: -72px -0px;
+/*        display: none;*/
+        visibility: hidden;
+        opacity:0;
 }
 
 .rating {

@@ -208,6 +208,8 @@ nav.toolbar .tab.active:hover {
 	overflow: hidden;
 	margin-top: -18px;
 	background: #c0c0c0 url(../img/no_ava.png) no-repeat center center;
+        text-align: center;
+        vertical-align: middle;
 }
 
 .avatar-container .avatar img {
@@ -219,6 +221,8 @@ nav.toolbar .tab.active:hover {
 	-webkit-box-shadow: inset 3px 3px 6px #000;
 	-moz-box-shadow: inset 3px 3px 6px #000;
 	box-shadow: inset 3px 3px 6px #000;
+        width: inherit;
+        height: inherit;
 }
 
 .avatar.selected {
@@ -259,6 +263,8 @@ nav.toolbar .tab.active:hover {
 }
 .post-content{
     border-right: 4px solid transparent;
+    min-height: 90px;
+    
 }
 
 #side nav {
@@ -304,7 +310,7 @@ nav.toolbar .tab.active:hover {
 	opacity: .5;
 }
 
-button {
+button, input[type="submit"] {
 	background: #dddddd url(../img/bg_main.png) repeat fixed;
 	font-size: 16px;
 	font-family: 'Open Sans Condensed', PTSansNarrowRegular, sans-serif;
@@ -319,23 +325,23 @@ button {
 	border: 1px outset #ffffff;
 }
 
-button.icon {
+button.icon, input[type="submit"].icon {
 	padding-left: 36px;
 }
 
-button.icon.icon-user-reg {
+button.icon.icon-user-reg, input[type="submit"].icon.icon-user-reg {
 	background: url(../img/icon16_user_reg.png) no-repeat 6px center, url(../img/bg_toolbar.png);
 }
 
-button.icon.icon-user-auth {
+button.icon.icon-user-auth, input[type="submit"].icon.icon-user-auth {
 	background: url(../img/icon16_user.png) no-repeat 6px center, url(../img/bg_toolbar.png);
 }
 
-button.icon.icon-del {
+button.icon.icon-del, input[type="submit"].icon.icon-del {
 	background: url(../img/icon24_del.png) no-repeat 6px center, url(../img/bg_toolbar.png);
 }
 
-button.icon.icon-send {
+button.icon.icon-send, input[type="submit"].icon.icon-send {
 	background: url(../img/innnerref.png) no-repeat 6px center, url(../img/bg_toolbar.png);
 }
 
@@ -620,7 +626,7 @@ ul.tags li.active {
 
 .authors_list {
 	overflow: hidden;
-	max-height: 150px;
+	max-height: 192px;
 }
 
 .authors_list .avatar {
@@ -794,4 +800,11 @@ transition: opacity .2s ease-in-out .3s, height .4s ease-in-out .2s;
 
 .fragment .post-content:first-child .gobranch {
     display: none;
+}
+
+.faded{
+    opacity: .5;
+}
+.faded:hover{
+    opacity: 1;
 }

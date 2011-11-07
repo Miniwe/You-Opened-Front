@@ -92,6 +92,10 @@ PostView.prototype = {
         
         
     },
+    makeFaded : function ( faded )
+    {
+        this.View.toggleClass( 'faded', faded );
+    },
     closeContent : function ( )
     {
         this.View.find(".state").removeClass('expanded');
