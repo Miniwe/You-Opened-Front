@@ -221,6 +221,29 @@ nav.toolbar .tab.active:hover {
 	box-shadow: inset 3px 3px 6px #000;
 }
 
+.avatar.selected {
+    opacity: 1;
+}
+
+.authors_list.active .avatar {
+    opacity: .3;
+}
+
+.authors_list.active .avatar.selected {
+    opacity: 1;
+}
+
+
+.tags_list.active .tag {
+    opacity: .3;
+}
+
+.tags_list.active .tag.selected {
+    opacity: 1;
+}
+
+
+
 #side {
 	float: right;
 	width: 240px;
@@ -405,10 +428,6 @@ ul.tags li.active {
 	font-size: 14px;
 	background: #ededeb;
 
-	-webkit-box-shadow: inset 3px 3px 6px #b2b2b2;
-	-moz-box-shadow: inset 3px 3px 6px #b2b2b2;
-	box-shadow: inset 3px 3px 6px #b2b2b2;
-
 	opacity: .5;
 
 	-webkit-transition: opacity .2s ease-in-out .2s;
@@ -418,11 +437,43 @@ ul.tags li.active {
 	transition: opacity .2s ease-in-out .2s;
 
 	color: #333;
+        cursor: pointer;
+        font-weight: bold;
+}
+
+.reply.opened {
+	margin: 12px 0;
+	padding-left: 36px;
+	padding-top: 6px;
+	padding-bottom: 6px;
+	line-height: 14px;
+	font-size: 14px;
+	background: #ededeb;
+
+	-webkit-box-shadow: inset 3px 3px 6px #b2b2b2;
+	-moz-box-shadow: inset 3px 3px 6px #b2b2b2;
+	box-shadow: inset 3px 3px 6px #b2b2b2;
+
+	opacity: 1;
+
+	-webkit-transition: opacity .2s ease-in-out .2s;
+	-moz-transition: opacity .2s ease-in-out .2s;
+	-o-transition: opacity .2s ease-in-out .2s;
+	-ms-transition: opacity .2s ease-in-out .2s;
+	transition: opacity .2s ease-in-out .2s;
+
+	color: #333;
+        cursor: default;
 }
 
 .reply .modes {
 	float: right;
 	padding-right: 12px;
+        display: none;
+}
+
+.reply.opened .modes {
+        display: block;
 }
 
 .reply .modes .icon16set {

@@ -272,6 +272,9 @@ var Application = function ( opts )
             domain: '.youopened.com'
         });
         
+        
+        $("div.reply").addClass("hidden");
+        
         clearTimeout(this.siteUserTimer);
         this.siteUserTimer = null;
         
@@ -447,6 +450,8 @@ var Application = function ( opts )
                 // clear userarea
                 // show userInfo form
                 this.View.fillUserArea( true );
+                
+                $("div.reply").removeClass("hidden");
                 
                 // start user update status
                 this.updateUserState();

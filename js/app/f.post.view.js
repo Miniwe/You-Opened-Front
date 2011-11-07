@@ -219,6 +219,23 @@ PostView.prototype = {
             .insertAfter( this.View );
 //            .animate({"opacity":"1"}, 400, function (){} );
     },
+    addInviteBehavior : function () 
+    {
+        var Application = this.Post.Application;
+        
+        // if this.text contains a contains #invite-No add event to href
+        $.each(this.View.find('a[href|="#invite"]'), function(i, el) {
+            var intivePostId = $(el).attr("href").split('-')[1];
+            
+            $(el).click(function () {
+                Application.View.newTab( 'Invite to ' + intivePostId, {
+                    'parentPostId' : intivePostId
+                });
+                return false;
+            })
+        });
+
+    }, 
     render : function ( params )
     {
         this.Post.prepareRender();
@@ -250,6 +267,8 @@ PostView.prototype = {
                 this.Post.Application.msg("Incorrect render mode for " + params.tmpl);
                 return false;
         }
+        
+        this.addInviteBehavior();
         
         this.View.css({"border-color": this.Post.getBranch().color});
         
@@ -363,6 +382,7 @@ PostView.prototype = {
         });
         
         replyForm.find('.cancel-reply').click( function ( ) {
+            replyForm.removeClass("opened");
             replyForm.find('.postform').resetForm();
             replyForm.find('.inner').slideUp("fast",function (){
                 replyForm.find('.field').remove();
@@ -393,7 +413,7 @@ PostView.prototype = {
                 data.directUserIds = getIds(data.directusernames);
             }
             if ( data.inviteinclude != undefined) {
-                data.text += '<hr /> Link to post <strong>'+ Post.id + '</strong>'
+                data.text += '<hr /> Link to post <a href="#invite-'+ Post.id + '"><strong>'+ Post.id + '</strong></a>'
             }
             
             replyForm.find('.cancel-reply').click();

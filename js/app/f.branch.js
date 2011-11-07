@@ -206,7 +206,7 @@ Branch.prototype = {
             }
         );        
     },
-    drawNavGraph : function ( holder )
+    drawNavGraph : function ( marker, fragment, holder )
     {
       var Facade = this,
           navGraph = holder;
@@ -226,6 +226,8 @@ Branch.prototype = {
      this.navGraph = new NavGraph( "navGraphCanvas" + this.id );
      
      this.navGraph.init();
+     this.navGraph.addMarker( marker );
+     this.navGraph.addFragment( fragment );
      this.navGraph.addData({
         id     : this.id,
         postCount : this.postCount,

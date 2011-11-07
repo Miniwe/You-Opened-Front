@@ -187,37 +187,38 @@ ApplicationView.prototype = {
     searchFormEvents : function ( )
     {
         var Application = this.Application;
+        
         $("#search-form").submit( function ( ) {
             
-            var marker = new Marker( Application );
-            marker.setPath( '/Slice.json' );
-            marker.setName( $("#search-field").val() );
-            marker.addParams( {
+            Application.View.newTab( $("#search-field").val(), {
                 'query' : $("#search-field").val()
-            } );
-            
-            marker.setAction ( function ( newData ) {
-                this.Application.msg('action of marker', 'console');
-                this.addFragments( newData );
-                
-                this.View.updateTab();
-
-                this.Application.View.clearMain();
-
-                this.View.drawFragments();
-
-                this.View.drawRightSide( this.rightSideData );
-
-                this.View.selectTab();
-                
-            } );
-            
-            Application.markers.push( marker );
-
-            marker.makeRequest();
+            });
             
             return false;
         } );
+    },
+    newTab : function (name, params)
+    {
+        var marker = new Marker( this.Application );
+        marker.setPath( '/Slice.json' );
+        marker.setName( name );
+        marker.addParams( params );
+
+        marker.setAction ( function ( newData ) {
+            this.addFragments( newData );
+            this.View.updateTab();
+            this.Application.View.clearMain();
+            this.View.drawFragments();
+            this.View.drawRightSide( this.rightSideData );
+            this.View.selectTab();
+        } );
+
+        
+        
+        this.Application.markers.push( marker );
+
+        marker.makeRequest();
+        
     }
 }
 

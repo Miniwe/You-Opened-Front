@@ -1,6 +1,9 @@
 function NavGraph ( holder ) {
     NavGraph.superclass.constructor.call(this, holder);
     
+    this.marker = null;
+    this.fragment = null;
+    
     this.activeBranch = undefined;
     this.hoverBranch  = undefined;
     this.highlightBranch = undefined;
@@ -50,17 +53,37 @@ NavGraph.prototype = {
         } );
         
         holder.click( function ( event ) {
-            
             if ( navGraph.hoverTri ) {
                 navGraph.activeBranch.makeMainClick( navGraph.activeBranch.id );
                 return true;
             }
             if ( navGraph.hoverBranch != undefined ) {
-                navGraph.hoverBranch.click( navGraph.hoverBranch.id );
-                navGraph.activeBranch = navGraph.hoverBranch;
+                var postId = navGraph.hoverBranch.id,
+                    fragment = navGraph.fragment;
+                navGraph.marker.addParams({'parentPostId' : postId});
+                
+                console.log('fragment in', fragment);
+                navGraph.marker.setAction( function ( newData ) {
+                    
+                  fragment.clear();
+                  fragment.fillData( newData );
+                  fragment.View.updateFragment();
+                  fragment.View.updateRightSide();  
+                } );
+                
+                navGraph.marker.makeRequest();
+                
+//                navGraph.hoverBranch.click( navGraph.hoverBranch.id );
+//                navGraph.activeBranch = navGraph.hoverBranch;
             }
         } );
 
+    },
+    addMarker : function ( marker ) {
+        this.marker = marker;
+    },
+    addFragment : function ( fragment ) {
+        this.fragment = fragment;
     },
     addData : function ( parentBranch, data ) {
         this.parentBranch = parentBranch;

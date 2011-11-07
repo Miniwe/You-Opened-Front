@@ -229,6 +229,37 @@ Marker.prototype = {
             }
         }
         return false;
+    },
+    appendValue : function ( name, value )
+    {
+        var tmpValuesArray = [];
+        
+        if ( this.params[name] == undefined ) {
+            this.params[name] = value;
+            return true;
+        }
+        
+        tmpValuesArray = this.params[name].split(',');
+        
+        tmpValuesArray.push( value );
+        
+        this.params[name] = tmpValuesArray.join(',');
+    },
+    removeValue : function ( name, value )
+    {
+        if ( this.params[name] == undefined ) {
+            return true;
+        }
+        
+        var tmpValuesArray = this.params[name].split(',');
+        
+        this.params[name] = [];
+        for (var i=tmpValuesArray.length; i--; ) {
+            if (tmpValuesArray[i] != value) {
+                this.params[name].push(tmpValuesArray[i]);
+            }
+        }
+        this.params[name] = this.params[name].join(',');
     }
     
 };

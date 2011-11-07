@@ -159,6 +159,9 @@ MarkerView.prototype = {
     },
     closeTabParams : function ( )
     {
+        if ( !this.tabView ) {
+            return false;
+        }
         this.tabView.find(".open-params").removeClass("opened");
         
         this.tabView.find(".opts-cont")
@@ -293,9 +296,11 @@ MarkerView.prototype = {
         $("#side").find(".content").html("");
         
         this.drawHistory( $("#side .content") );
-        this.drawNavigram( sideData.navigram );
+        this.drawNavigram( sideData.fragment, sideData.navigram );
         this.drawTagCloud( sideData.tagCloud );
         this.drawAuthorCloud( sideData.userCloud );
+        
+        this.updateMarkerView();
         
         $("#side")
             .css({
@@ -325,23 +330,95 @@ MarkerView.prototype = {
         });
          
     },
-    drawNavigram : function ( navigramBranch ) {
+    drawNavigram : function ( fragment, navigramBranch ) {
         if ( !navigramBranch ) {return false;}
         $('<div class="navdiag"></div>').appendTo($("#side .content"));
-        navigramBranch.drawNavGraph( $("#side .content").find(".navdiag") );
+        navigramBranch.drawNavGraph( this.Marker, fragment, $("#side .content").find(".navdiag") );
     },
     drawTagCloud : function( tagCloud ) {
+        var Marker = this.Marker;
         if ( tagCloud == {} ) {return false;}
         var tagsArea = $("<div class='tags_list'></div>").appendTo($("#side .content"));
         var generatedTags = this.generateTagList( tagCloud );
         $(generatedTags).appendTo( tagsArea );
+        
+        
+        tagsArea.find('a.tag').click(function (){
+            $(this).toggleClass("selected");
+            if ( $(this).hasClass("selected") ) {
+                Marker.appendValue('tagIds', $(this).attr('data-id'));
+            }
+            else {
+                Marker.removeValue('tagIds', $(this).attr('data-id'));
+            }
+            
+            Marker.View.updateMarkerView()
+            
+            return false;
+        });
+        this.updateMarkerView();
+        
+        
     },
     drawAuthorCloud : function ( userCloud ) {
+        var Marker = this.Marker;
         if ( userCloud == {} ) {return false;}
         var authorsArea = $("<div class='authors_list'></div>").appendTo($("#side .content"));
         var generatedUsers = this.generateUsersList( userCloud );
         $(generatedUsers).appendTo( authorsArea );
+
         this.renderAvatars(authorsArea, 48);
+        
+        authorsArea.find('.avatar').click(function (){
+            $(this).toggleClass("selected");
+            if ( $(this).hasClass("selected") ) {
+                Marker.appendValue('authorIds', $(this).attr('data-id'));
+            }
+            else {
+                Marker.removeValue('authorIds', $(this).attr('data-id'));
+            }
+            
+            Marker.View.updateMarkerView()
+            
+            return false;
+        });
+    },
+    updateMarkerView : function ()
+    {
+        var activeUsers = this.Marker.getParam('authorIds');
+        $('.authors_list').find('.avatar').removeClass('selected');
+        
+        // @hak
+        activeUsers.replace('%2C', ',');
+        if (activeUsers != '') {
+            $('.authors_list').addClass('active');
+            
+            activeUsers = activeUsers.split(',');
+            for (var i=activeUsers.length; i--; ) {
+                $('.authors_list').find('.avatar[data-id='+activeUsers[i]+']').addClass('selected');
+            }
+        }
+        else {
+            $('.authors_list').removeClass('active');
+        }
+        
+        var activeTags = this.Marker.getParam('tagIds');
+        $('.tags_list').find('a.tag').removeClass('selected');
+        
+        // @hak
+        activeTags.replace('%2C', ',');
+        if (activeTags != '') {
+            $('.tags_list').addClass('active');
+            
+            activeTags = activeTags.split(',');
+            for (var i=activeTags.length; i--; ) {
+                $('.tags_list').find('.tag[data-id='+activeTags[i]+']').addClass('selected');
+            }
+        }
+        else {
+            $('.tags_list').removeClass('active');
+        }
+        
     },
     drawPosts : function ()
     {
@@ -402,7 +479,7 @@ MarkerView.prototype = {
             tmpView = [];
         
         for (var tagId in tags) {
-            tmpView = $("<a href='#tag-" + tagId + "' title='" + tags[tagId].entryRating+ "'> " 
+            tmpView = $("<a class='tag' data-id='" + tagId + "' href='#tag-" + tagId + "' title='" + tags[tagId].entryRating+ "'> " 
                 + tags[tagId].tag.asText 
                 + " </a>");
             content.appendChild( tmpView[0] );
@@ -424,7 +501,7 @@ MarkerView.prototype = {
 //                + " </a>");
             avaContent = '<a href="#avatar-author-'+ id + '" \n\
                 data-id="' + id + '" \n\
-                title="' + authors[id].postCount + '" \n\
+                title="'+ authors[id].author.name+ '-' + authors[id].postCount + '" \n\
                 class="avatarHref" title="'+ authors[id].author.name + '"></a>';
             
             if ((authors[id].avataruri != null))
@@ -434,8 +511,7 @@ MarkerView.prototype = {
                     data-id="' + id + '" \n\
                     class="round-border" />';
             }
-            tmpView = $('<div class="avatar">'+ avaContent + '</div>');
-            
+            tmpView = $('<div class="avatar" data-id="' + id + '">'+ avaContent + '</div>');
             content.appendChild( tmpView[0] );
         }
         
